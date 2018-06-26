@@ -22,6 +22,7 @@ struct Params
     string inDictFile = ""; // Input dictionary file path (positional arg 1).
     string inPatternFile = ""; // Input pattern file path (positional arg 2).
 
+    string separator = "\n"; // Input data (dictionary and patterns) separator.
     string outFile = "res.txt"; // Output file path.
 
     // CONSTANTS

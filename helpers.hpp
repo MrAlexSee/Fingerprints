@@ -1,14 +1,10 @@
 #ifndef HELPERS_HPP
 #define HELPERS_HPP
 
-#include <cmath>
-#include <cstdio>
+#include <boost/algorithm/string.hpp>
 #include <fstream>
-#include <random>
-#include <stdexcept>
 #include <string>
-#include <sstream>
-#include <type_traits>
+#include <vector>
 
 using namespace std;
 
@@ -31,10 +27,7 @@ struct Helpers
      */
 
     static bool isFileReadable(const string &filePath);
-    static string readFile(const string &filePath);
-
-    static void dumpToFile(const string &text, const string &filePath, bool newline = false);
-    static bool removeFile(const string &filePath);
+    static vector<string> readWords(const string &filePath, const string &separator);
 };
 
 template<typename T>
@@ -57,7 +50,7 @@ inline bool Helpers::isFileReadable(const string &filePath)
     return inStream.good();
 }
 
-inline string Helpers::readFile(const string &filePath)
+inline vector<string> Helpers::readWords(const string &filePath, const string &separator)
 {
     ifstream inStream(filePath);
 
@@ -66,29 +59,17 @@ inline string Helpers::readFile(const string &filePath)
         throw runtime_error("failed to read file (insufficient permisions?): " + filePath);
     }
 
-    return static_cast<stringstream const&>(stringstream() << inStream.rdbuf()).str();
-}
+    string text = static_cast<stringstream const&>(stringstream() << inStream.rdbuf()).str();
 
-inline void Helpers::dumpToFile(const string &text, const string &filePath, bool newline)
-{
-    ofstream outStream(filePath, ios_base::app);
+    vector<string> words;
+    boost::split(words, text, boost::is_any_of(separator));
 
-    if (!outStream)
+    for (string &word : words)
     {
-        throw runtime_error("failed to write file (insufficient permisions?): " + filePath);
+        boost::trim(word);
     }
 
-    outStream << text;
-
-    if (newline)
-    {
-        outStream << endl;
-    }
-}
-
-inline bool Helpers::removeFile(const string &filePath)
-{
-    return remove(filePath.c_str()) == 0;
+    return words;
 }
 
 } // namespace fingerprints

@@ -11,6 +11,7 @@
 #include <boost/format.hpp>
 #include <boost/program_options.hpp>
 #include <chrono>
+#include <cstdint>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -39,6 +40,8 @@ Params params;
 int handleParams(int argc, const char **argv);
 bool checkInputFiles(const char *execName);
 int run();
+
+void runFingerprints(const vector<string> &words, const vector<string> &patterns);
 
 }
 
@@ -71,7 +74,8 @@ int handleParams(int argc, const char **argv)
        ("in-pattern-file,I", po::value<string>(&params.inPatternFile)->required(), "input pattern file path (positional arg 2)")
        ("approx,k", po::value<int>(&params.kApprox)->required(), "perform approximate search (Hamming distance) for k errors")
        ("out-file,o", po::value<string>(&params.outFile), "output file path")
-        ("pattern-count,p", po::value<int>(&params.nPatterns), "maximum number of patterns read from top of the patterns file (non-positive values are ignored)")
+        ("pattern-count,p", po::value<int>(&params.nPatterns), "maximum number of patterns read from top of the patterns (non-positive values are ignored)")
+       ("separator,s", po::value<string>(&params.separator), "input data separator")
        ("version,v", "display version info");
 
     po::positional_options_description positionalOptions;
@@ -144,7 +148,10 @@ int run()
 {
     try
     {
+        vector<string> dict = Helpers::readWords(params.inDictFile, params.separator);
+        vector<string> patterns = Helpers::readWords(params.inPatternFile, params.separator);
 
+        runFingerprints(dict, patterns);
     }
     catch (const exception &e)
     {
@@ -153,6 +160,17 @@ int run()
     }
 
     return 0;
+}
+
+void runFingerprints(const vector<string> &words, const vector<string> &patterns)
+{
+    Fingerprints<uint16_t> fingerprints;
+
+    fingerprints.preprocess(words);
+    fingerprints.test(patterns);
+
+    cout << boost::format("Processed #words = %1%, #queries = %2%") % words.size() % patterns.size() << endl;
+    cout << boost::format("Elapsed = %1% us") % fingerprints.getElapsedUs() << endl;
 }
 
 } // namespace fingerprints
