@@ -10,7 +10,7 @@ letters = [c for c in string.ascii_lowercase]
 wordSize = 5 # Number of letters per word.
 nWords = 100000 # Total number of words.
 
-outFile = "out.txt" # Output file path.
+outFile = "dict.txt" # Output file path.
 
 def genWord(wordSize):
     pFreq = [0.01 * f for f in freq]

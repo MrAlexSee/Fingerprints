@@ -1,4 +1,4 @@
-inFile = "../data/dict_iamerican_insane.txt" # Input file path.
+inFile = "../data/dict_urls.txt" # Input file path.
 
 def readWords(inFile):
     print "Reading from: {0}".format(inFile)

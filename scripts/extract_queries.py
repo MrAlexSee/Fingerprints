@@ -1,11 +1,11 @@
 import random
 
-nQueries = 1000 # Number of queries.
-querySize = 9 # Size of each query (#chars).
+nQueries = 10000 # Number of queries.
+querySize = 69 # Size of each query (#chars).
 maxNErrors = 2 # Maximum number of errors (e), will be sampled from [1, e].
 
-inFile = "iamerican-insane.txt" # Input file path.
-outFile = "dict.txt" # Output file path.
+inFile = "../data/dict_urls.txt" # Input file path.
+outFile = "queries.txt" # Output file path.
 
 def readWords(inFile, wordSize):
     print "Reading from: {0}".format(inFile)
