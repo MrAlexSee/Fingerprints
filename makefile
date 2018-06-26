@@ -1,5 +1,5 @@
 CC        = g++
-CCFLAGS   = -Wall -pedantic -std=c++11
+CCFLAGS   = -Wall -pedantic -std=c++14
 OPTFLAGS  = -DNDEBUG -O3
 
 BOOST_DIR = "/home/alex/boost_1_67_0"

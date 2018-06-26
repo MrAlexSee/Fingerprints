@@ -6,10 +6,13 @@
 
 using namespace std;
 
+// 0 -> occurrence fingerprint
+#define FING_TYPE 0
+
 namespace fingerprints
 {
 
-template<typename SKETCH_T>
+template<typename FING_T>
 class Fingerprints
 {
 public:
@@ -19,7 +22,17 @@ public:
     float getElapsedUs() const { return elapsedUs; }
 
 private:
+    FING_T calcFingerprint(const char *str, size_t size) const;
+    FING_T calcFingerprintOcc(const char *str, size_t size) const;
+
+    unsigned char *charsMap = nullptr;
+
     float elapsedUs = 0.0f;
+
+    // CONSTANTS follow
+
+    // Indicates that the character is not stored in a fingerprint.
+    static const unsigned char noCharIndex = 255;
 
     const string commonChars16 = "etaoinshrdlcumwf";
     const string rareChars16 = "zqxjkvbpygfwmucl";
