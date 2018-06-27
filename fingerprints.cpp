@@ -60,24 +60,39 @@ void Fingerprints<FING_T>::preprocess(vector<string> words)
 }
 
 template<typename FING_T>
-void Fingerprints<FING_T>::test(const vector<string> &patterns)
+int Fingerprints<FING_T>::test(const vector<string> &patterns, int k)
 {
+    int nMatches = 0;
     clock_t start, end;
 
     start = std::clock();
 
     for (const string &pattern : patterns) 
     {
-        FING_T curFingerprint = calcFingerprint(pattern.c_str(), pattern.size());
-        
-        char *curEntry = fingArrayEntries[pattern.size()];
-        char *nextEntry = fingArrayEntries[pattern.size() + 1];
+        const size_t curSize = pattern.size();
+
+        FING_T patFingerprint = calcFingerprint(pattern.c_str(), curSize);
+
+        char *curEntry = fingArrayEntries[curSize];
+        char *nextEntry = fingArrayEntries[curSize + 1];
 
         while (curEntry != nextEntry) 
         {
             // We iterate over all words and calculate the Hamming distance only
             // when the fingerprint comparison is not successful.
+            if (calcNErrors(patFingerprint, *(reinterpret_cast<FING_T *>(curEntry))) <= k)
+            {
+                curEntry += sizeof(FING_T);
+
+                if (isHamAMK(pattern.c_str(), curEntry, curSize, k))
+                {
+                    // Make sure that the number of results is returned in order to
+                    // prevent the compiler from overoptimizing unused results.
+                    nMatches += 1;
+                }
+            }
             
+            curEntry += curSize;
         }
     }
 
@@ -85,6 +100,8 @@ void Fingerprints<FING_T>::test(const vector<string> &patterns)
 
     double elapsedSec = (end - start) / static_cast<double>(CLOCKS_PER_SEC);
     elapsedUs = elapsedSec / 1'000'000;
+
+    return nMatches;
 }
 
 template<typename FING_T>
@@ -111,10 +128,34 @@ void Fingerprints<FING_T>::initCharsMap()
 
 #if FING_TYPE == 0
     size_t nChars = sizeof(FING_T) * 8;
-    // charList = getCharList(nChars, LETTERS_TYPE);
+    string charList = getCharList(nChars);
 #else
     #error Bad FING_TYPE
 #endif
+
+    assert(nChars == charList.size());
+    for (size_t i = 0; i < nChars; ++i)
+    {
+        char c = charList[i];
+        charsMap[static_cast<size_t>(c)] = i;
+    }
+}
+
+template<typename FING_T>
+string Fingerprints<FING_T>::getCharList(size_t nChars) const
+{
+    switch (nChars)
+    {
+        case 8:
+            return commonChars8;
+        case 16:
+            return commonChars16;
+        default:
+            assert(false);
+    }
+
+    assert(false);
+    return "";
 }
 
 template<typename FING_T>
@@ -206,6 +247,28 @@ unsigned char Fingerprints<FING_T>::calcNErrors(FING_T f1, FING_T f2) const
 
     assert(setBits >= 0 and setBits <= sizeof(FING_T * 8));
     return nErrorsLUT[setBits];
+}
+
+template<typename FING_T>
+bool Fingerprints<FING_T>::isHamAMK(const char *str1, const char *str2, size_t size, int k)
+{
+    // With compiler optimizations, this version is faster than any bitwise/avx/sse magic (tested).
+    int nErrors = 0;
+
+    for (size_t i = 0; i < size; ++i)
+    {
+        assert(str1[i] != '\0' and str2[i] != '\0');
+
+        if (str1[i] != str2[i])
+        {
+            if (++nErrors > k)
+            {
+                return false;
+            }
+        }
+    }
+
+    return true;
 }
 
 } // namespace fingerprints

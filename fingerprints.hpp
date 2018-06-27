@@ -20,13 +20,15 @@ public:
     ~Fingerprints();
 
     void preprocess(vector<string> words);
-    void test(const vector<string> &patterns);
+    int test(const vector<string> &patterns, int k);
 
     float getElapsedUs() const { return elapsedUs; }
 
 private:
     void initNErrorsLUT();
+    
     void initCharsMap();
+    string getCharList(size_t nChars) const;
 
     void calcOccSetBitsLUT();
 
@@ -37,6 +39,8 @@ private:
 
     static unsigned int calcHammingWeight(unsigned int n);
     unsigned char calcNErrors(FING_T f1, FING_T f2) const;
+
+    static bool isHamAMK(const char *str1, const char *str2, size_t size, int k);
 
     static constexpr size_t maxWordSize = 255;
     static constexpr size_t charsMapSize = 255;
