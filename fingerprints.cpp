@@ -21,9 +21,11 @@ Fingerprints<FING_T>::Fingerprints()
 template<typename FING_T>
 Fingerprints<FING_T>::~Fingerprints()
 {
+    delete[] nErrorsLUT;
     delete[] charsMap;
     delete[] setBitsLUT;
-    delete[] nErrorsLUT;
+
+    delete[] fingArray;
 }
 
 template<typename FING_T>
@@ -107,10 +109,10 @@ int Fingerprints<FING_T>::test(const vector<string> &patterns, int k)
 template<typename FING_T>
 void Fingerprints<FING_T>::initNErrorsLUT()
 {
-    size_t fingSize = sizeof(FING_T) * 8;
-    nErrorsLUT = new unsigned char[fingSize + 1];
+    size_t fingSizeBits = sizeof(FING_T) * 8;
+    nErrorsLUT = new unsigned char[fingSizeBits + 1];
 
-    for (size_t i = 0; i <= fingSize; ++i)
+    for (size_t i = 0; i <= fingSizeBits; ++i)
     {
         nErrorsLUT[i] = ceil(i / 2.0);
     }
@@ -136,7 +138,7 @@ void Fingerprints<FING_T>::initCharsMap()
     assert(nChars == charList.size());
     for (size_t i = 0; i < nChars; ++i)
     {
-        char c = charList[i];
+        const char c = charList[i];
         charsMap[static_cast<size_t>(c)] = i;
     }
 }
@@ -162,10 +164,9 @@ template<typename FING_T>
 void Fingerprints<FING_T>::calcOccSetBitsLUT()
 {
     FING_T maxVal = std::numeric_limits<FING_T>::max();
-    setBitsLUT = new unsigned char[std::numeric_limits<FING_T>::max() + 1];
+    setBitsLUT = new unsigned char[maxVal + 1];
 
-
-    FING_T n = 0x0;
+    FING_T n = 0;
 
     while (true)
     {

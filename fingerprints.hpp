@@ -50,9 +50,10 @@ private:
     char *fingArray = nullptr;
     char *fingArrayEntries[maxWordSize];
 
+    unsigned char *nErrorsLUT = nullptr;
+
     unsigned char *charsMap = nullptr;
     unsigned char *setBitsLUT = nullptr;
-    unsigned char *nErrorsLUT = nullptr;
 
     float elapsedUs = 0.0f;
 
