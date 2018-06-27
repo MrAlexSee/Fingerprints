@@ -74,7 +74,7 @@ int handleParams(int argc, const char **argv)
        ("in-pattern-file,I", po::value<string>(&params.inPatternFile)->required(), "input pattern file path (positional arg 2)")
        ("approx,k", po::value<int>(&params.kApprox)->required(), "perform approximate search (Hamming distance) for k errors")
        ("out-file,o", po::value<string>(&params.outFile), "output file path")
-        ("pattern-count,p", po::value<int>(&params.nPatterns), "maximum number of patterns read from top of the patterns (non-positive values are ignored)")
+       ("pattern-count,p", po::value<int>(&params.nPatterns), "maximum number of patterns read from top of the patterns (non-positive values are ignored)")
        ("separator,s", po::value<string>(&params.separator), "input data separator")
        ("version,v", "display version info");
 
@@ -171,7 +171,15 @@ void runFingerprints(const vector<string> &words, const vector<string> &patterns
 
     cout << boost::format("Processed #words = %1%, #queries = %2%, #matches = %3%") 
         % words.size() % patterns.size() % nMatches << endl;
-    cout << boost::format("Elapsed = %1% us") % fingerprints.getElapsedUs() << endl;
+
+    float elapsedUs = fingerprints.getElapsedUs();
+    float elapsedS = elapsedUs / 1'000'000;
+
+    size_t totalSizeB = Helpers::getTotalSize(words);
+    float throughputMbs = static_cast<float>(totalSizeB) / 1'000'000.0 / elapsedS;
+
+    cout << boost::format("Elapsed = %1% us, throughput = %2% MB/s")
+        % elapsedUs % throughputMbs  << endl;
 }
 
 } // namespace fingerprints

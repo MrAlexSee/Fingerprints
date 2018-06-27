@@ -22,6 +22,8 @@ struct Helpers
     template<typename T>
     static void calcStatsMedian(const vector<T> &throughputVec, T *throughputMedian);
  
+    static size_t getTotalSize(const vector<string> &words);
+
     /*
      *** FILES
      */
@@ -42,6 +44,18 @@ inline void Helpers::calcStatsMedian(const vector<T> &throughputVec, T *throughp
 
     sort(tmp.begin(), tmp.end());
     *throughputMedian = tmp[tmp.size() / 2];
+}
+
+size_t Helpers::getTotalSize(const vector<string> &words)
+{
+    size_t totalSize = 0;
+
+    for (const string &word : words)
+    {
+        totalSize += word.size();
+    }
+
+    return totalSize;
 }
 
 inline bool Helpers::isFileReadable(const string &filePath)
