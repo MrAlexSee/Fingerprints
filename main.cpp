@@ -170,9 +170,10 @@ void runFingerprints(const vector<string> &words, const vector<string> &patterns
     fingerprints.preprocess(words);
     cout << boost::format("Preprocessed #words = %1%") % words.size() << endl;
 
+    cout << boost::format("Testing #queries = %1%") % patterns.size() << endl;
     int nMatches = fingerprints.test(patterns, params.kApprox);
 
-    cout << boost::format("#queries = %1%, #matches = %2%") % patterns.size() % nMatches << endl;
+    cout << boost::format("Got #matches = %1%") % nMatches << endl;
 
     float elapsedUs = fingerprints.getElapsedUs();
     float elapsedS = elapsedUs / 1'000'000;

@@ -62,7 +62,7 @@ void Fingerprints<FING_T>::preprocess(vector<string> words)
         }
     }
 
-    assert(iWord == words.size() - 1); // Making sure that all words have been processed.
+    assert(iWord == words.size()); // Making sure that all words have been processed.
 }
 
 template<typename FING_T>
@@ -81,7 +81,7 @@ int Fingerprints<FING_T>::test(const vector<string> &patterns, int k)
         char *curEntry = fingArrayEntries[curSize];
         char *nextEntry = fingArrayEntries[curSize + 1];
 
-        while (curEntry != nextEntry) 
+        while (curEntry != nextEntry)
         {
             // We iterate over all words and calculate the Hamming distance only
             // when the fingerprint comparison is not successful.
