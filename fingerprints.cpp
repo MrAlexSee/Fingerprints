@@ -50,14 +50,14 @@ void Fingerprints<FING_T>::preprocess(vector<string> words)
         for (size_t iCurWord = 0; iCurWord < wordCountsBySize[wordSize]; ++iCurWord)
         {
             assert(words[iWord].size() == wordSize);
-
             const char *wordPtr = words[iWord].c_str();
+
+            *(reinterpret_cast<FING_T *>(curEntry)) = calcFingerprint(wordPtr, wordSize);
+            curEntry += sizeof(FING_T);
+
             strncpy(curEntry, wordPtr, wordSize);
         
             curEntry += wordSize;
-            *(reinterpret_cast<FING_T *>(curEntry)) = calcFingerprint(wordPtr, wordSize);
-
-            curEntry += sizeof(FING_T);
             iWord += 1;
         }
     }
