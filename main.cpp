@@ -151,6 +151,11 @@ int run()
         vector<string> dict = Helpers::readWords(params.inDictFile, params.separator);
         vector<string> patterns = Helpers::readWords(params.inPatternFile, params.separator);
 
+        if (params.nPatterns > 0)
+        {
+            patterns.resize(params.nPatterns);
+        }
+
         cout << boost::format("Read #words = %1%, #queries = %2%") % dict.size() % patterns.size() << endl;
         runFingerprints(dict, patterns);
     }

@@ -109,7 +109,7 @@ int Fingerprints<FING_T>::test(const vector<string> &patterns, int k)
     end = std::clock();
 
     double elapsedS = (end - start) / static_cast<double>(CLOCKS_PER_SEC);
-    elapsedUs = elapsedS / 1'000'000;
+    elapsedUs = elapsedS * 1'000'000;
 
     return nMatches;
 }
