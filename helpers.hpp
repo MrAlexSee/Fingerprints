@@ -30,6 +30,8 @@ struct Helpers
 
     static bool isFileReadable(const string &filePath);
     static vector<string> readWords(const string &filePath, const string &separator);
+    
+    static void dumpToFile(const string &text, const string &filePath, bool newline = false);
 };
 
 template<typename T>
@@ -84,6 +86,23 @@ inline vector<string> Helpers::readWords(const string &filePath, const string &s
     }
 
     return words;
+}
+
+void Helpers::dumpToFile(const string &text, const string &filePath, bool newline)
+{
+    ofstream outStream(filePath, ios_base::app);
+
+    if (!outStream)
+    {
+        throw runtime_error("failed to write file (insufficient permisions?): " + filePath);
+    }
+
+    outStream << text;
+
+    if (newline)
+    {
+        outStream << endl;
+    }
 }
 
 } // namespace fingerprints

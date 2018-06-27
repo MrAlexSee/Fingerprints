@@ -175,11 +175,19 @@ void runFingerprints(const vector<string> &words, const vector<string> &patterns
     float elapsedUs = fingerprints.getElapsedUs();
     float elapsedS = elapsedUs / 1'000'000;
 
-    size_t totalSizeB = Helpers::getTotalSize(words);
-    float throughputMbs = static_cast<float>(totalSizeB) / 1'000'000.0 / elapsedS;
+    size_t dictSizeB = Helpers::getTotalSize(words);
+    float dictSizeMB = static_cast<float>(dictSizeB) / 1'000'000.0;
+
+    float throughputMbs = dictSizeMB / elapsedS;
 
     cout << boost::format("Elapsed = %1% us, throughput = %2% MB/s")
         % elapsedUs % throughputMbs  << endl;
+
+    if (params.dumpToFile)
+    {
+        string outStr = params.inDictFile + " " + to_string(dictSizeMB) + " " + to_string(throughputMbs);
+        Helpers::dumpToFile(outStr, params.outFile);
+    }
 }
 
 } // namespace fingerprints
