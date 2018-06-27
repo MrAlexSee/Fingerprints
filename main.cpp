@@ -167,10 +167,11 @@ void runFingerprints(const vector<string> &words, const vector<string> &patterns
     Fingerprints<uint16_t> fingerprints;
 
     fingerprints.preprocess(words);
+    cout << boost::format("Preprocessed #words = %1%") % words.size() << endl;
+
     int nMatches = fingerprints.test(patterns, params.kApprox);
 
-    cout << boost::format("Processed #words = %1%, #queries = %2%, #matches = %3%") 
-        % words.size() % patterns.size() % nMatches << endl;
+    cout << boost::format("#queries = %1%, #matches = %2%") % patterns.size() % nMatches << endl;
 
     float elapsedUs = fingerprints.getElapsedUs();
     float elapsedS = elapsedUs / 1'000'000;
@@ -178,14 +179,14 @@ void runFingerprints(const vector<string> &words, const vector<string> &patterns
     size_t dictSizeB = Helpers::getTotalSize(words);
     float dictSizeMB = static_cast<float>(dictSizeB) / 1'000'000.0;
 
-    float throughputMbs = dictSizeMB / elapsedS;
+    float throughputMBs = dictSizeMB / elapsedS;
 
     cout << boost::format("Elapsed = %1% us, throughput = %2% MB/s")
-        % elapsedUs % throughputMbs  << endl;
+        % elapsedUs % throughputMBs  << endl;
 
     if (params.dumpToFile)
     {
-        string outStr = params.inDictFile + " " + to_string(dictSizeMB) + " " + to_string(throughputMbs);
+        string outStr = params.inDictFile + " " + to_string(dictSizeMB) + " " + to_string(throughputMBs);
         Helpers::dumpToFile(outStr, params.outFile);
     }
 }
