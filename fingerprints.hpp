@@ -48,7 +48,8 @@ private:
     static constexpr unsigned char noCharIndex = 255; // Indicates that the character is not stored in a fingerprint.
 
     char *fingArray = nullptr;
-    char *fingArrayEntries[maxWordSize];
+    // Points to the beginning of each word size bracket in fingArray.
+    char *fingArrayEntries[maxWordSize + 1];
 
     unsigned char *nErrorsLUT = nullptr;
 

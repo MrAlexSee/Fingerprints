@@ -31,7 +31,7 @@ Fingerprints<FING_T>::~Fingerprints()
 template<typename FING_T>
 void Fingerprints<FING_T>::preprocess(vector<string> words)
 {
-    size_t wordArraySizes[maxWordSize];
+    size_t wordArraySizes[maxWordSize + 1];
     size_t totalSize = calcWordsArraySizes(words, wordArraySizes);
 
     fingArray = new char[totalSize];
@@ -43,12 +43,14 @@ void Fingerprints<FING_T>::preprocess(vector<string> words)
     char *curEntry = fingArray;
     size_t iWord = 0;
 
-    for (size_t wordSize = 1; wordSize < maxWordSize; ++wordSize)
+    for (size_t wordSize = 1; wordSize <= maxWordSize; ++wordSize)
     {   
         fingArrayEntries[wordSize] = curEntry;
 
         for (size_t iCurWord = 0; iCurWord < wordArraySizes[wordSize]; ++iCurWord)
         {
+            assert(words[iWord].size() == wordSize);
+
             const char *wordPtr = words[iWord].c_str();
             strncpy(curEntry, wordPtr, wordSize);
         
@@ -187,7 +189,7 @@ size_t Fingerprints<FING_T>::calcWordsArraySizes(const vector<string> &words, si
     size_t totalSize = 0;
     unordered_map<size_t, int> hist;
 
-    for (size_t i = 0; i < maxWordSize; ++i)
+    for (size_t i = 0; i <= maxWordSize; ++i)
     {
         sizes[i] = 0;
     }
