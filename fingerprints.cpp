@@ -1,12 +1,62 @@
+#include <bitset>
 #include <cassert>
+#include <unordered_map>
 
 namespace fingerprints
 {
 
 template<typename FING_T>
-void Fingerprints<FING_T>::preprocess(const vector<string> &words)
+Fingerprints<FING_T>::Fingerprints()
 {
+    initNErrorsLUT();
 
+    #if FING_TYPE == 0
+        initCharsMap();
+        calcOccSetBitsLUT();
+    #else
+        #error Bad FING_TYPE
+    #endif
+}
+
+template<typename FING_T>
+Fingerprints<FING_T>::~Fingerprints()
+{
+    delete[] charsMap;
+    delete[] setBitsLUT;
+    delete[] nErrorsLUT;
+}
+
+template<typename FING_T>
+void Fingerprints<FING_T>::preprocess(vector<string> words)
+{
+    size_t wordArraySizes[maxWordSize];
+    size_t totalSize = calcWordsArraySizes(words, wordArraySizes);
+
+    fingArray = new char[totalSize];
+    
+    sort(words.begin(), words.end(), [](const string &str1, const string &str2) {
+        return str1.size() < str2.size();
+    });
+
+    char *curEntry = fingArray;
+    size_t iWord = 0;
+
+    for (size_t wordSize = 1; wordSize < maxWordSize; ++wordSize)
+    {   
+        fingArrayEntries[wordSize] = curEntry;
+
+        for (size_t iCurWord = 0; iCurWord < wordArraySizes[wordSize]; ++iCurWord)
+        {
+            const char *wordPtr = words[iWord].c_str();
+            strncpy(curEntry, wordPtr, wordSize);
+        
+            curEntry += wordSize;
+            *(reinterpret_cast<FING_T *>(curEntry)) = calcFingerprint(wordPtr, wordSize);
+
+            curEntry += sizeof(FING_T);
+            iWord += 1;
+        }
+    }
 }
 
 template<typename FING_T>
@@ -19,15 +69,96 @@ void Fingerprints<FING_T>::test(const vector<string> &patterns)
     for (const string &pattern : patterns) 
     {
         FING_T curFingerprint = calcFingerprint(pattern.c_str(), pattern.size());
+        
+        char *curEntry = fingArrayEntries[pattern.size()];
+        char *nextEntry = fingArrayEntries[pattern.size() + 1];
 
-        // We iterate over all words and calculate the Hamming distance only
-        // when the fingerprint comparison is not successful.
+        while (curEntry != nextEntry) 
+        {
+            // We iterate over all words and calculate the Hamming distance only
+            // when the fingerprint comparison is not successful.
+            
+        }
     }
 
     end = std::clock();
 
     double elapsedSec = (end - start) / static_cast<double>(CLOCKS_PER_SEC);
     elapsedUs = elapsedSec / 1'000'000;
+}
+
+template<typename FING_T>
+void Fingerprints<FING_T>::initNErrorsLUT()
+{
+    size_t fingSize = sizeof(FING_T) * 8;
+    nErrorsLUT = new unsigned char[fingSize + 1];
+
+    for (size_t i = 0; i <= fingSize; ++i)
+    {
+        nErrorsLUT[i] = ceil(i / 2.0);
+    }
+}
+
+template<typename FING_T>
+void Fingerprints<FING_T>::initCharsMap()
+{
+    charsMap = new unsigned char[charsMapSize];
+
+    for (size_t i = 0; i < charsMapSize; ++i)
+    {
+        charsMap[i] = noCharIndex;
+    }
+
+#if FING_TYPE == 0
+    size_t nChars = sizeof(FING_T) * 8;
+    // charList = getCharList(nChars, LETTERS_TYPE);
+#else
+    #error Bad FING_TYPE
+#endif
+}
+
+template<typename FING_T>
+void Fingerprints<FING_T>::calcOccSetBitsLUT()
+{
+    FING_T maxVal = std::numeric_limits<FING_T>::max();
+    setBitsLUT = new unsigned char[std::numeric_limits<FING_T>::max() + 1];
+
+
+    FING_T n = 0x0;
+
+    while (true)
+    {
+        setBitsLUT[n] = calcHammingWeight(n);
+        assert(setBitsLUT[n] >= 0 and setBitsLUT[n] <= sizeof(FING_T) * 8);
+
+        // Beware of overflows here.
+        if (n == maxVal)
+            break;
+
+        n += 1;
+    }
+}
+
+template<typename FING_T>
+size_t Fingerprints<FING_T>::calcWordsArraySizes(const vector<string> &words, size_t *sizes)
+{
+    size_t totalSize = 0;
+    unordered_map<size_t, int> hist;
+
+    for (size_t i = 0; i < maxWordSize; ++i)
+    {
+        sizes[i] = 0;
+    }
+
+    for (const string &word : words)
+    {
+        size_t curBracketSize = word.size() + sizeof(FING_T);
+
+        sizes[word.size()] += curBracketSize;
+        totalSize += curBracketSize;
+    }
+
+    return totalSize;
 }
 
 template<typename FING_T>
@@ -60,6 +191,21 @@ FING_T Fingerprints<FING_T>::calcFingerprintOcc(const char *str, size_t size) co
     }
 
     return s;
+}
+
+template<typename FING_T>
+unsigned int Fingerprints<FING_T>::calcHammingWeight(unsigned int n)
+{
+    return bitset<sizeof(FING_T)>(n).count();
+}
+
+template<typename FING_T>
+unsigned char Fingerprints<FING_T>::calcNErrors(FING_T f1, FING_T f2) const
+{
+    unsigned char setBits = setBitsLUT[f1 ^ f2];
+
+    assert(setBits >= 0 and setBits <= sizeof(FING_T * 8));
+    return nErrorsLUT[setBits];
 }
 
 } // namespace fingerprints
