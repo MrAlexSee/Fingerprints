@@ -61,6 +61,8 @@ void Fingerprints<FING_T>::preprocess(vector<string> words)
             iWord += 1;
         }
     }
+
+    assert(iWord == words.size() - 1); // Making sure that all words have been processed.
 }
 
 template<typename FING_T>
@@ -74,7 +76,6 @@ int Fingerprints<FING_T>::test(const vector<string> &patterns, int k)
     for (const string &pattern : patterns) 
     {
         const size_t curSize = pattern.size();
-
         FING_T patFingerprint = calcFingerprint(pattern.c_str(), curSize);
 
         char *curEntry = fingArrayEntries[curSize];
@@ -94,16 +95,21 @@ int Fingerprints<FING_T>::test(const vector<string> &patterns, int k)
                     // prevent the compiler from overoptimizing unused results.
                     nMatches += 1;
                 }
+
+                curEntry += curSize;
             }
-            
-            curEntry += curSize;
+            else
+            {
+                curEntry += sizeof(FING_T);
+                curEntry += curSize;
+            }
         }
     }
 
     end = std::clock();
 
-    double elapsedSec = (end - start) / static_cast<double>(CLOCKS_PER_SEC);
-    elapsedUs = elapsedSec / 1'000'000;
+    double elapsedS = (end - start) / static_cast<double>(CLOCKS_PER_SEC);
+    elapsedUs = elapsedS / 1'000'000;
 
     return nMatches;
 }
