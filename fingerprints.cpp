@@ -31,8 +31,8 @@ Fingerprints<FING_T>::~Fingerprints()
 template<typename FING_T>
 void Fingerprints<FING_T>::preprocess(vector<string> words)
 {
-    size_t wordArraySizes[maxWordSize + 1];
-    size_t totalSize = calcWordsArraySizes(words, wordArraySizes);
+    size_t wordCountsBySize[maxWordSize + 1];
+    size_t totalSize = calcTotalSize(words, wordCountsBySize);
 
     fingArray = new char[totalSize];
     
@@ -47,7 +47,7 @@ void Fingerprints<FING_T>::preprocess(vector<string> words)
     {   
         fingArrayEntries[wordSize] = curEntry;
 
-        for (size_t iCurWord = 0; iCurWord < wordArraySizes[wordSize]; ++iCurWord)
+        for (size_t iCurWord = 0; iCurWord < wordCountsBySize[wordSize]; ++iCurWord)
         {
             assert(words[iWord].size() == wordSize);
 
@@ -190,22 +190,19 @@ void Fingerprints<FING_T>::calcOccSetBitsLUT()
 }
 
 template<typename FING_T>
-size_t Fingerprints<FING_T>::calcWordsArraySizes(const vector<string> &words, size_t *sizes)
+size_t Fingerprints<FING_T>::calcTotalSize(const vector<string> &words, size_t *wordCountsBySize)
 {
     size_t totalSize = 0;
-    unordered_map<size_t, int> hist;
 
     for (size_t i = 0; i <= maxWordSize; ++i)
     {
-        sizes[i] = 0;
+        wordCountsBySize[i] = 0;
     }
 
     for (const string &word : words)
     {
-        size_t curBracketSize = word.size() + sizeof(FING_T);
-
-        sizes[word.size()] += curBracketSize;
-        totalSize += curBracketSize;
+        wordCountsBySize[word.size()] += 1;
+        totalSize += word.size() + sizeof(FING_T);
     }
 
     return totalSize;
@@ -254,7 +251,7 @@ unsigned char Fingerprints<FING_T>::calcNErrors(FING_T f1, FING_T f2) const
 {
     unsigned char setBits = setBitsLUT[f1 ^ f2];
 
-    assert(setBits >= 0 and setBits <= sizeof(FING_T * 8));
+    assert(setBits >= 0 and setBits <= sizeof(FING_T) * 8);
     return nErrorsLUT[setBits];
 }
 

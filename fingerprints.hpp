@@ -32,7 +32,7 @@ private:
 
     void calcOccSetBitsLUT();
 
-    size_t calcWordsArraySizes(const vector<string> &words, size_t *sizes);
+    size_t calcTotalSize(const vector<string> &words, size_t *wordCountsBySize);
 
     FING_T calcFingerprint(const char *str, size_t size) const;
     FING_T calcFingerprintOcc(const char *str, size_t size) const;
