@@ -14,7 +14,7 @@ struct Params
     // COMMAND-LINE PARAMS
     // These parameters are set by handleParams() in main.cpp after parsing command line args.
 
-    bool dumpToFile = false; // Dump input file info and throughput to output file (outFile). Cmd arg -d.
+    bool dumpToFile = false; // Dump input file and params info with elapsed and throughput to output file (useful for testing). Cmd arg -d.
 
     int lettersType = 0; // Letters type: 0 -> common, 1 -> mixed, 2 -> rare. Cmd arg -l.
 

@@ -68,7 +68,7 @@ int handleParams(int argc, const char **argv)
 {
     po::options_description options("Parameters");
     options.add_options()
-       ("dump,d", "dump input file info and throughput to output file (useful for throughput testing)")
+       ("dump,d", "dump input file and params info with elapsed and throughput to output file (useful for testing)")
        ("help,h", "display help message")
        ("in-dict-file,i", po::value<string>(&params.inDictFile)->required(), "input dictionary file path (positional arg 1)")
        ("in-pattern-file,I", po::value<string>(&params.inPatternFile)->required(), "input pattern file path (positional arg 2)")
@@ -172,14 +172,15 @@ int run()
 void runFingerprints(const vector<string> &words, const vector<string> &patterns)
 {
     Fingerprints<uint16_t> fingerprints(params.lettersType);
+    cout << "Using letters type: " << params.lettersType << endl; 
 
     fingerprints.preprocess(words);
-    cout << boost::format("Preprocessed #words = %1%") % words.size() << endl;
+    cout << "Preprocessed #words = " << words.size() << endl;
 
-    cout << boost::format("Testing #queries = %1%") % patterns.size() << endl;
+    cout << "Testing #queries = " << patterns.size() << endl;
     int nMatches = fingerprints.test(patterns, params.kApprox);
 
-    cout << boost::format("Got #matches = %1%") % nMatches << endl;
+    cout << "Got #matches = " << nMatches << endl;
 
     float elapsedUs = fingerprints.getElapsedUs();
     float elapsedS = elapsedUs / 1'000'000;
@@ -195,8 +196,10 @@ void runFingerprints(const vector<string> &words, const vector<string> &patterns
 
     if (params.dumpToFile)
     {
-        string outStr = params.inDictFile + " " + to_string(dictSizeMB) + " " + to_string(throughputMBs);
-        Helpers::dumpToFile(outStr, params.outFile);
+        string outStr = (boost::format("%1% %2% %3% %4%") % params.inDictFile % dictSizeMB % elapsedPerWordNs % throughputMBs).str();
+
+        Helpers::dumpToFile(outStr, params.outFile, true);
+        cout << "Dumped info to: " << params.outFile << endl;
     }
 }
 
