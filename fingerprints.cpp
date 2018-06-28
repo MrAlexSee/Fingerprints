@@ -6,12 +6,17 @@ namespace fingerprints
 {
 
 template<typename FING_T>
-Fingerprints<FING_T>::Fingerprints()
+Fingerprints<FING_T>::Fingerprints(int lettersType)
 {
+    if (lettersType != 0 and lettersType != 1 and lettersType != 2)
+    {
+        throw runtime_error("bad letters type: " + to_string(lettersType));
+    }
+
     initNErrorsLUT();
 
     #if FING_TYPE == 0
-        initCharsMap();
+        initCharsMap(lettersType);
         calcOccSetBitsLUT();
     #else
         #error Bad FING_TYPE
@@ -127,7 +132,7 @@ void Fingerprints<FING_T>::initNErrorsLUT()
 }
 
 template<typename FING_T>
-void Fingerprints<FING_T>::initCharsMap()
+void Fingerprints<FING_T>::initCharsMap(int lettersType)
 {
     charsMap = new unsigned char[charsMapSize];
 
@@ -138,7 +143,7 @@ void Fingerprints<FING_T>::initCharsMap()
 
 #if FING_TYPE == 0
     size_t nChars = sizeof(FING_T) * 8;
-    string charList = getCharList(nChars);
+    string charList = getCharList(nChars, lettersType);
 #else
     #error Bad FING_TYPE
 #endif
@@ -152,16 +157,34 @@ void Fingerprints<FING_T>::initCharsMap()
 }
 
 template<typename FING_T>
-string Fingerprints<FING_T>::getCharList(size_t nChars) const
+string Fingerprints<FING_T>::getCharList(size_t nChars, int lettersType) const
 {
-    switch (nChars)
+    switch (lettersType)
     {
-        case 8:
-            return commonChars8;
-        case 16:
-            return commonChars16;
-        default:
-            assert(false);
+        case 0: // common
+            switch (nChars)
+            {
+                case 8:
+                    return commonChars8;
+                case 16:
+                    return commonChars16;
+            }
+        case 1: // mixed
+            switch (nChars)
+            {
+                case 8:
+                    return mixedChars8;
+                case 16:
+                    return mixedChars16;
+            }
+        case 2: // rare
+            switch (nChars)
+            {
+                case 8:
+                    return rareChars8;
+                case 16:
+                    return rareChars16;
+            }
     }
 
     assert(false);

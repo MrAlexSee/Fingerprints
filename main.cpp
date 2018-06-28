@@ -73,6 +73,7 @@ int handleParams(int argc, const char **argv)
        ("in-dict-file,i", po::value<string>(&params.inDictFile)->required(), "input dictionary file path (positional arg 1)")
        ("in-pattern-file,I", po::value<string>(&params.inPatternFile)->required(), "input pattern file path (positional arg 2)")
        ("approx,k", po::value<int>(&params.kApprox)->required(), "perform approximate search (Hamming distance) for k errors")
+       ("letters-type,l", po::value<int>(&params.lettersType), "letters type: 0 -> common, 1 -> mixed, 2 -> rare (default = 0)")
        ("out-file,o", po::value<string>(&params.outFile), "output file path")
        ("pattern-count,p", po::value<int>(&params.nPatterns), "maximum number of patterns read from top of the patterns (non-positive values are ignored)")
        ("separator,s", po::value<string>(&params.separator), "input data separator")
@@ -170,7 +171,7 @@ int run()
 
 void runFingerprints(const vector<string> &words, const vector<string> &patterns)
 {
-    Fingerprints<uint16_t> fingerprints;
+    Fingerprints<uint16_t> fingerprints(params.lettersType);
 
     fingerprints.preprocess(words);
     cout << boost::format("Preprocessed #words = %1%") % words.size() << endl;

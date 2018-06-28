@@ -16,6 +16,8 @@ struct Params
 
     bool dumpToFile = false; // Dump input file info and throughput to output file (outFile). Cmd arg -d.
 
+    int lettersType = 0; // Letters type: 0 -> common, 1 -> mixed, 2 -> rare. Cmd arg -l.
+
     int kApprox = noValue; // Number of errors for approximate search (Hamming). noValue = perform exact search. Cmd arg -k.
     int nPatterns = noValue; // Maximum number of patterns read from top of the patterns file; noValue = ignore the pattern count limit. Cmd arg -p.
 

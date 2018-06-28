@@ -16,7 +16,7 @@ template<typename FING_T>
 class Fingerprints
 {
 public:
-    Fingerprints();
+    Fingerprints(int lettersType);
     ~Fingerprints();
 
     void preprocess(vector<string> words);
@@ -27,12 +27,12 @@ public:
 private:
     void initNErrorsLUT();
     
-    void initCharsMap();
-    string getCharList(size_t nChars) const;
+    void initCharsMap(int lettersType);
+    string getCharList(size_t nChars, int lettersType) const;
 
     void calcOccSetBitsLUT();
 
-    size_t calcTotalSize(const vector<string> &words, size_t *wordCountsBySize);
+    static size_t calcTotalSize(const vector<string> &words, size_t *wordCountsBySize);
 
     FING_T calcFingerprint(const char *str, size_t size) const;
     FING_T calcFingerprintOcc(const char *str, size_t size) const;
@@ -61,12 +61,12 @@ private:
     // Fingerprint letter collections follow.
 
     const string commonChars16 = "etaoinshrdlcumwf";
-    const string rareChars16 = "zqxjkvbpygfwmucl";
     const string mixedChars16 = "etaoinshzqxjkvbp";
+    const string rareChars16 = "zqxjkvbpygfwmucl";
 
     const string commonChars8 = "etaoinsh";
-    const string rareChars8 = "zqxjkvbp";
     const string mixedChars8 = "etaokvbp";
+    const string rareChars8 = "zqxjkvbp";
 };
 
 } // namespace fingerprints
