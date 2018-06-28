@@ -8,7 +8,7 @@ namespace fingerprints
 template<typename FING_T>
 Fingerprints<FING_T>::Fingerprints(int fingerprintType, int lettersType)
 {
-    if (fingerprintType < 0 or fingerprintType > 0)
+    if (fingerprintType < 0 or fingerprintType > 1)
     {
         throw runtime_error("bad fingerprint type: " + to_string(fingerprintType));
     }
@@ -34,6 +34,7 @@ Fingerprints<FING_T>::Fingerprints(int fingerprintType, int lettersType)
 
             calcFingerprintFun = bind(&Fingerprints<FING_T>::calcFingerprintCount, this, 
                 placeholders::_1, placeholders::_2);
+            break;
         default:
             assert(false);
     }
