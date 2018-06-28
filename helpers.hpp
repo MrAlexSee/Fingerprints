@@ -28,14 +28,14 @@ struct Helpers
      *** FILES
      */
 
-    static bool isFileReadable(const string &filePath);
+    inline static bool isFileReadable(const string &filePath);
     static vector<string> readWords(const string &filePath, const string &separator);
     
     static void dumpToFile(const string &text, const string &filePath, bool newline = false);
 };
 
 template<typename T>
-inline void Helpers::calcStatsMedian(const vector<T> &throughputVec, T *throughputMedian)
+void Helpers::calcStatsMedian(const vector<T> &throughputVec, T *throughputMedian)
 {
     if (throughputVec.size() == 0)
     {
@@ -60,13 +60,13 @@ size_t Helpers::getTotalSize(const vector<string> &words)
     return totalSize;
 }
 
-inline bool Helpers::isFileReadable(const string &filePath)
+bool Helpers::isFileReadable(const string &filePath)
 {
     ifstream inStream(filePath);
     return inStream.good();
 }
 
-inline vector<string> Helpers::readWords(const string &filePath, const string &separator)
+vector<string> Helpers::readWords(const string &filePath, const string &separator)
 {
     ifstream inStream(filePath);
 

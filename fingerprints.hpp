@@ -1,13 +1,15 @@
 #ifndef FINGERPRINTS_HPP
 #define FINGERPRINTS_HPP
 
+#include <functional>
 #include <string>
 #include <vector>
 
-using namespace std;
+#ifndef FINGERPRINTS_WHITEBOX
+#define FINGERPRINTS_WHITEBOX
+#endif
 
-// 0 -> occurrence fingerprint
-#define FING_TYPE 0
+using namespace std;
 
 namespace fingerprints
 {
@@ -16,7 +18,7 @@ template<typename FING_T>
 class Fingerprints
 {
 public:
-    Fingerprints(int lettersType);
+    Fingerprints(int fingerprintType, int lettersType);
     ~Fingerprints();
 
     void preprocess(vector<string> words);
@@ -25,16 +27,25 @@ public:
     float getElapsedUs() const { return elapsedUs; }
 
 private:
+    /*
+     *** INITIALIZIATION
+     */
+
     void initNErrorsLUT();
     
-    void initCharsMap(int lettersType);
+    void initCharsMap(int fingerprintType, int lettersType);
     string getCharList(size_t nChars, int lettersType) const;
 
     void calcOccSetBitsLUT();
 
     static size_t calcTotalSize(const vector<string> &words, size_t *wordCountsBySize);
 
-    FING_T calcFingerprint(const char *str, size_t size) const;
+    /*
+     *** FINGERPRINT CALCULATION
+     */
+
+    function<FING_T(const char *, size_t)> calcFingerprintFun;
+
     FING_T calcFingerprintOcc(const char *str, size_t size) const;
 
     static unsigned int calcHammingWeight(unsigned int n);
@@ -42,10 +53,18 @@ private:
 
     static bool isHamAMK(const char *str1, const char *str2, size_t size, int k);
 
+    /*
+     *** CONSTANTS
+     */
+
     static constexpr size_t maxWordSize = 255;
     static constexpr size_t charsMapSize = 255;
 
     static constexpr unsigned char noCharIndex = 255; // Indicates that the character is not stored in a fingerprint.
+
+    /*
+     *** ARRAYS, MAPS AND LOOKUP TABLES
+     */
 
     char *fingArray = nullptr;
     // Points to the beginning of each word size bracket in fingArray.
@@ -58,7 +77,9 @@ private:
 
     float elapsedUs = 0.0f;
 
-    // Fingerprint letter collections follow.
+    /*
+     *** FINGERPRINT LETTER COLLECTIONS
+     */
 
     const string commonChars16 = "etaoinshrdlcumwf";
     const string mixedChars16 = "etaoinshzqxjkvbp";
@@ -67,6 +88,8 @@ private:
     const string commonChars8 = "etaoinsh";
     const string mixedChars8 = "etaokvbp";
     const string rareChars8 = "zqxjkvbp";
+
+    FINGERPRINTS_WHITEBOX
 };
 
 } // namespace fingerprints

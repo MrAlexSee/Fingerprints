@@ -16,6 +16,7 @@ struct Params
 
     bool dumpToFile = false; // Dump input file and params info with elapsed and throughput to output file (useful for testing). Cmd arg -d.
 
+    int fingerprintType = 0; // Fingerprint type: 0 -> occurrence (default = 0). Cmd arg -f.
     int lettersType = 0; // Letters type: 0 -> common, 1 -> mixed, 2 -> rare. Cmd arg -l.
 
     int kApprox = noValue; // Number of errors for approximate search (Hamming). noValue = perform exact search. Cmd arg -k.

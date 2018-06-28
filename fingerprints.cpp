@@ -6,21 +6,30 @@ namespace fingerprints
 {
 
 template<typename FING_T>
-Fingerprints<FING_T>::Fingerprints(int lettersType)
+Fingerprints<FING_T>::Fingerprints(int fingerprintType, int lettersType)
 {
-    if (lettersType != 0 and lettersType != 1 and lettersType != 2)
+    if (fingerprintType < 0 or fingerprintType > 0)
+    {
+        throw runtime_error("bad fingerprint type: " + to_string(fingerprintType));
+    }
+    if (lettersType < 0 or lettersType > 2)
     {
         throw runtime_error("bad letters type: " + to_string(lettersType));
     }
 
     initNErrorsLUT();
 
-    #if FING_TYPE == 0
-        initCharsMap(lettersType);
-        calcOccSetBitsLUT();
-    #else
-        #error Bad FING_TYPE
-    #endif
+    switch (fingerprintType)
+    {
+        case 0:
+            initCharsMap(0, lettersType);
+            calcOccSetBitsLUT();
+
+            calcFingerprintFun = bind(&Fingerprints<FING_T>::calcFingerprintOcc, this, placeholders::_1, placeholders::_2);
+            break;
+        default:
+            assert(false);
+    }
 }
 
 template<typename FING_T>
@@ -49,7 +58,7 @@ void Fingerprints<FING_T>::preprocess(vector<string> words)
     size_t iWord = 0;
 
     for (size_t wordSize = 1; wordSize <= maxWordSize; ++wordSize)
-    {   
+    {
         fingArrayEntries[wordSize] = curEntry;
 
         for (size_t iCurWord = 0; iCurWord < wordCountsBySize[wordSize]; ++iCurWord)
@@ -57,7 +66,7 @@ void Fingerprints<FING_T>::preprocess(vector<string> words)
             assert(words[iWord].size() == wordSize);
             const char *wordPtr = words[iWord].c_str();
 
-            *(reinterpret_cast<FING_T *>(curEntry)) = calcFingerprint(wordPtr, wordSize);
+            *(reinterpret_cast<FING_T *>(curEntry)) = calcFingerprintFun(wordPtr, wordSize);
             curEntry += sizeof(FING_T);
 
             strncpy(curEntry, wordPtr, wordSize);
@@ -81,7 +90,7 @@ int Fingerprints<FING_T>::test(const vector<string> &patterns, int k)
     for (const string &pattern : patterns) 
     {
         const size_t curSize = pattern.size();
-        FING_T patFingerprint = calcFingerprint(pattern.c_str(), curSize);
+        FING_T patFingerprint = calcFingerprintFun(pattern.c_str(), curSize);
 
         char *curEntry = fingArrayEntries[curSize];
         char *nextEntry = fingArrayEntries[curSize + 1];
@@ -132,7 +141,7 @@ void Fingerprints<FING_T>::initNErrorsLUT()
 }
 
 template<typename FING_T>
-void Fingerprints<FING_T>::initCharsMap(int lettersType)
+void Fingerprints<FING_T>::initCharsMap(int fingerprintType, int lettersType)
 {
     charsMap = new unsigned char[charsMapSize];
 
@@ -141,13 +150,19 @@ void Fingerprints<FING_T>::initCharsMap(int lettersType)
         charsMap[i] = noCharIndex;
     }
 
-#if FING_TYPE == 0
-    size_t nChars = sizeof(FING_T) * 8;
-    string charList = getCharList(nChars, lettersType);
-#else
-    #error Bad FING_TYPE
-#endif
+    size_t nChars;
+    string charList;
 
+    switch (fingerprintType)
+    {
+        case 0:
+            nChars = sizeof(FING_T) * 8;
+            charList = getCharList(nChars, lettersType);
+            break;
+        default:
+            assert(false);
+    }
+    
     assert(nChars == charList.size());
     for (size_t i = 0; i < nChars; ++i)
     {
@@ -229,16 +244,6 @@ size_t Fingerprints<FING_T>::calcTotalSize(const vector<string> &words, size_t *
     }
 
     return totalSize;
-}
-
-template<typename FING_T>
-FING_T Fingerprints<FING_T>::calcFingerprint(const char *str, size_t size) const
-{
-    #if FING_TYPE == 0
-        return calcFingerprintOcc(str, size);
-    #else
-        #error Bad FING_TYPE
-    #endif
 }
 
 template<typename FING_T>
