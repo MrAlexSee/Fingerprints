@@ -37,6 +37,7 @@ private:
     string getCharList(size_t nChars, int lettersType) const;
 
     void calcOccSetBitsLUT();
+    void calcCountSetBitsLUT();
 
     static size_t calcTotalSize(const vector<string> &words, size_t *wordCountsBySize);
 
@@ -47,6 +48,7 @@ private:
     function<FING_T(const char *, size_t)> calcFingerprintFun;
 
     FING_T calcFingerprintOcc(const char *str, size_t size) const;
+    FING_T calcFingerprintCount(const char *str, size_t size) const;
 
     static unsigned int calcHammingWeight(unsigned int n);
     unsigned char calcNErrors(FING_T f1, FING_T f2) const;

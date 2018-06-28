@@ -25,8 +25,15 @@ Fingerprints<FING_T>::Fingerprints(int fingerprintType, int lettersType)
             initCharsMap(0, lettersType);
             calcOccSetBitsLUT();
 
-            calcFingerprintFun = bind(&Fingerprints<FING_T>::calcFingerprintOcc, this, placeholders::_1, placeholders::_2);
+            calcFingerprintFun = bind(&Fingerprints<FING_T>::calcFingerprintOcc, this, 
+                placeholders::_1, placeholders::_2);
             break;
+        case 1:
+            initCharsMap(1, lettersType);
+            calcCountSetBitsLUT();
+
+            calcFingerprintFun = bind(&Fingerprints<FING_T>::calcFingerprintCount, this, 
+                placeholders::_1, placeholders::_2);
         default:
             assert(false);
     }
@@ -151,18 +158,20 @@ void Fingerprints<FING_T>::initCharsMap(int fingerprintType, int lettersType)
     }
 
     size_t nChars;
-    string charList;
-
     switch (fingerprintType)
     {
         case 0:
             nChars = sizeof(FING_T) * 8;
-            charList = getCharList(nChars, lettersType);
+            break;
+        case 1:
+            nChars = sizeof(FING_T) * 4;
             break;
         default:
             assert(false);
     }
-    
+
+    string charList = getCharList(nChars, lettersType);
+
     assert(nChars == charList.size());
     for (size_t i = 0; i < nChars; ++i)
     {
@@ -228,6 +237,44 @@ void Fingerprints<FING_T>::calcOccSetBitsLUT()
 }
 
 template<typename FING_T>
+void Fingerprints<FING_T>::calcCountSetBitsLUT()
+{
+    assert(sizeof(FING_T) == 2);
+
+    FING_T maxVal = std::numeric_limits<FING_T>::max();
+    setBitsLUT = new unsigned char[maxVal + 1];
+
+    FING_T mask = 0b011;
+    FING_T n = 0;
+
+    while (true)
+    {
+        unsigned char nErrors = 0;
+
+        for (int iM = 0; iM < 8; ++iM)
+        {
+            FING_T curDiff = n & (mask << (2 * iM));
+
+            // Unfortunately each difference in a count can lead only up to max 1 error.
+            // Example: 01 xor 10 -> 11 (1 error).
+            if (curDiff)
+            {
+                nErrors += 1;
+            }
+
+            assert(nErrors >= 0 and nErrors <= 8);
+            setBitsLUT[n] = nErrors;
+        }
+
+        // Beware of overflows here.
+        if (n == maxVal)
+            break;
+
+        n += 1;
+    }
+}
+
+template<typename FING_T>
 size_t Fingerprints<FING_T>::calcTotalSize(const vector<string> &words, size_t *wordCountsBySize)
 {
     size_t totalSize = 0;
@@ -262,6 +309,52 @@ FING_T Fingerprints<FING_T>::calcFingerprintOcc(const char *str, size_t size) co
         if (index != noCharIndex)
         {
             s |= (mask << index);
+        }
+    }
+
+    return s;
+}
+
+template<typename FING_T>
+FING_T Fingerprints<FING_T>::calcFingerprintCount(const char *str, size_t size) const
+{
+    assert(sizeof(FING_T) == 2);
+    FING_T s = 0x0;
+
+    for (size_t i = 0; i < size; ++i)
+    {
+        FING_T mask = 0x1;
+        unsigned char index = charsMap[static_cast<size_t>(str[i])];
+
+        // Index < size of sketch in bits / 2 (count sketch = 2 bits per character).
+        assert(index < sizeof(FING_T) * 4 or index == noCharIndex);
+
+        if (index != noCharIndex)
+        {
+            // In a count sketch we use two bits per index, hence we shift the mask twice in order
+            // to set it to the relevant position.
+            mask <<= index;
+            mask <<= index;
+
+            // If right bit is 0, we set it to 1 (0->1 or 2->3).
+            if (not (s & mask))
+            {
+                s |= mask;
+            }
+            else // Otherwise either 1->2 or 2->3.
+            {
+                mask <<= 1;
+
+                if (s & mask) // 2 -> 3
+                {
+                    s |= (mask >> 1);
+                }
+                else // 1 -> 2
+                {
+                    s |= mask;
+                    s &= ~(mask >> 1);
+                }
+            }
         }
     }
 
