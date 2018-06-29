@@ -30,6 +30,7 @@ struct Helpers
     static vector<string> readWords(const string &filePath, const string &separator);
     
     static void dumpToFile(const string &text, const string &filePath, bool newline = false);
+    inline static bool removeFile(const string &filePath);
 };
 
 size_t Helpers::getTotalSize(const vector<string> &words)
@@ -64,12 +65,19 @@ vector<string> Helpers::readWords(const string &filePath, const string &separato
     vector<string> words;
     boost::split(words, text, boost::is_any_of(separator));
 
+    vector<string> filt;
+
     for (string &word : words)
     {
         boost::trim(word);
+
+        if (word.empty() == false) 
+        {
+            filt.emplace_back(move(word));
+        }
     }
 
-    return words;
+    return filt;
 }
 
 void Helpers::dumpToFile(const string &text, const string &filePath, bool newline)
@@ -87,6 +95,11 @@ void Helpers::dumpToFile(const string &text, const string &filePath, bool newlin
     {
         outStream << endl;
     }
+}
+
+bool Helpers::removeFile(const string &filePath)
+{
+    return remove(filePath.c_str()) == 0;
 }
 
 } // namespace fingerprints

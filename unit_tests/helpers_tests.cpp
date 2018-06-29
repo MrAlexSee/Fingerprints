@@ -14,6 +14,8 @@ namespace
 constexpr int maxNStrings = 100;
 constexpr int stringSize = 50;
 
+const string tmpFileName = "fingerprints_tmp.dat";
+
 }
 
 TEST_CASE("is getting total size for empty vector correct", "[files]")
@@ -43,9 +45,43 @@ TEST_CASE("is getting total size for randomized strings correct", "[files]")
     }
 }
 
+TEST_CASE("is reading empty words correct", "[files]")
+{
+    Helpers::dumpToFile("", tmpFileName, false);
+    
+    vector<string> words = Helpers::readWords(tmpFileName, "\n");
+    REQUIRE(words.size() == 0);
+
+    Helpers::removeFile(tmpFileName);
+    REQUIRE(Helpers::isFileReadable(tmpFileName) == false);
+}
+
 TEST_CASE("is reading words correct", "[files]")
 {
+    string str = "ala\nma\nkota";
+    Helpers::dumpToFile(str, tmpFileName, false);
 
+    vector<string> words = Helpers::readWords(tmpFileName, "\n");
+    
+    REQUIRE(words.size() == 3);
+    REQUIRE(words == vector<string> { "ala", "ma", "kota" });
+
+    Helpers::removeFile(tmpFileName);
+    REQUIRE(Helpers::isFileReadable(tmpFileName) == false);
+}
+
+TEST_CASE("is reading words with whitespace correct", "[files]")
+{
+    string str = "ala\nma  \n\n\n\n\n kota  \n";
+    Helpers::dumpToFile(str, tmpFileName, false);
+
+    vector<string> words = Helpers::readWords(tmpFileName, "\n");
+    
+    REQUIRE(words.size() == 3);
+    REQUIRE(words == vector<string> { "ala", "ma", "kota" });
+
+    Helpers::removeFile(tmpFileName);
+    REQUIRE(Helpers::isFileReadable(tmpFileName) == false);
 }
 
 } // namespace fingerprints
