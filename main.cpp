@@ -68,7 +68,7 @@ int handleParams(int argc, const char **argv)
 {
     po::options_description options("Parameters");
     options.add_options()
-       ("dump,d", "dump input file and params info with elapsed and throughput to output file (useful for testing)")
+       ("dump,d", "dump input files and params info with elapsed and throughput to output file (useful for testing)")
        ("help,h", "display help message")
        ("fingerprint-type,f", po::value<int>(&params.fingerprintType), "fingerprint type: 0 -> occurrence, 1 -> count (default = 0)")
        ("in-dict-file,i", po::value<string>(&params.inDictFile)->required(), "input dictionary file path (positional arg 1)")
@@ -199,7 +199,8 @@ void runFingerprints(const vector<string> &words, const vector<string> &patterns
 
     if (params.dumpToFile)
     {
-        string outStr = (boost::format("%1% %2% %3% %4%") % params.inDictFile % dictSizeMB % elapsedPerWordNs % throughputMBs).str();
+        string outStr = (boost::format("%1% %2% %3% %4% %5%") % params.inDictFile % params.inPatternFile
+            % dictSizeMB % elapsedPerWordNs % throughputMBs).str();
 
         Helpers::dumpToFile(outStr, params.outFile, true);
         cout << "Dumped info to: " << params.outFile << endl;
