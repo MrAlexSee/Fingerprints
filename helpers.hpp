@@ -3,6 +3,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <fstream>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -19,9 +20,6 @@ struct Helpers
      *** COLLECTIONS
      */
 
-    template<typename T>
-    static void calcStatsMedian(const vector<T> &throughputVec, T *throughputMedian);
- 
     static size_t getTotalSize(const vector<string> &words);
 
     /*
@@ -33,20 +31,6 @@ struct Helpers
     
     static void dumpToFile(const string &text, const string &filePath, bool newline = false);
 };
-
-template<typename T>
-void Helpers::calcStatsMedian(const vector<T> &throughputVec, T *throughputMedian)
-{
-    if (throughputVec.size() == 0)
-    {
-        return;
-    }
-
-    vector<T> tmp = throughputVec;
-
-    sort(tmp.begin(), tmp.end());
-    *throughputMedian = tmp[tmp.size() / 2];
-}
 
 size_t Helpers::getTotalSize(const vector<string> &words)
 {
