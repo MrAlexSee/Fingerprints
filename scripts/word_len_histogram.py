@@ -1,4 +1,4 @@
-inFile = "../data/dict_urls.txt" # Input file path.
+pInFile = "../data/dict_urls.txt" # Input file path.
 
 def readWords(inFile):
     print "Reading from: {0}".format(inFile)
@@ -12,7 +12,7 @@ def readWords(inFile):
     return words
 
 def main():
-    words = readWords(inFile)
+    words = readWords(pInFile)
 
     hist = {}
     for w in words:

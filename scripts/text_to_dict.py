@@ -1,7 +1,7 @@
 import string
 
-inFile = "english200.txt" # Input file path.
-outFile = "dict.txt" # Output file path.
+pInFile = "english200.txt" # Input file path.
+pOutFile = "dict.txt" # Output file path.
 
 def isWordOK(s):
     return len(s) == len([c for c in s if c in string.printable])
@@ -24,17 +24,17 @@ def readWordsFilt(inFile):
     return wordsFilt
 
 def main():
-    wordsFilt = readWordsFilt(inFile)
+    wordsFilt = readWordsFilt(pInFile)
 
     nChars = len(set("".join(wordsFilt)))
     print "Alphabet size = {0}".format(nChars)
 
     wordsFilt.sort()
 
-    with open(outFile, "w") as f:
+    with open(pOutFile, "w") as f:
         f.write("\n".join(wordsFilt))
 
-    print "Dumped to: {0}".format(outFile)
+    print "Dumped to: {0}".format(pOutFile)
 
 if __name__ == "__main__":
     main()

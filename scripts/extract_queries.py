@@ -1,11 +1,12 @@
 import random
 
-nQueries = 10000 # Number of queries.
+pNQueries = 10000 # Number of queries.
+
 querySize = 69 # Size of each query (#chars).
 maxNErrors = 2 # Maximum number of errors (e), will be sampled from [1, e].
 
-inFile = "../data/dict_urls.txt" # Input file path.
-outFile = "queries.txt" # Output file path.
+pInFile = "../data/dict_urls.txt" # Input file path.
+pOutFile = "queries.txt" # Output file path.
 
 def readWords(inFile, wordSize):
     print "Reading from: {0}".format(inFile)
@@ -40,13 +41,13 @@ def extractQueries(words, nQueries):
     return queries
 
 def main():
-    words = readWords(inFile, querySize)
-    queries = extractQueries(words, nQueries)
+    words = readWords(pInFile, querySize)
+    queries = extractQueries(words, pNQueries)
 
-    with open(outFile, "w") as f:
+    with open(pOutFile, "w") as f:
         f.write("\n".join(queries))
 
-    print "Dumped #queries = {0}, max #errors = {1}, to: {2}".format(nQueries, maxNErrors, outFile)
+    print "Dumped #queries = {0}, max #errors = {1}, to: {2}".format(pNQueries, maxNErrors, pOutFile)
 
 if __name__ == "__main__":
     main()
