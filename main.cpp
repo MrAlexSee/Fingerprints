@@ -10,7 +10,6 @@
 
 #include <boost/format.hpp>
 #include <boost/program_options.hpp>
-#include <chrono>
 #include <cstdint>
 #include <iostream>
 #include <string>
@@ -172,8 +171,10 @@ int run()
 
 void runFingerprints(const vector<string> &words, const vector<string> &patterns)
 {
-    Fingerprints<uint16_t> fingerprints(params.fingerprintType, params.lettersType);
+    using FING_T = uint16_t;
+    Fingerprints<FING_T> fingerprints(params.fingerprintType, params.lettersType);
 
+    cout << boost::format("Using fingerprint size: %1% bytes") % sizeof(FING_T) << endl; 
     cout << "Using fingerprint type: " << params.fingerprintType << endl; 
     cout << "Using letters type: " << params.lettersType << endl << endl;
 

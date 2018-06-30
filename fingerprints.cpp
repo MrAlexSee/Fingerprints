@@ -1,5 +1,8 @@
 #include <bitset>
 #include <cassert>
+#include <cstring>
+#include <chrono>
+#include <string>
 #include <unordered_map>
 
 namespace fingerprints
