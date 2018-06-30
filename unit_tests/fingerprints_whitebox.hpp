@@ -17,10 +17,9 @@ public:
     FingerprintsWhitebox() = delete;
 
     template<typename FING_T>
-    inline static void calcTotalSize(Fingerprints<FING_T> &fingerprints, 
-        const vector<string> &words, size_t *wordCountsBySize)
+    inline static size_t calcTotalSize(const vector<string> &words, size_t *wordCountsBySize)
     {
-        return fingerprints.calcTotalSize(words, wordCountsBySize);
+        return Fingerprints<FING_T>::calcTotalSize(words, wordCountsBySize);
     }
 };
 
