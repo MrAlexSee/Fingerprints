@@ -7,7 +7,7 @@ CCFLAGS       = -Wall -pedantic -std=c++14
 TEST_FILES    = catch.hpp repeat.hpp
 
 EXE 	      = main_tests
-OBJ           = main_tests.o helpers_tests.o
+OBJ           = main_tests.o fingerprint_tests.o helpers_tests.o
 
 all: $(EXE)
 
@@ -16,6 +16,9 @@ $(EXE): $(OBJ)
 
 main_tests.o: main_tests.cpp catch.hpp
 	$(CC) $(CCFLAGS) $(OPTFLAGS) -c main_tests.cpp
+
+fingerprint_tests.o: fingerprint_tests.cpp fingerprints_whitebox.hpp ../fingerprints.hpp ../fingerprints.cpp $(TEST_FILES)
+	$(CC) $(CCFLAGS) $(OPTFLAGS) -c fingerprint_tests.cpp
 
 helpers_tests.o: helpers_tests.cpp ../helpers.hpp $(TEST_FILES)
 	$(CC) $(CCFLAGS) $(OPTFLAGS) -c helpers_tests.cpp
