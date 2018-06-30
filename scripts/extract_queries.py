@@ -2,8 +2,8 @@ import random
 
 pNQueries = 10000 # Number of queries.
 
-querySize = 69 # Size of each query (#chars).
-maxNErrors = 2 # Maximum number of errors (e), will be sampled from [1, e].
+pQuerySize = 69 # Size of each query (#chars).
+pMaxNErrors = 2 # Maximum number of errors (e), will be sampled from [1, e].
 
 pInFile = "../data/dict_urls.txt" # Input file path.
 pOutFile = "queries.txt" # Output file path.
@@ -22,7 +22,7 @@ def readWords(inFile, wordSize):
 
     return words
 
-def extractQueries(words, nQueries):
+def extractQueries(words, nQueries, maxNErrors):
     alphabet = list(set("".join(words)))
     queries = []
 
@@ -41,13 +41,13 @@ def extractQueries(words, nQueries):
     return queries
 
 def main():
-    words = readWords(pInFile, querySize)
-    queries = extractQueries(words, pNQueries)
+    words = readWords(pInFile, pQuerySize)
+    queries = extractQueries(words, pNQueries, pMaxNErrors)
 
     with open(pOutFile, "w") as f:
         f.write("\n".join(queries))
 
-    print "Dumped #queries = {0}, max #errors = {1}, to: {2}".format(pNQueries, maxNErrors, pOutFile)
+    print "Dumped #queries = {0}, max #errors = {1}, to: {2}".format(pNQueries, pMaxNErrors, pOutFile)
 
 if __name__ == "__main__":
     main()

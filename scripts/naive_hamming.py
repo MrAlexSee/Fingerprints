@@ -1,8 +1,8 @@
-inDictFile = "../data/dict_iamerican_insane.txt" # Input dictionary file path.
-inPatternsFile = "../data/queries_iamerican_insane_8.txt" # Input patterns file path.
+pInDictFile = "../data/dict_iamerican_insane.txt" # Input dictionary file path.
+pInPatternsFile = "../data/queries_iamerican_insane_8.txt" # Input patterns file path.
 
-k = 1 # Number of mismatches.
-nPatterns = 50 # Number of patterns, set to -1 to ignore.
+pNPatterns = 50 # Number of patterns, set to -1 to ignore.
+pK = 1 # Number of mismatches.
 
 def readWords(inFile):
     print "Reading from: {0}".format(inFile)
@@ -26,11 +26,11 @@ def calcHamming(str1, str2):
     return nErrors
 
 def main():
-    words = readWords(inDictFile)
-    patterns = readWords(inPatternsFile)
+    words = readWords(pInDictFile)
+    patterns = readWords(pInPatternsFile)
 
-    if nPatterns > 0:
-        patterns = patterns[ : nPatterns]
+    if pNPatterns > 0:
+        patterns = patterns[ : pNPatterns]
 
     nTotalMatches = 0
 
@@ -39,15 +39,15 @@ def main():
         matches = set()
 
         for iW, word in enumerate(words):
-            if len(pattern) == len(word) and calcHamming(pattern, word) <= k:
-                matches.add(iW)
+            if len(pattern) == len(word) and calcHamming(pattern, word) <= pK:
+                matches.add((word, iW))
 
         print "Matches: {0}".format(matches)
         print "#matches = {0}\n".format(len(matches))
 
         nTotalMatches += len(matches)
 
-    print "Total #matches = {0}".format(nTotalMatches)
+    print "Total #matches = {0} for k = {1}".format(nTotalMatches, pK)
 
 if __name__ == "__main__":
     main()
