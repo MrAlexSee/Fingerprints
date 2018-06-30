@@ -39,6 +39,8 @@ private:
     void calcOccSetBitsLUT();
     void calcCountSetBitsLUT();
 
+    // Returns the total size of an array for words and corresponding fingerprints.
+    // Calculates a count for each word size and stores it in wordCountsBySize (passed array must be of size maxWordSize + 1).
     static size_t calcTotalSize(const vector<string> &words, size_t *wordCountsBySize);
 
     /*
