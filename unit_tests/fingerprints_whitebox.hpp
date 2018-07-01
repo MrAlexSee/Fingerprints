@@ -21,6 +21,18 @@ public:
     {
         return Fingerprints<FING_T>::calcTotalSize(words, wordCountsBySize);
     }
+
+    template<typename FING_T>
+    inline static unsigned int calcHammingWeight(unsigned int n)
+    {
+        return Fingerprints<FING_T>::calcHammingWeight(n);
+    }
+
+    template<typename FING_T>
+    inline static bool isHamAMK(const char *str1, const char *str2, size_t size, int k)
+    {
+        return Fingerprints<FING_T>::isHamAMK(str1, str2, size, k);
+    }
 };
 
 } // namespace fingerprints

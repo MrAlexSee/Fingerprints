@@ -29,7 +29,7 @@ TEST_CASE("is getting total size correct", "[files]")
     REQUIRE(Helpers::getTotalSize(vec) == 9);
 }
 
-TEST_CASE("is getting total size for randomized strings correct", "[files]")
+TEST_CASE("is getting total size for repeated strings correct", "[files]")
 {
     for (int nStrings = 0; nStrings < maxNStrings; ++nStrings)
     {
