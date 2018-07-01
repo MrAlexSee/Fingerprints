@@ -368,7 +368,7 @@ FING_T Fingerprints<FING_T>::calcFingerprintCount(const char *str, size_t size) 
 template<typename FING_T>
 unsigned int Fingerprints<FING_T>::calcHammingWeight(unsigned int n)
 {
-    return bitset<sizeof(FING_T)>(n).count();
+    return bitset<8 * sizeof(FING_T)>(n).count();
 }
 
 template<typename FING_T>
