@@ -39,8 +39,7 @@ private:
     void calcOccSetBitsLUT();
     void calcCountSetBitsLUT();
 
-    // Returns the total size of an array for words and corresponding fingerprints.
-    // Calculates a count for each word size and stores it in wordCountsBySize (passed array must be of size maxWordSize + 1).
+    /** Returns the total size of an array for words from [words] and corresponding fingerprints. Calculates a count for each word size and stores it in [wordCountsBySize] (passed array must be of size maxWordSize + 1). */
     static size_t calcTotalSize(const vector<string> &words, size_t *wordCountsBySize);
 
     /*
@@ -55,6 +54,7 @@ private:
     static unsigned int calcHammingWeight(unsigned int n);
     unsigned char calcNErrors(FING_T f1, FING_T f2) const;
 
+    /** Checks whether Hamming distance between [str1] and [str2] both of [size] is at most [k]. */
     static bool isHamAMK(const char *str1, const char *str2, size_t size, int k);
 
     /*
@@ -64,14 +64,15 @@ private:
     static constexpr size_t maxWordSize = 255;
     static constexpr size_t charsMapSize = 255;
 
-    static constexpr unsigned char noCharIndex = 255; // Indicates that the character is not stored in a fingerprint.
+    /** Indicates that a character is not stored in a fingerprint. */
+    static constexpr unsigned char noCharIndex = 255;
 
     /*
-     *** ARRAYS, MAPS AND LOOKUP TABLES
+     *** ARRAYS, MAPS, AND LOOKUP TABLES
      */
 
     char *fingArray = nullptr;
-    // Points to the beginning of each word size bracket in fingArray.
+    /** Points to the beginning of each word size bracket in fingArray. */
     char *fingArrayEntries[maxWordSize + 1];
 
     unsigned char *nErrorsLUT = nullptr;

@@ -11,29 +11,47 @@ namespace fingerprints
 
 struct Params
 {
-    // COMMAND-LINE PARAMS
+    /*
+     *** COMMAND-LINE PARAMS
+     */
+
     // These parameters are set by handleParams() in main.cpp after parsing command line args.
 
-    bool dumpToFile = false; // Dump input files and params info with elapsed and throughput to output file (useful for testing). Cmd arg -d.
+    /** Dump input files and params info with elapsed and throughput to output file. Cmd arg -d. */
+    bool dumpToFile = false;
 
-    int fingerprintType = 0; // Fingerprint type: 0 -> occurrence, 1 -> count. Cmd arg -f.
-    int lettersType = 0; // Letters type: 0 -> common, 1 -> mixed, 2 -> rare. Cmd arg -l.
+    /** Fingerprint type: 0 -> occurrence, 1 -> count. Cmd arg -f. */
+    int fingerprintType = 0;
+    /** Letters type: 0 -> common, 1 -> mixed, 2 -> rare. Cmd arg -l. */
+    int lettersType = 0;
 
-    int kApprox = noValue; // Number of errors for approximate search (Hamming). noValue = perform exact search. Cmd arg -k.
-    int nPatterns = noValue; // Maximum number of patterns read from top of the patterns file; noValue = ignore the pattern count limit. Cmd arg -p.
+    /** Number of errors for approximate search (Hamming). noValue = perform exact search. Cmd arg -k. */
+    int kApprox = noValue;
+    /** Maximum number of patterns read from top of the patterns file. noValue = ignore the pattern count limit. Cmd arg -p. */
+    int nPatterns = noValue;
 
-    string inDictFile = ""; // Input dictionary file path (positional arg 1).
-    string inPatternFile = ""; // Input pattern file path (positional arg 2).
+    /** Input dictionary file path (positional arg 1). */
+    string inDictFile = "";
+    /** Input pattern file path (positional arg 2). */
+    string inPatternFile = "";
 
-    string separator = "\n"; // Input data (dictionary and patterns) separator.
-    string outFile = "res.txt"; // Output file path.
+    /** Input data (dictionary and patterns) separator. */
+    string separator = "\n";
+    /** Output file path. */
+    string outFile = "res.txt";
 
-    // CONSTANTS
-    static constexpr int errorExitCode = 1; // Returned from main on failure.
-    static constexpr int noValue = -1; // Indicates that a given non-negative integer is not set.
+    /*
+     *** CONSTANTS
+     */
 
-    const string versionInfo = "fingerprints v0.1.0"; // Current version: major.minor.patch
-    const string usageInfoString = "[options] <input text file> <input pattern file>";
+    /** Returned from main on failure. */
+    static constexpr int errorExitCode = 1;
+    /** Indicates that a given non-negative integer is not set. */
+    static constexpr int noValue = -1;
+
+    /** Current version: major.minor.patch */
+    const string versionInfo = "fingerprints v0.1.0";
+    const string usageInfoString = "[options] <input dictionary file> <input pattern file>";
 };
 
 } // namespace fingerprints

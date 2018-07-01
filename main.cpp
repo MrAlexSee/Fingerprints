@@ -36,8 +36,11 @@ Params params;
 
 }
 
+/** Handles cmd-line parameters, returns -1 if program execution should continue. */
 int handleParams(int argc, const char **argv);
+/** Returns true if input files are readable, false otherwise. */
 bool checkInputFiles(const char *execName);
+/** Runs the main program and returns the program exit code. */
 int run();
 
 void runFingerprints(const vector<string> &words, const vector<string> &patterns);
@@ -76,7 +79,7 @@ int handleParams(int argc, const char **argv)
        ("letters-type,l", po::value<int>(&params.lettersType), "letters type: 0 -> common, 1 -> mixed, 2 -> rare (default = 0)")
        ("out-file,o", po::value<string>(&params.outFile), "output file path")
        ("pattern-count,p", po::value<int>(&params.nPatterns), "maximum number of patterns read from top of the patterns (non-positive values are ignored)")
-       ("separator,s", po::value<string>(&params.separator), "input data separator")
+       ("separator,s", po::value<string>(&params.separator), "input data (dictionary and patterns) separator")
        ("version,v", "display version info");
 
     po::positional_options_description positionalOptions;

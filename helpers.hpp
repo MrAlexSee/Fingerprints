@@ -20,6 +20,7 @@ struct Helpers
      *** COLLECTIONS
      */
 
+    /** Returns the total size of all strings from [words]. */
     static size_t getTotalSize(const vector<string> &words);
 
     /*
@@ -28,7 +29,8 @@ struct Helpers
 
     inline static bool isFileReadable(const string &filePath);
     static vector<string> readWords(const string &filePath, const string &separator);
-    
+
+    /** Appends [text] to file with [filePath] followed by an optional newline if [newline] is true. */
     static void dumpToFile(const string &text, const string &filePath, bool newline = false);
     inline static bool removeFile(const string &filePath);
 };
