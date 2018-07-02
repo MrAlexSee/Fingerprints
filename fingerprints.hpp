@@ -71,6 +71,7 @@ private:
      *** ARRAYS, MAPS, AND LOOKUP TABLES
      */
 
+    /** Stores contiguously pairs (fingerprint, word) sorted by word size. */
     char *fingArray = nullptr;
     /** Points to the beginning of each word size bracket in fingArray. */
     char *fingArrayEntries[maxWordSize + 1];
@@ -80,6 +81,7 @@ private:
     unsigned char *charsMap = nullptr;
     unsigned char *setBitsLUT = nullptr;
 
+    /** Elapsed time in microseconds. */
     float elapsedUs = 0.0f;
 
     /*
