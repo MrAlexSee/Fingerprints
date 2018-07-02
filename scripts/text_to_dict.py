@@ -1,7 +1,13 @@
+"""
+Transforms input text to a dictionary, splitting words on any whitespace.
+"""
+
 import string
 
-pInFile = "english200.txt" # Input file path.
-pOutFile = "dict.txt" # Output file path.
+# Input file path.
+pInFile = "english200.txt"
+# Output file path.
+pOutFile = "dict.txt"
 
 def isWordOK(s):
     return len(s) == len([c for c in s if c in string.printable])
