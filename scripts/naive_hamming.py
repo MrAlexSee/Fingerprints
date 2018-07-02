@@ -1,8 +1,17 @@
-pInDictFile = "../data/dict_iamerican_insane.txt" # Input dictionary file path.
-pInPatternsFile = "../data/queries_iamerican_insane_8.txt" # Input patterns file path.
+"""
+Performs approximate Hamming distance matching for a dictionary and patterns
+using a naive algorithm.
+"""
 
-pNPatterns = 50 # Number of patterns, set to -1 to ignore.
-pK = 1 # Number of mismatches.
+# Input dictionary file path.
+pInDictFile = "../data/dict_iamerican_insane.txt"
+# Input patterns file path.
+pInPatternsFile = "../data/queries_iamerican_insane_8.txt"
+
+# Number of patterns, set to -1 to ignore.
+pNPatterns = 50
+# Number of mismatches.
+pK = 1 
 
 def readWords(inFile):
     print "Reading from: {0}".format(inFile)

@@ -1,12 +1,22 @@
+"""
+Extracts the queries which consists in sampling the words of a given size
+from a dictionary and introducing random errors.
+"""
+
 import random
 
-pNQueries = 10000 # Number of queries.
+# Number of queries.
+pNQueries = 10000
 
-pQuerySize = 69 # Size of each query (#chars).
-pMaxNErrors = 2 # Maximum number of errors (e), will be sampled from [1, e].
+# Size of each query (#chars).
+pQuerySize = 69
+# Maximum number of errors (e), will be sampled from [1, e].
+pMaxNErrors = 2
 
-pInFile = "../data/dict_urls.txt" # Input file path.
-pOutFile = "queries.txt" # Output file path.
+# Input file path.
+pInFile = "../data/dict_urls.txt"
+# Output file path.
+pOutFile = "queries.txt"
 
 def readWords(inFile, wordSize):
     print "Reading from: {0}".format(inFile)

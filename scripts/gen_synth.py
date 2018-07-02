@@ -1,3 +1,7 @@
+"""
+Generates a synthetic dictionary based on English alphabet letter frequencies.
+"""
+
 import sys
 import string
 
@@ -9,10 +13,13 @@ pFreqList = [8.167, 1.492, 2.782, 4.253, 12.702, 2.228, 2.015, 6.094, 6.966, 0.1
              2.758, 0.978, 2.361, 0.150, 1.974, 0.074]
 pLetters = [c for c in string.ascii_lowercase]
 
-pWordSize = 5 # Number of letters per word.
-pNWords = 1000 # Total number of words.
+# Number of letters per word.
+pWordSize = 5
+# Total number of words.
+pNWords = 1000
 
-pOutFile = "dict.txt" # Output file path.
+# Output file path.
+pOutFile = "dict.txt"
 
 def genWord(wordSize, letters, freqList):
     pFreq = [0.01 * f for f in freqList]
