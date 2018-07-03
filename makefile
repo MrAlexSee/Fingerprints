@@ -6,7 +6,7 @@ BOOST_DIR = "/home/alex/boost_1_67_0"
 
 INCLUDE   = -I$(BOOST_DIR)
 LDFLAGS   = -L$(BOOST_DIR) -static
-LDLIBS    = -lboost_program_options -lm
+LDLIBS    = -lboost_program_options
 
 EXE       = fingerprints
 OBJ       = main.o
@@ -14,9 +14,9 @@ OBJ       = main.o
 all: $(EXE)
 
 $(EXE): $(OBJ)
-	$(CC) $(CCFLAGS) $(OPTFLAGS) $(INCLUDE) $(LDFLAGS) $^ -o $@ $(LDLIBS)
+	$(CC) $(CCFLAGS) $(OPTFLAGS) $(LDFLAGS) $^ -o $@ $(LDLIBS)
 
-main.o: main.cpp fingerprints.hpp fingerprints.cpp helpers.hpp params.hpp
+main.o: main.cpp fingerprints.cpp fingerprints.hpp helpers.hpp params.hpp
 	$(CC) $(CCFLAGS) $(OPTFLAGS) $(INCLUDE) -c main.cpp
 
 .PHONY: clean
