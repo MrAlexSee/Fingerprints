@@ -146,7 +146,7 @@ TEST_CASE("is Hamming at most k=1,2,3,4 randomized calculation correct", "[finge
     for (int k = 1; k <= 4; ++k)
     {
         repeat(nHammingRepeats, [str, k] {
-            auto indexList = Helpers::randNumbersFromRange(0, str.size() - 1, k);
+            set<int> indexList = Helpers::randNumbersFromRange(0, str.size() - 1, k);
             string cur = str;
 
             for (const int i : indexList)
@@ -156,11 +156,11 @@ TEST_CASE("is Hamming at most k=1,2,3,4 randomized calculation correct", "[finge
 
             for (int curK = 0; curK < k; ++curK)
             {
-                REQUIRE(FingerprintsWhitebox::isHamAMK<FING_T>(cur.c_str(), str.c_str(), cur.size(), k) == false);
+                REQUIRE(FingerprintsWhitebox::isHamAMK<FING_T>(cur.c_str(), str.c_str(), cur.size(), curK) == false);
             }
             for (int curK = k; curK <= 4; ++curK)
             {
-                REQUIRE(FingerprintsWhitebox::isHamAMK<FING_T>(cur.c_str(), str.c_str(), cur.size(), k) == true);
+                REQUIRE(FingerprintsWhitebox::isHamAMK<FING_T>(cur.c_str(), str.c_str(), cur.size(), curK) == true);
             }
         });
     };
