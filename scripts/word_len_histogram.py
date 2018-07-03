@@ -1,4 +1,9 @@
-pInFile = "../data/dict_urls.txt" # Input file path.
+"""
+Prints a histogram of word lengths and mode length for a dictionary.
+"""
+
+# Input file path.
+pInFile = "../data/dict_iamerican_insane.txt"
 
 def readWords(inFile):
     print "Reading from: {0}".format(inFile)
