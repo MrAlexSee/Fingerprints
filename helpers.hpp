@@ -3,7 +3,9 @@
 
 #include <boost/algorithm/string.hpp>
 #include <fstream>
+#include <set>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -21,18 +23,25 @@ struct Helpers
      */
 
     /** Returns the total size of all strings from [words]. */
-    static size_t getTotalSize(const vector<string> &words);
+    inline static size_t getTotalSize(const vector<string> &words);
 
     /*
      *** FILES
      */
 
     inline static bool isFileReadable(const string &filePath);
-    static vector<string> readWords(const string &filePath, const string &separator);
+    inline static vector<string> readWords(const string &filePath, const string &separator);
 
     /** Appends [text] to file with [filePath] followed by an optional newline if [newline] is true. */
-    static void dumpToFile(const string &text, const string &filePath, bool newline = false);
+    inline static void dumpToFile(const string &text, const string &filePath, bool newline = false);
     inline static bool removeFile(const string &filePath);
+
+    /*
+     *** RANDOM
+     */
+
+    /** Returns a set of [count] random distinct numbers from range [start] to [end] (both inclusive). */
+    inline static set<int> randNumbersFromRange(int start, int end, int count);
 };
 
 size_t Helpers::getTotalSize(const vector<string> &words)
@@ -102,6 +111,27 @@ void Helpers::dumpToFile(const string &text, const string &filePath, bool newlin
 bool Helpers::removeFile(const string &filePath)
 {
     return remove(filePath.c_str()) == 0;
+}
+
+set<int> Helpers::randNumbersFromRange(int start, int end, int count)
+{
+    if (end - start + 1 < count)
+    {
+        throw invalid_argument("range is too narrow");
+    }
+
+    set<int> res;
+
+    random_device rd;
+    mt19937 mt(rd());
+    uniform_int_distribution<int> dist(start, end);
+
+    while (static_cast<int>(res.size()) < count)
+    {
+        res.insert(dist(mt));
+    }
+
+    return res;
 }
 
 } // namespace fingerprints
