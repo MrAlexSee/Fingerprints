@@ -19,7 +19,7 @@ $(EXE): $(OBJ)
 main_tests.o: main_tests.cpp catch.hpp
 	$(CC) $(CCFLAGS) $(OPTFLAGS) $(INCLUDE) -c main_tests.cpp
 
-fingerprint_tests.o: fingerprint_tests.cpp fingerprints_whitebox.hpp ../fingerprints.hpp ../fingerprints.cpp $(TEST_FILES)
+fingerprint_tests.o: fingerprint_tests.cpp fingerprints_whitebox.hpp ../fingerprints.hpp ../fingerprints.cpp ../helpers.hpp $(TEST_FILES)
 	$(CC) $(CCFLAGS) $(OPTFLAGS) $(INCLUDE) -c fingerprint_tests.cpp
 
 helpers_tests.o: helpers_tests.cpp ../helpers.hpp $(TEST_FILES)

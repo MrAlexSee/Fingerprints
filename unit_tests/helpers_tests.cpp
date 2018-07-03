@@ -1,4 +1,5 @@
 #include "catch.hpp"
+#include "repeat.hpp"
 
 #include "../helpers.hpp"
 
@@ -13,23 +14,25 @@ namespace
 constexpr int maxNStrings = 100;
 constexpr int stringSize = 50;
 
+constexpr int nRandomRepeats = 100;
+
 const string tmpFileName = "fingerprints_tmp.dat";
 
 }
 
-TEST_CASE("is getting total size for empty vector correct", "[files]")
+TEST_CASE("is getting total size for empty vector correct", "[collections]")
 {
     vector<string> vec;
     REQUIRE(Helpers::getTotalSize(vec) == 0);
 }
 
-TEST_CASE("is getting total size correct", "[files]")
+TEST_CASE("is getting total size correct", "[collections]")
 {
     vector<string> vec { "ala", "ma", "kota" };
     REQUIRE(Helpers::getTotalSize(vec) == 9);
 }
 
-TEST_CASE("is getting total size for repeated strings correct", "[files]")
+TEST_CASE("is getting total size for repeated strings correct", "[collections]")
 {
     for (int nStrings = 0; nStrings < maxNStrings; ++nStrings)
     {
@@ -81,6 +84,23 @@ TEST_CASE("is reading words with whitespace correct", "[files]")
 
     Helpers::removeFile(tmpFileName);
     REQUIRE(Helpers::isFileReadable(tmpFileName) == false);
+}
+
+TEST_CASE("is getting random numbers from range correct", "[random]")
+{
+    repeat(nRandomRepeats, [] {
+        for (int count = 1; count <= 10; ++count)
+        {
+            set<int> range = Helpers::randNumbersFromRange(0, 100, count);
+            REQUIRE(range.size() == count);
+
+            for (const int n : range)
+            {
+                REQUIRE(n >= 0);
+                REQUIRE(n <= 100);
+            }
+        }
+    });
 }
 
 } // namespace fingerprints

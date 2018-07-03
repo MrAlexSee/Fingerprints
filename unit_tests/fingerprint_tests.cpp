@@ -1,11 +1,14 @@
 #include <map>
 
 #include "catch.hpp"
+#include "repeat.hpp"
 
 #include "fingerprints_whitebox.hpp"
 
 #include "../fingerprints.hpp"
 #include "../fingerprints.cpp"
+
+#include "../helpers.hpp"
 
 using namespace std;
 
@@ -21,6 +24,7 @@ constexpr int maxNStrings = 100;
 constexpr int stringSize = 50;
 
 constexpr int maxK = 10;
+constexpr int nHammingRepeats = 10;
 
 }
 
@@ -121,9 +125,45 @@ TEST_CASE("is Hamming at most k calculation for self correct", "[fingerprints]")
     }
 }
 
-TEST_CASE("is Hamming at most k calculation correct", "[fingerprints]")
+TEST_CASE("is Hamming at most k=1 calculation correct", "[fingerprints]")
 {
-    // TODO
+    string str = "ala ma kota";
+    
+    for (size_t i = 0; i < str.size(); ++i)
+    {
+        string cur = str;
+        cur[i] = 'N';
+
+        REQUIRE(FingerprintsWhitebox::isHamAMK<FING_T>(cur.c_str(), str.c_str(), cur.size(), 0) == false);
+        REQUIRE(FingerprintsWhitebox::isHamAMK<FING_T>(cur.c_str(), str.c_str(), cur.size(), 1) == true);
+    }
+}
+
+TEST_CASE("is Hamming at most k=1,2,3,4 randomized calculation correct", "[fingerprints]")
+{
+    string str = "ala ma kota";
+
+    for (int k = 1; k <= 4; ++k)
+    {
+        repeat(nHammingRepeats, [str, k] {
+            auto indexList = Helpers::randNumbersFromRange(0, str.size() - 1, k);
+            string cur = str;
+
+            for (const int i : indexList)
+            {
+                cur[i] = 'N';
+            }
+
+            for (int curK = 0; curK < k; ++curK)
+            {
+                REQUIRE(FingerprintsWhitebox::isHamAMK<FING_T>(cur.c_str(), str.c_str(), cur.size(), k) == false);
+            }
+            for (int curK = k; curK <= 4; ++curK)
+            {
+                REQUIRE(FingerprintsWhitebox::isHamAMK<FING_T>(cur.c_str(), str.c_str(), cur.size(), k) == true);
+            }
+        });
+    };
 }
 
 } // namespace fingerprints
