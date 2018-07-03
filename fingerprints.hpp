@@ -54,7 +54,7 @@ private:
     static unsigned int calcHammingWeight(unsigned int n);
     unsigned char calcNErrors(FING_T f1, FING_T f2) const;
 
-    /** Checks whether Hamming distance between [str1] and [str2] both of [size] is at most [k]. */
+    /** Returns true if Hamming distance between [str1] and [str2] both of [size] is at most [k] (i.e. <= k). */
     static bool isHamAMK(const char *str1, const char *str2, size_t size, int k);
 
     /*
