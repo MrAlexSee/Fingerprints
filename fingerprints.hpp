@@ -41,8 +41,8 @@ private:
     void initCharsMap(int fingerprintType, int lettersType);
     string getCharList(size_t nChars, int lettersType) const;
 
-    void calcOccSetBitsLUT();
-    void calcCountSetBitsLUT();
+    void calcOccNMismatchesLUT();
+    void calcCountNMismatchesLUT();
 
     /** Returns the total size of an array for words from [words] and corresponding fingerprints.
      * Calculates a count for each word size and stores it in [wordCountsBySize]
@@ -83,10 +83,13 @@ private:
     /** Points to the beginning of each word size bracket in fingArray. */
     char *fingArrayEntries[maxWordSize + 1];
 
-    unsigned char *nErrorsLUT = nullptr;
-
+    /** Maps chars to their positions in fingerprints. */
     unsigned char *charsMap = nullptr;
-    unsigned char *setBitsLUT = nullptr;
+
+    /** Stores the minimum number of actual errors for a given number of fingerprint mismatches. */
+    unsigned char *nErrorsLUT = nullptr;
+    /** Stores a number of fingerprint mismatches resulting from fingerprint comparison. */
+    unsigned char *nMismatchesLUT = nullptr;
 
     /** Elapsed time in microseconds. */
     float elapsedUs = 0.0f;

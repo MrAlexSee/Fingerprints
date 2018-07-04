@@ -45,6 +45,19 @@ TEST_CASE("is initializing chars map for 16 common letters correct", "[fingerpri
     }
 }
 
+TEST_CASE("is calculating mismatches lut for occurrence fingerprint correct", "[fingerprints]")
+{
+    Fingerprints<FING_T> fingerprints(0, 0);
+    FingerprintsWhitebox::calcOccNMismatchesLUT<FING_T>(fingerprints);
+
+
+}
+
+TEST_CASE("is calculating mismatches lut for count fingerprint correct", "[fingerprints]")
+{
+    
+}
+
 TEST_CASE("is calculating words total size and counts correct for empty", "[fingerprints]")
 {
     vector<string> words;

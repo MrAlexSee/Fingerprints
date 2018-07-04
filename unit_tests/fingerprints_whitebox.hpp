@@ -29,6 +29,18 @@ public:
     }
 
     template<typename FING_T>
+    inline static void calcOccNMismatchesLUT(Fingerprints<FING_T> &fingerprints)
+    {
+        fingerprints.calcOccNMismatchesLUT();
+    }
+
+    template<typename FING_T>
+    inline static void calcCountNMismatchesLUT(Fingerprints<FING_T> &fingerprints)
+    {
+        fingerprints.calcCountNMismatchesLUT();
+    }
+
+    template<typename FING_T>
     inline static size_t calcTotalSize(const vector<string> &words, size_t *wordCountsBySize)
     {
         return Fingerprints<FING_T>::calcTotalSize(words, wordCountsBySize);
@@ -45,10 +57,6 @@ public:
     {
         return fingerprints.calcFingerprintCount(str, size);
     }
-
-    FING_T  const;
-    FING_T calcFingerprintCount(const char *str, size_t size) const;
-
 
     template<typename FING_T>
     inline static unsigned int calcHammingWeight(unsigned int n)

@@ -26,14 +26,14 @@ Fingerprints<FING_T>::Fingerprints(int fingerprintType, int lettersType)
     {
         case 0:
             initCharsMap(0, lettersType);
-            calcOccSetBitsLUT();
+            calcOccNMismatchesLUT();
 
             calcFingerprintFun = bind(&Fingerprints<FING_T>::calcFingerprintOcc, this, 
                 placeholders::_1, placeholders::_2);
             break;
         case 1:
             initCharsMap(1, lettersType);
-            calcCountSetBitsLUT();
+            calcCountNMismatchesLUT();
 
             calcFingerprintFun = bind(&Fingerprints<FING_T>::calcFingerprintCount, this, 
                 placeholders::_1, placeholders::_2);
@@ -46,9 +46,10 @@ Fingerprints<FING_T>::Fingerprints(int fingerprintType, int lettersType)
 template<typename FING_T>
 Fingerprints<FING_T>::~Fingerprints()
 {
-    delete[] nErrorsLUT;
     delete[] charsMap;
-    delete[] setBitsLUT;
+
+    delete[] nErrorsLUT;
+    delete[] nMismatchesLUT;
 
     delete[] fingArray;
 }
@@ -220,17 +221,17 @@ string Fingerprints<FING_T>::getCharList(size_t nChars, int lettersType) const
 }
 
 template<typename FING_T>
-void Fingerprints<FING_T>::calcOccSetBitsLUT()
+void Fingerprints<FING_T>::calcOccNMismatchesLUT()
 {
     FING_T maxVal = std::numeric_limits<FING_T>::max();
-    setBitsLUT = new unsigned char[maxVal + 1];
+    nMismatchesLUT = new unsigned char[maxVal + 1];
 
     FING_T n = 0;
 
     while (true)
     {
-        setBitsLUT[n] = calcHammingWeight(n);
-        assert(setBitsLUT[n] >= 0 and setBitsLUT[n] <= sizeof(FING_T) * 8);
+        nMismatchesLUT[n] = calcHammingWeight(n);
+        assert(nMismatchesLUT[n] >= 0 and nMismatchesLUT[n] <= sizeof(FING_T) * 8);
 
         // Beware of overflows here.
         if (n == maxVal)
@@ -241,12 +242,12 @@ void Fingerprints<FING_T>::calcOccSetBitsLUT()
 }
 
 template<typename FING_T>
-void Fingerprints<FING_T>::calcCountSetBitsLUT()
+void Fingerprints<FING_T>::calcCountNMismatchesLUT()
 {
     assert(sizeof(FING_T) == 2);
 
     FING_T maxVal = std::numeric_limits<FING_T>::max();
-    setBitsLUT = new unsigned char[maxVal + 1];
+    nMismatchesLUT = new unsigned char[maxVal + 1];
 
     FING_T mask = 0b011;
     FING_T n = 0;
@@ -267,7 +268,7 @@ void Fingerprints<FING_T>::calcCountSetBitsLUT()
             }
 
             assert(nErrors >= 0 and nErrors <= 8);
-            setBitsLUT[n] = nErrors;
+            nMismatchesLUT[n] = nErrors;
         }
 
         // Beware of overflows here.
@@ -374,7 +375,7 @@ unsigned int Fingerprints<FING_T>::calcHammingWeight(unsigned int n)
 template<typename FING_T>
 unsigned char Fingerprints<FING_T>::calcNErrors(FING_T f1, FING_T f2) const
 {
-    unsigned char setBits = setBitsLUT[f1 ^ f2];
+    unsigned char setBits = nMismatchesLUT[f1 ^ f2];
 
     assert(setBits >= 0 and setBits <= sizeof(FING_T) * 8);
     return nErrorsLUT[setBits];
