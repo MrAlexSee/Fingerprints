@@ -17,6 +17,18 @@ public:
     FingerprintsWhitebox() = delete;
 
     template<typename FING_T>
+    inline static void initCharsMap(Fingerprints<FING_T> &fingerprints, int fingerprintType, int lettersType)
+    {
+        fingerprints.initCharsMap(fingerprintType, lettersType);
+    }
+
+    template<typename FING_T>
+    inline static const unsigned char *getCharsMap(const Fingerprints<FING_T> &fingerprints)
+    {
+        return fingerprints.charsMap;
+    }
+
+    template<typename FING_T>
     inline static size_t calcTotalSize(const vector<string> &words, size_t *wordCountsBySize)
     {
         return Fingerprints<FING_T>::calcTotalSize(words, wordCountsBySize);

@@ -30,6 +30,21 @@ constexpr int nHammingRepeats = 10;
 
 using FING_T = uint16_t;
 
+TEST_CASE("is initializing chars map for 16 common letters correct", "[fingerprints]")
+{
+    Fingerprints<FING_T> fingerprints(0, 0);
+    FingerprintsWhitebox::initCharsMap(fingerprints, 0, 0);
+
+    const unsigned char *charsMap = FingerprintsWhitebox::getCharsMap(fingerprints);
+
+    string letters = "etaoinshrdlcumwf";
+
+    for (size_t i = 0; i < 16; ++i)
+    {
+        REQUIRE(charsMap[static_cast<size_t>(letters[i])] == i);
+    }
+}
+
 TEST_CASE("is calculating words total size and counts correct for empty", "[fingerprints]")
 {
     vector<string> words;
