@@ -106,7 +106,7 @@ TEST_CASE("is getting random numbers from range correct", "[random]")
 TEST_CASE("does random generation from bad range throw", "[random]")
 {
     REQUIRE_THROWS_AS(Helpers::randNumbersFromRange(10, -5, 1), invalid_argument);
-    REQUIRE_THROWS_AS(Helpers::randNumbersFromRange(0, 2, 3), invalid_argument);
+    REQUIRE_THROWS_AS(Helpers::randNumbersFromRange(0, 2, 4), invalid_argument);
 }
 
 } // namespace fingerprints

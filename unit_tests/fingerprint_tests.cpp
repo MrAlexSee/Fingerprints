@@ -186,7 +186,7 @@ TEST_CASE("is calculating occurrence fingerprint for rare letters correct", "[fi
     auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
 
     REQUIRE(fun("ala", 3) == 0b1000000000000000);
-    REQUIRE(fun("instance", 8) == 0b0000000000000000);
+    REQUIRE(fun("instance", 8) == 0b0100000000000000);
     REQUIRE(fun("aaaaa", 5) == 0b0000000000000000);
     REQUIRE(fun("ebiz", 4) == 0b0000000001000001);
 }
@@ -438,8 +438,8 @@ TEST_CASE("is calculating number of errors for count fingerprint for mixed lette
     REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f1, f4) == 1);
     REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f4, f1) == 1);
 
-    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f2, f4) == 2);
-    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f4, f2) == 2);
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f2, f4) == 1);
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f4, f2) == 1);
 
     REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f3, f4) == 2);
     REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f4, f3) == 2);
