@@ -41,7 +41,9 @@ private:
     void initCharsMap(int fingerprintType, int lettersType);
     string getCharList(size_t nChars, int lettersType) const;
 
+    /** Calculates mismatches LUT (nMismatchesLUT) for occurrence fingerprints. */
     void calcOccNMismatchesLUT();
+    /** Calculates mismatches LUT (nMismatchesLUT) for count fingerprints. */
     void calcCountNMismatchesLUT();
 
     /** Returns the total size of an array for words from [words] and corresponding fingerprints.
@@ -53,12 +55,17 @@ private:
      *** FINGERPRINT CALCULATION
      */
 
+    /** Returns a fingerprint of the current type, set to one of the specific functions listed below. */
     function<FING_T(const char *, size_t)> calcFingerprintFun;
 
+    /** Returns an occurrence fingerprint for string [str] having [size] chars. */
     FING_T calcFingerprintOcc(const char *str, size_t size) const;
+    /** Returns a count fingerprint for string [str] having [size] chars. */
     FING_T calcFingerprintCount(const char *str, size_t size) const;
 
+    /** Returns the Hamming weight for number [n]. */
     static unsigned int calcHammingWeight(unsigned int n);
+    /** Returns the number of errors resulting from comparing fingerprints [f1] and [f2]. */
     unsigned char calcNErrors(FING_T f1, FING_T f2) const;
 
     /** Returns true if Hamming distance between [str1] and [str2] both of [size] is at most [k] (i.e. <= k). */
