@@ -352,7 +352,7 @@ FING_T Fingerprints<FING_T>::calcFingerprintCount(const char *str, size_t size) 
             {
                 mask <<= 1;
 
-                if (s & mask) // 2 -> 3
+                if (s & mask) // 2 -> 3 or 3 -> 3 (no change)
                 {
                     s |= (mask >> 1);
                 }
