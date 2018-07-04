@@ -106,6 +106,16 @@ TEST_CASE("is calculating words total size and counts correct for repeated strin
     }
 }
 
+TEST_CASE("is calculating occurrence fingerprint correct", "[fingerprints]")
+{
+    // TODO
+}
+
+TEST_CASE("is calculating count fingerprint correct", "[fingerprints]")
+{
+    // TODO
+}
+
 TEST_CASE("is Hamming weight calculation correct", "[fingerprints]")
 {
     // Hamming weight for 0 to 16.
@@ -118,6 +128,16 @@ TEST_CASE("is Hamming weight calculation correct", "[fingerprints]")
 
     // 2^16 - 1
     REQUIRE(FingerprintsWhitebox::calcHammingWeight<FING_T>(65535) == 16);
+}
+
+TEST_CASE("is calculcating number of errors for occurrence fingerprint correct", "[fingerprints]")
+{
+    // TODO
+}
+
+TEST_CASE("is calculating number of errors for count fingerprint correct", "[fingerprints]")
+{
+    // TODO
 }
 
 TEST_CASE("is Hamming at most k for empty calculation correct", "[fingerprints]")

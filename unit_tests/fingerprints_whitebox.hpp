@@ -35,6 +35,22 @@ public:
     }
 
     template<typename FING_T>
+    inline static FING_T calcFingerprintOcc(const Fingerprints<FING_T> &fingerprints, const char *str, size_t size)
+    {
+        return fingerprints.calcFingerprintOcc(str, size);
+    }
+
+    template<typename FING_T>
+    inline static FING_T calcFingerprintCount(const Fingerprints<FING_T> &fingerprints, const char *str, size_t size)
+    {
+        return fingerprints.calcFingerprintCount(str, size);
+    }
+
+    FING_T  const;
+    FING_T calcFingerprintCount(const char *str, size_t size) const;
+
+
+    template<typename FING_T>
     inline static unsigned int calcHammingWeight(unsigned int n)
     {
         return Fingerprints<FING_T>::calcHammingWeight(n);
