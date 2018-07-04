@@ -23,7 +23,10 @@ public:
     Fingerprints(int fingerprintType, int lettersType);
     ~Fingerprints();
 
+    /** Constructs an array which stores [words] together with their corresponding fingerprints. */
     void preprocess(vector<string> words);
+    /** Performs approximate matching for [patterns] and [k] errors. Returns the total number of matches.
+     * Sets elapsedUs to time elapsed during this matching. */
     int test(const vector<string> &patterns, int k);
 
     float getElapsedUs() const { return elapsedUs; }
