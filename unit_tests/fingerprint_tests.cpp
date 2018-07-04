@@ -30,6 +30,11 @@ constexpr int nHammingRepeats = 10;
 
 using FING_T = uint16_t;
 
+TEST_CASE("is initializing errors LUT correct", "[fingerprints]")
+{
+    // TODO
+}
+
 TEST_CASE("is initializing chars map for 16 common letters correct", "[fingerprints]")
 {
     Fingerprints<FING_T> fingerprints(0, 0);
@@ -50,12 +55,33 @@ TEST_CASE("is calculating mismatches LUT for occurrence fingerprints correct", "
     Fingerprints<FING_T> fingerprints(0, 0);
     FingerprintsWhitebox::calcOccNMismatchesLUT<FING_T>(fingerprints);
 
-    // TODO
+    const unsigned char *nMismatchesLUT = FingerprintsWhitebox::getNMismatchesLUT(fingerprints);
+    
+    // We check the mismatches for selected predefined results below.
+    for (const auto &kv : map<size_t, size_t>({ { 0, 0 }, { 1, 1 }, { 2, 1 }, { 4, 1 }, { 5, 2 }, { 6, 2 }, { 7, 3 }, { 8, 1 } }))
+    {
+        REQUIRE(nMismatchesLUT[kv.first] == kv.second);
+    }
+
+    REQUIRE(nMismatchesLUT[0b000111010110] == 6);
 }
 
 TEST_CASE("is calculating mismatches LUT for count fingerprints correct", "[fingerprints]")
 {
-    // TODO
+    Fingerprints<FING_T> fingerprints(1, 0);
+    FingerprintsWhitebox::calcCountNMismatchesLUT<FING_T>(fingerprints);
+
+    const unsigned char *nMismatchesLUT = FingerprintsWhitebox::getNMismatchesLUT(fingerprints);
+    
+    // We check the mismatches for selected predefined results below.
+    for (const auto &kv : map<size_t, size_t>({ { 0, 0 }, { 1, 1 }, { 2, 1 }, { 4, 1 }, { 5, 2 }, { 6, 2 }, { 7, 2 }, { 8, 1 } }))
+    {
+        REQUIRE(nMismatchesLUT[kv.first] == kv.second);
+    }
+
+    REQUIRE(nMismatchesLUT[0b000111010110] == 5);
+    REQUIRE(nMismatchesLUT[0b000111111111] == 5);
+    REQUIRE(nMismatchesLUT[0b000001010101] == 4);
 }
 
 TEST_CASE("is calculating words total size and counts correct for empty", "[fingerprints]")
@@ -138,9 +164,10 @@ TEST_CASE("is Hamming weight calculation correct", "[fingerprints]")
     {
         REQUIRE(FingerprintsWhitebox::calcHammingWeight<FING_T>(n) == res[n]);
     }
+    
+    REQUIRE(FingerprintsWhitebox::calcHammingWeight<FING_T>(0b000111010110) == 6);
+    REQUIRE(FingerprintsWhitebox::calcHammingWeight<FING_T>(65535) == 16); // 2^16 - 1
 
-    // 2^16 - 1
-    REQUIRE(FingerprintsWhitebox::calcHammingWeight<FING_T>(65535) == 16);
 }
 
 TEST_CASE("is calculcating number of errors for occurrence fingerprint correct", "[fingerprints]")

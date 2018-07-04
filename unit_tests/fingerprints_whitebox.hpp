@@ -41,6 +41,12 @@ public:
     }
 
     template<typename FING_T>
+    inline static const unsigned char *getNMismatchesLUT(const Fingerprints<FING_T> &fingerprints)
+    {
+        return fingerprints.nMismatchesLUT;
+    }
+
+    template<typename FING_T>
     inline static size_t calcTotalSize(const vector<string> &words, size_t *wordCountsBySize)
     {
         return Fingerprints<FING_T>::calcTotalSize(words, wordCountsBySize);
