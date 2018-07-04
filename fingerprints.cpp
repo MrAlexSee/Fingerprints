@@ -194,25 +194,25 @@ string Fingerprints<FING_T>::getCharList(size_t nChars, int lettersType) const
             switch (nChars)
             {
                 case 8:
-                    return commonChars8;
+                    return commonLetters8;
                 case 16:
-                    return commonChars16;
+                    return commonLetters16;
             }
         case 1: // mixed
             switch (nChars)
             {
                 case 8:
-                    return mixedChars8;
+                    return mixedLetters8;
                 case 16:
-                    return mixedChars16;
+                    return mixedLetters16;
             }
         case 2: // rare
             switch (nChars)
             {
                 case 8:
-                    return rareChars8;
+                    return rareLetters8;
                 case 16:
-                    return rareChars16;
+                    return rareLetters16;
             }
     }
 

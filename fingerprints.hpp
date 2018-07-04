@@ -105,13 +105,13 @@ private:
      *** FINGERPRINT LETTER COLLECTIONS
      */
 
-    const string commonChars16 = "etaoinshrdlcumwf";
-    const string mixedChars16 = "etaoinshzqxjkvbp";
-    const string rareChars16 = "zqxjkvbpygfwmucl";
+    const string commonLetters16 = "etaoinshrdlcumwf";
+    const string mixedLetters16 = "etaoinshzqxjkvbp";
+    const string rareLetters16 = "zqxjkvbpygfwmucl";
 
-    const string commonChars8 = "etaoinsh";
-    const string mixedChars8 = "etaokvbp";
-    const string rareChars8 = "zqxjkvbp";
+    const string commonLetters8 = "etaoinsh";
+    const string mixedLetters8 = "etaokvbp";
+    const string rareLetters8 = "zqxjkvbp";
 
     FINGERPRINTS_WHITEBOX
 };
