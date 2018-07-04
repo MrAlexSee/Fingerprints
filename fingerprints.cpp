@@ -261,7 +261,9 @@ void Fingerprints<FING_T>::calcCountNMismatchesLUT()
             FING_T curDiff = n & (mask << (2 * iM));
 
             // Unfortunately each difference in a count can lead only up to max 1 error.
-            // Example: 01 xor 10 -> 11 (1 error).
+            // Example: fingerprint 01 (letter count = 1) xored with fingerprint 10 (letter count = 2) 
+            // -> results in 11.
+            // Two bits are set in the result but they translate to only 1 error.
             if (curDiff)
             {
                 nErrors += 1;

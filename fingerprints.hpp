@@ -95,7 +95,7 @@ private:
 
     /** Stores the minimum number of actual errors for a given number of fingerprint mismatches. */
     unsigned char *nErrorsLUT = nullptr;
-    /** Stores a number of fingerprint mismatches resulting from fingerprint comparison. */
+    /** Stores the number of fingerprint mismatches resulting from fingerprint comparison. */
     unsigned char *nMismatchesLUT = nullptr;
 
     /** Elapsed time in microseconds. */
