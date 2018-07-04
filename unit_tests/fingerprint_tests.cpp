@@ -32,7 +32,17 @@ using FING_T = uint16_t;
 
 TEST_CASE("is initializing errors LUT correct", "[fingerprints]")
 {
-    // TODO
+    Fingerprints<FING_T> fingerprints(0, 0);
+    FingerprintsWhitebox::initNErrorsLUT(fingerprints);
+
+    const unsigned char *nErrorsLUT = FingerprintsWhitebox::getNErrorsLUT(fingerprints);
+
+    REQUIRE(nErrorsLUT[0] == 0);
+    REQUIRE(nErrorsLUT[1] == 1);
+    REQUIRE(nErrorsLUT[2] == 1);
+    REQUIRE(nErrorsLUT[3] == 2);
+    REQUIRE(nErrorsLUT[4] == 2);
+    REQUIRE(nErrorsLUT[16] == 8);
 }
 
 TEST_CASE("is initializing chars map for 16 common letters correct", "[fingerprints]")
@@ -41,7 +51,6 @@ TEST_CASE("is initializing chars map for 16 common letters correct", "[fingerpri
     FingerprintsWhitebox::initCharsMap(fingerprints, 0, 0);
 
     const unsigned char *charsMap = FingerprintsWhitebox::getCharsMap(fingerprints);
-
     string letters = "etaoinshrdlcumwf";
 
     for (size_t i = 0; i < 16; ++i)
@@ -145,14 +154,80 @@ TEST_CASE("is calculating words total size and counts correct for repeated strin
     }
 }
 
-TEST_CASE("is calculating occurrence fingerprint correct", "[fingerprints]")
+TEST_CASE("is calculating occurrence fingerprint for common letters correct", "[fingerprints]")
 {
-    // TODO
+    // Passing fingerprint type 0 -- occurrence, letters type 0 - common (etaoinshrdlcumwf).
+    Fingerprints<FING_T> fingerprints(0, 0);
+    auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
+
+    // Fingerprints are constructed from the right-hand side (i.e. from the least significant bit).
+    REQUIRE(fun("ala", 3) == 0b0000010000000100);
+    REQUIRE(fun("instance", 8) == 0b0000100001110111);
+    REQUIRE(fun("aaaaa", 5) == 0b0000000000000100);
+    REQUIRE(fun("ebiz", 4) == 0b0000000000010001);
 }
 
-TEST_CASE("is calculating count fingerprint correct", "[fingerprints]")
+TEST_CASE("is calculating occurrence fingerprint for mixed letters correct", "[fingerprints]")
 {
-    // TODO
+     // Passing fingerprint type 0 -- occurrence, letters type 1 - mixed (etaoinshzqxjkvbp).
+    Fingerprints<FING_T> fingerprints(0, 1);
+    auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
+
+    REQUIRE(fun("ala", 3) == 0b0000000000000100);
+    REQUIRE(fun("instance", 8) == 0b0000000001110111);
+    REQUIRE(fun("aaaaa", 5) == 0b0000000000000100);
+    REQUIRE(fun("ebiz", 4) == 0b0100000100010001);
+}
+
+TEST_CASE("is calculating occurrence fingerprint for rare letters correct", "[fingerprints]")
+{
+    // Passing fingerprint type 0 -- occurrence, letters type 2 - rare (zqxjkvbpygfwmucl).
+    Fingerprints<FING_T> fingerprints(0, 2);
+    auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
+
+    REQUIRE(fun("ala", 3) == 0b1000000000000000);
+    REQUIRE(fun("instance", 8) == 0b0000000000000000);
+    REQUIRE(fun("aaaaa", 5) == 0b0000000000000000);
+    REQUIRE(fun("ebiz", 4) == 0b0000000001000001);
+}
+
+TEST_CASE("is calculating count fingerprint for common letters correct", "[fingerprints]")
+{
+    // Passing fingerprint type 1 -- count, letters type 0 - common (etaoinsh).
+    Fingerprints<FING_T> fingerprints(1, 0);
+    auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
+
+    // Fingerprints are constructed from the right-hand side (i.e. from the least significant bit).
+    REQUIRE(fun("ala", 3) == 0b0000000000100000);
+    REQUIRE(fun("instance", 8) == 0b0001100100010101);
+    REQUIRE(fun("aaaaa", 5) == 0b0000000000110000);
+    REQUIRE(fun("ebiz", 4) == 0b0000000100000001);
+}
+
+TEST_CASE("is calculating count fingerprint for mixed letters correct", "[fingerprints]")
+{
+    // Passing fingerprint type 1 -- count, letters type 1 - mixed (etaokvbp).
+    Fingerprints<FING_T> fingerprints(1, 1);
+    auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
+
+    // Fingerprints are constructed from the right-hand side (i.e. from the least significant bit).
+    REQUIRE(fun("ala", 3) == 0b0000000000100000);
+    REQUIRE(fun("instance", 8) == 0b0000000000010101);
+    REQUIRE(fun("aaaaa", 5) == 0b0000000000110000);
+    REQUIRE(fun("ebiz", 4) == 0b0001000000000001);
+}
+
+TEST_CASE("is calculating count fingerprint for rare letters correct", "[fingerprints]")
+{
+    // Passing fingerprint type 1 -- count, letters type 2 - rare (zqxjkvbp).
+    Fingerprints<FING_T> fingerprints(1, 2);
+    auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
+
+    // Fingerprints are constructed from the right-hand side (i.e. from the least significant bit).
+    REQUIRE(fun("ala", 3) == 0b0000000000000000);
+    REQUIRE(fun("instance", 8) == 0b0000000000000000);
+    REQUIRE(fun("aaaaa", 5) == 0b0000000000000000);
+    REQUIRE(fun("ebiz", 4) == 0b0001000000000001);
 }
 
 TEST_CASE("is Hamming weight calculation correct", "[fingerprints]")
@@ -170,12 +245,35 @@ TEST_CASE("is Hamming weight calculation correct", "[fingerprints]")
 
 }
 
-TEST_CASE("is calculcating number of errors for occurrence fingerprint correct", "[fingerprints]")
+TEST_CASE("is calculcating number of errors for occurrence fingerprint for common letters correct", "[fingerprints]")
+{
+    // Passing fingerprint type 0 -- occurrence, letters type 0 - common (etaoinshrdlcumwf).
+    Fingerprints<FING_T> fingerprints(0, 0);
+    auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
+
+}
+
+TEST_CASE("is calculcating number of errors for occurrence fingerprint for mixed letters correct", "[fingerprints]")
 {
     // TODO
 }
 
-TEST_CASE("is calculating number of errors for count fingerprint correct", "[fingerprints]")
+TEST_CASE("is calculcating number of errors for occurrence fingerprint for rare letters correct", "[fingerprints]")
+{
+    // TODO
+}
+
+TEST_CASE("is calculating number of errors for count fingerprint for common letters correct", "[fingerprints]")
+{
+    // TODO
+}
+
+TEST_CASE("is calculating number of errors for count fingerprint for mixed letters correct", "[fingerprints]")
+{
+    // TODO
+}
+
+TEST_CASE("is calculating number of errors for count fingerprint for rare letters correct", "[fingerprints]")
 {
     // TODO
 }

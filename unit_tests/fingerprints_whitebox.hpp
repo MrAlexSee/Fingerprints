@@ -17,6 +17,24 @@ public:
     FingerprintsWhitebox() = delete;
 
     template<typename FING_T>
+    inline static function<FING_T(const char *, size_t)> getCalcFingerprintFun(Fingerprints<FING_T> &fingerprints)
+    {
+        return fingerprints.calcFingerprintFun;
+    }
+
+    template<typename FING_T>
+    inline static void initNErrorsLUT(Fingerprints<FING_T> &fingerprints)
+    {
+        fingerprints.initNErrorsLUT();
+    }
+
+    template<typename FING_T>
+    inline static unsigned char *getNErrorsLUT(const Fingerprints<FING_T> &fingerprints)
+    {
+        return fingerprints.nErrorsLUT;
+    }
+
+    template<typename FING_T>
     inline static void initCharsMap(Fingerprints<FING_T> &fingerprints, int fingerprintType, int lettersType)
     {
         fingerprints.initCharsMap(fingerprintType, lettersType);
