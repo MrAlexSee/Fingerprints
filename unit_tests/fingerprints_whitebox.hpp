@@ -89,6 +89,12 @@ public:
     }
 
     template<typename FING_T>
+    inline static unsigned char calcNErrors(const Fingerprints<FING_T> &fingerprints, FING_T f1, FING_T f2)
+    {
+        return fingerprints.calcNErrors(f1, f2);
+    }
+
+    template<typename FING_T>
     inline static bool isHamAMK(const char *str1, const char *str2, size_t size, int k)
     {
         return Fingerprints<FING_T>::isHamAMK(str1, str2, size, k);
