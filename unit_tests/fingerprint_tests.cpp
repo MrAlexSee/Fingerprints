@@ -30,6 +30,19 @@ constexpr int nHammingRepeats = 10;
 
 using FING_T = uint16_t;
 
+
+TEST_CASE("is initializing using fingerprints correct", "[fingerprints]")
+{
+    Fingerprints<FING_T> fno(-1, 0);
+    REQUIRE(FingerprintsWhitebox::getUseFingerprints(fno) == false);
+
+    Fingerprints<FING_T> f0(0, 0);
+    REQUIRE(FingerprintsWhitebox::getUseFingerprints(f0) == true);
+
+    Fingerprints<FING_T> f1(1, 0);
+    REQUIRE(FingerprintsWhitebox::getUseFingerprints(f1) == true);
+}
+
 TEST_CASE("is preprocessing correct", "[fingerprints]")
 {
     // TODO

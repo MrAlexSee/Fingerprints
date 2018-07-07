@@ -17,6 +17,12 @@ public:
     FingerprintsWhitebox() = delete;
 
     template<typename FING_T>
+    inline static bool getUseFingerprints(const Fingerprints<FING_T> &fingerprints)
+    {
+        return fingerprints.useFingerprints;
+    }
+
+    template<typename FING_T>
     inline static function<FING_T(const char *, size_t)> getCalcFingerprintFun(Fingerprints<FING_T> &fingerprints)
     {
         return fingerprints.calcFingerprintFun;
