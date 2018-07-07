@@ -25,9 +25,9 @@ public:
 
     /** Constructs an array which stores [words],
      * if [useFingerprints] is true together with their corresponding fingerprints. */
-    void preprocess(const vector<string> &words, bool useFingerprints);
-    /** Performs approximate matching for [patterns] and [k] errors. Returns the total number of matches.
-     * Sets elapsedUs to time elapsed during this matching. */
+    void preprocess(const vector<string> &words);
+    /** Performs approximate matching for [patterns] and [k] errors.
+     * Returns the total number of matches. Sets elapsedUs to time elapsed during this matching. */
     int test(const vector<string> &patterns, int k);
 
     float getElapsedUs() const { return elapsedUs; }
@@ -36,7 +36,18 @@ private:
     /*
      *** INITIALIZIATION
      */
+
+    /** Constructs an array which stores [words] together with their corresponding fingerprints. */
     void preprocessFingerprints(vector<string> words);
+    /** Constructs an array which stores only [words]. */
+    void preprocessWords(vector<string> words);
+
+    /** Performs approximate matching for [patterns] and [k] errors using fingerprints.
+     * Returns the total number of matches. Sets elapsedUs to time elapsed during this matching. */
+    int testFingerprints(const vector<string> &patterns, int k);
+    /** Performs approximate matching for [patterns] and [k] errors without fingerprints.
+     * Returns the total number of matches. Sets elapsedUs to time elapsed during this matching. */
+    int testWords(const vector<string> &patterns, int k);
 
     void initNErrorsLUT();
     
@@ -52,6 +63,9 @@ private:
      * Calculates a count for each word size and stores it in [wordCountsBySize]
      * (passed array must be of size maxWordSize + 1). */
     static size_t calcTotalSize(const vector<string> &words, size_t *wordCountsBySize);
+
+    /** Set to false if the user selected the mode without fingeprints (where only words are stored). */
+    bool useFingerprints = true;
 
     /*
      *** FINGERPRINT CALCULATION

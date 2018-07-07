@@ -181,7 +181,7 @@ void runFingerprints(const vector<string> &words, const vector<string> &patterns
     cout << "Using fingerprint type: " << params.fingerprintType << endl; 
     cout << "Using letters type: " << params.lettersType << endl << endl;
 
-    fingerprints.preprocess(words, params.fingerprintType != -1);
+    fingerprints.preprocess(words);
     cout << "Preprocessed #words = " << words.size() << endl;
 
     cout << "Testing #queries = " << patterns.size() << endl;
