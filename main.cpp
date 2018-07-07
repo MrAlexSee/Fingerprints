@@ -45,6 +45,9 @@ int run();
 
 void runFingerprints(const vector<string> &words, const vector<string> &patterns);
 
+void dumpParamInfoToStdout(int fingSizeB);
+void dumpRunInfo(float elapsedUs, const vector<string> &words, const vector<string> &patterns);
+
 }
 
 int main(int argc, const char **argv)
@@ -175,28 +178,45 @@ int run()
 void runFingerprints(const vector<string> &words, const vector<string> &patterns)
 {
     using FING_T = uint16_t;
+    dumpParamInfoToStdout(sizeof(FING_T));
+
     Fingerprints<FING_T> fingerprints(params.fingerprintType, params.lettersType);
-
-    cout << boost::format("Using fingerprint size: %1% bytes") % sizeof(FING_T) << endl; 
-    cout << "Using fingerprint type: " << params.fingerprintType << endl; 
-    cout << "Using letters type: " << params.lettersType << endl << endl;
-
     fingerprints.preprocess(words);
+    
     cout << "Preprocessed #words = " << words.size() << endl;
-
     cout << "Testing #queries = " << patterns.size() << endl;
+   
     int nMatches = fingerprints.test(patterns, params.kApprox);
-
     cout << "Got #matches = " << nMatches << endl;
 
-    float elapsedUs = fingerprints.getElapsedUs();
+    dumpRunInfo(fingerprints.getElapsedUs(), words, patterns);
+}
+
+void dumpParamInfoToStdout(int fingSizeB)
+{
+    cout << boost::format("Using fingerprint size: %1% bytes") % fingSizeB << endl; 
+    
+    if (params.fingerprintType == -1)
+    {
+        cout << "Using no fingerprints (words only)" << endl; 
+    }
+    else
+    {
+        cout << "Using fingerprint type: " << params.fingerprintType << endl; 
+    }
+
+    cout << "Using letters type: " << params.lettersType << endl << endl;
+}
+
+void dumpRunInfo(float elapsedUs, const vector<string> &words, const vector<string> &patterns)
+{
     float elapsedS = elapsedUs / 1'000'000;
 
     size_t dictSizeB = Helpers::getTotalSize(words);
     float dictSizeMB = static_cast<float>(dictSizeB) / 1'000'000.0;
 
     float throughputMBs = dictSizeMB / (elapsedS / patterns.size());
-    float elapsedPerWordNs = 1'000.0 * elapsedUs / (words.size() * patterns.size());
+    float elapsedPerWordNs = (1'000.0 * elapsedUs) / (words.size() * patterns.size());
 
     cout << boost::format("Elapsed = %1% us, per word = %2% ns, throughput = %3% MB/s")
         % elapsedUs % elapsedPerWordNs % throughputMBs << endl;
