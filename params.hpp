@@ -20,7 +20,7 @@ struct Params
     /** Dump input files and params info with elapsed and throughput to output file. Cmd arg -d. */
     bool dumpToFile = false;
 
-    /** Fingerprint type: 0 -> occurrence, 1 -> count. Cmd arg -f. */
+    /** Fingerprint type: -1 -> no fingerprints, 0 -> occurrence, 1 -> count. Cmd arg -f. */
     int fingerprintType = 0;
     /** Letters type: 0 -> common, 1 -> mixed, 2 -> rare. Cmd arg -l. */
     int lettersType = 0;

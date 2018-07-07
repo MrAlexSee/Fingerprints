@@ -72,7 +72,7 @@ int handleParams(int argc, const char **argv)
     options.add_options()
        ("dump,d", "dump input files and params info with elapsed and throughput to output file (useful for testing)")
        ("help,h", "display help message")
-       ("fingerprint-type,f", po::value<int>(&params.fingerprintType), "fingerprint type: 0 -> occurrence, 1 -> count (default = 0)")
+       ("fingerprint-type,f", po::value<int>(&params.fingerprintType), "fingerprint type: -1 -> no fingerprints, 0 -> occurrence, 1 -> count (default = 0)")
        ("in-dict-file,i", po::value<string>(&params.inDictFile)->required(), "input dictionary file path (positional arg 1)")
        ("in-pattern-file,I", po::value<string>(&params.inPatternFile)->required(), "input pattern file path (positional arg 2)")
        ("approx,k", po::value<int>(&params.kApprox)->required(), "perform approximate search (Hamming distance) for k errors")
@@ -181,7 +181,7 @@ void runFingerprints(const vector<string> &words, const vector<string> &patterns
     cout << "Using fingerprint type: " << params.fingerprintType << endl; 
     cout << "Using letters type: " << params.lettersType << endl << endl;
 
-    fingerprints.preprocess(words);
+    fingerprints.preprocess(words, params.fingerprintType != -1);
     cout << "Preprocessed #words = " << words.size() << endl;
 
     cout << "Testing #queries = " << patterns.size() << endl;
