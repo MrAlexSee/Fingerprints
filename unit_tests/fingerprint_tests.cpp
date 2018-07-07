@@ -30,6 +30,16 @@ constexpr int nHammingRepeats = 10;
 
 using FING_T = uint16_t;
 
+TEST_CASE("is preprocessing correct", "[fingerprints]")
+{
+    // TODO
+}
+
+TEST_CASE("is testing correct", "[fingerprints]")
+{
+    // TODO
+}
+
 TEST_CASE("is initializing errors LUT correct", "[fingerprints]")
 {
     Fingerprints<FING_T> fingerprints(0, 0);
