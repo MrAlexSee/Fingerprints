@@ -4,6 +4,7 @@
 #include <chrono>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 
 namespace fingerprints
 {
@@ -60,13 +61,20 @@ Fingerprints<FING_T>::~Fingerprints()
 template<typename FING_T>
 void Fingerprints<FING_T>::preprocess(const vector<string> &words)
 {
+    // We remove the duplicates.
+    unordered_set<string> wordSet(words.begin(), words.end());
+
+    // We convert the set back to a vector for further sorting.
+    vector<string> wordsUnique(wordSet.begin(), wordSet.end());
+    assert(wordsUnique.size() <= words.size());
+
     if (useFingerprints)
     {
-        preprocessFingerprints(words);
+        preprocessFingerprints(move(wordsUnique));
     }
     else
     {
-        preprocessWords(words);
+        preprocessWords(move(wordsUnique));
     }
 }
 
