@@ -313,6 +313,11 @@ TEST_CASE("is calculating mismatches LUT for count fingerprints correct", "[fing
     REQUIRE(nMismatchesLUT[0b000001010101] == 4);
 }
 
+TEST_CASE("is calculating mismatches LUT for position fingerprints correct", "[fingerprints]")
+{
+    // TODO
+}
+
 TEST_CASE("is calculating words total size and counts correct for empty", "[fingerprints]")
 {
     vector<string> words;
@@ -448,6 +453,33 @@ TEST_CASE("is calculating count fingerprint for rare letters correct", "[fingerp
     REQUIRE(fun("instance", 8) == 0b0000000000000000);
     REQUIRE(fun("aaaaa", 5) == 0b0000000000000000);
     REQUIRE(fun("ebiz", 4) == 0b0001000000000001);
+}
+
+TEST_CASE("is calculating position fingerprint for common letters correct", "[fingerprints]")
+{
+    // Passing fingerprint type 2 -- position, letters type 0 - common (etaoin).
+    // Fingerprints<FING_T> fingerprints(2, 0);
+    // auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
+
+    // TODO
+}
+
+TEST_CASE("is calculating position fingerprint for mixed letters correct", "[fingerprints]")
+{
+    // Passing fingerprint type 2 -- position, letters type 1 - mixed (etakvb).
+    // Fingerprints<FING_T> fingerprints(2, 1);
+    // auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
+
+    // TODO
+}
+
+TEST_CASE("is calculating position fingerprint for rare letters correct", "[fingerprints]")
+{
+    // Passing fingerprint type 2 -- position, letters type 2 - rare (zqxjkv).
+    // Fingerprints<FING_T> fingerprints(2, 2);
+    // auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
+
+    // TODO
 }
 
 TEST_CASE("is Hamming weight calculation correct", "[fingerprints]")
@@ -703,6 +735,33 @@ TEST_CASE("is calculating number of errors for count fingerprint for rare letter
 
     REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f3, f4) == 1);
     REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f4, f3) == 1);
+}
+
+TEST_CASE("is calculating number of errors for position fingerprint for common letters correct", "[fingerprints]")
+{
+    // Passing fingerprint type 2 -- position, letters type 0 - common (etaoin).
+    // Fingerprints<FING_T> fingerprints(2, 0);
+    // auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
+
+    // TODO
+}
+
+TEST_CASE("is calculating number of errors for position fingerprint for mixed letters correct", "[fingerprints]")
+{
+    // Passing fingerprint type 2 -- position, letters type 1 - mixed (etakvb).
+    // Fingerprints<FING_T> fingerprints(2, 1);
+    // auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
+
+    // TODO
+}
+
+TEST_CASE("is calculating number of errors for position fingerprint for rare letters correct", "[fingerprints]")
+{
+    // Passing fingerprint type 2 -- position, letters type 2 - rare (zqxjkv).
+    // Fingerprints<FING_T> fingerprints(2, 2);
+    // auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
+
+    // TODO
 }
 
 TEST_CASE("is Hamming at most k for empty calculation correct", "[fingerprints]")
