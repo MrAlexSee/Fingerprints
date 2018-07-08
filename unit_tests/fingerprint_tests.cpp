@@ -65,7 +65,7 @@ TEST_CASE("is searching empty words correct", "[fingerprints]")
 TEST_CASE("is searching words exact correct", "[fingerprints]")
 {
     vector<string> words { "ala", "ma", "kota", "a", "jarek", "ma", "psa" };
-    vector<string> patterns { "not", "in", "this", "dict" };
+    vector<string> patternsOut { "not", "in", "this", "dict" };
 
     for (int fingerprintType : { -1, 0, 1 })
     {
@@ -75,7 +75,7 @@ TEST_CASE("is searching words exact correct", "[fingerprints]")
             curF.preprocess(words);
 
             REQUIRE(curF.test(words, 0) == words.size());
-            REQUIRE(curF.test(patterns, 0) == 0);
+            REQUIRE(curF.test(patternsOut, 0) == 0);
         }
     }
 }
@@ -83,7 +83,7 @@ TEST_CASE("is searching words exact correct", "[fingerprints]")
 TEST_CASE("is searching words exact one-by-one correct", "[fingerprints]")
 {
     vector<string> words { "ala", "ma", "kota", "a", "jarek", "ma", "psa" };
-    vector<string> patterns { "not", "in", "this", "dict" };
+    vector<string> patternsOut { "not", "in", "this", "dict" };
 
     for (int fingerprintType : { -1, 0, 1 })
     {
@@ -97,9 +97,78 @@ TEST_CASE("is searching words exact one-by-one correct", "[fingerprints]")
                 REQUIRE(curF.test(vector<string> { word }, 0) == 1);
             }
 
-            for (const string &pattern : patterns)
+            for (const string &patternOut : patternsOut)
             {
-                REQUIRE(curF.test(vector<string> { pattern }, 0) == 0);
+                REQUIRE(curF.test(vector<string> { patternOut }, 0) == 0);
+            }
+        }
+    }
+}
+
+TEST_CASE("is searching words for k = 1 correct", "[fingerprints]")
+{
+    vector<string> words { "ala", "ma", "kota", "a", "jarek", "ma", "psa" };
+    
+    vector<string> patternsOut { "not", "in", "this", "dict" };
+    vector<string> patternsIn;
+
+    for (const string &word : words)
+    {
+        for (size_t i = 0; i < word.size(); ++i)
+        {
+            string curWord = word;
+            curWord[i] = 'N';
+
+            patternsIn.emplace_back(move(curWord));
+        }
+    }
+
+    for (int fingerprintType : { -1, 0, 1 })
+    {
+        for (int lettersType : { 0, 1, 2 })
+        {
+            Fingerprints<FING_T> curF(fingerprintType, lettersType);
+            curF.preprocess(words);
+
+            REQUIRE(curF.test(patternsIn, 1) == patternsIn.size());
+            REQUIRE(curF.test(patternsOut, 1) == 0);
+        }
+    }
+}
+
+TEST_CASE("is searching words for k = 1 one-by-one correct", "[fingerprints]")
+{
+    vector<string> words { "ala", "ma", "kota", "a", "jarek", "ma", "psa" };
+    
+    vector<string> patternsOut { "not", "in", "this", "dict" };
+    vector<string> patternsIn;
+
+    for (const string &word : words)
+    {
+        for (size_t i = 0; i < word.size(); ++i)
+        {
+            string curWord = word;
+            curWord[i] = 'N';
+
+            patternsIn.emplace_back(move(curWord));
+        }
+    }
+
+    for (int fingerprintType : { -1, 0, 1 })
+    {
+        for (int lettersType : { 0, 1, 2 })
+        {
+            Fingerprints<FING_T> curF(fingerprintType, lettersType);
+            curF.preprocess(words);
+
+            for (const string &patternIn : patternsIn)
+            {
+                REQUIRE(curF.test(vector<string> { patternIn }, 1) == 1);
+            }
+
+            for (const string &patternOut : patternsOut)
+            {
+                REQUIRE(curF.test(vector<string> { patternOut }, 1) == 0);
             }
         }
     }
