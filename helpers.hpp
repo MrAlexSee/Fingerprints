@@ -14,8 +14,9 @@ using namespace std;
 namespace fingerprints
 {
 
-struct Helpers
+class Helpers
 {
+public:
     Helpers() = delete;
 
     /*
@@ -42,6 +43,15 @@ struct Helpers
 
     /** Returns a set of [count] random distinct numbers from range [start] to [end] (both inclusive). */
     inline static set<int> randNumbersFromRange(int start, int end, int count);
+
+    /** Returns a random alphanumeric string having [size] characters. */
+    inline static string genRandomStringAlphNum(int size);
+
+private:
+    /** Lookup table for alphanumeric characters. */
+    static constexpr const char *alnumLUT = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    /** Size of alnumLUT exluding the terminating '\0'. */
+    static constexpr int alnumLUTSize = 62;
 };
 
 size_t Helpers::getTotalSize(const vector<string> &words)
@@ -129,6 +139,22 @@ set<int> Helpers::randNumbersFromRange(int start, int end, int count)
     while (static_cast<int>(res.size()) < count)
     {
         res.insert(dist(mt));
+    }
+
+    return res;
+}
+
+string Helpers::genRandomStringAlphNum(int size)
+{
+    random_device rd;
+    mt19937 mt(rd());
+    uniform_int_distribution<int> dist(0, alnumLUTSize - 1);
+
+    string res = "";
+
+    for (int i = 0; i < size; ++i)
+    {
+        res += alnumLUT[dist(mt)];
     }
 
     return res;
