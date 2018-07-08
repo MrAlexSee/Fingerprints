@@ -58,6 +58,8 @@ private:
     void calcOccNMismatchesLUT();
     /** Calculates mismatches LUT (nMismatchesLUT) for count fingerprints. */
     void calcCountNMismatchesLUT();
+    /** Calculates mismatches LUT (nMismatchesLUT) for position fingerprints. */
+    void calcPosNMismatchesLUT();
 
     /** Returns the total size of an array for words from [words] and corresponding fingerprints.
      * Calculates a count for each word size and stores it in [wordCountsBySize]
@@ -78,6 +80,9 @@ private:
     FING_T calcFingerprintOcc(const char *str, size_t size) const;
     /** Returns a count fingerprint for string [str] having [size] chars. */
     FING_T calcFingerprintCount(const char *str, size_t size) const;
+    /** Returns a position fingerprint for string [str] having [size] chars. */
+    FING_T calcFingerprintPos(const char *str, size_t size) const;
+
 
     /** Returns the Hamming weight for number [n]. */
     static unsigned int calcHammingWeight(unsigned int n);
@@ -121,13 +126,19 @@ private:
      *** FINGERPRINT LETTER COLLECTIONS
      */
 
-    const string commonLetters16 = "etaoinshrdlcumwf";
-    const string mixedLetters16 = "etaoinshzqxjkvbp";
-    const string rareLetters16 = "zqxjkvbpygfwmucl";
+    const string engCommonLetters16 = "etaoinshrdlcumwf";
+    const string engMixedLetters16 = "etaoinshzqxjkvbp";
+    const string engRareLetters16 = "zqxjkvbpygfwmucl";
 
-    const string commonLetters8 = "etaoinsh";
-    const string mixedLetters8 = "etaokvbp";
-    const string rareLetters8 = "zqxjkvbp";
+    const string engCommonLetters8 = "etaoinsh";
+    const string engMixedLetters8 = "etaokvbp";
+    const string engRareLetters8 = "zqxjkvbp";
+
+    // These collections use 5 letters for a position fingerprint and a single,
+    // additional character for occurrence.
+    const string engCommonLettersPos5 = "etaoin";
+    const string engMixedLettersPos5 = "etakvb";
+    const string engRareLettersPos5 = "zqxjkv";
 
     FINGERPRINTS_WHITEBOX
 };

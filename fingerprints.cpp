@@ -12,7 +12,7 @@ namespace fingerprints
 template<typename FING_T>
 Fingerprints<FING_T>::Fingerprints(int fingerprintType, int lettersType)
 {
-    if (fingerprintType < -1 or fingerprintType > 1)
+    if (fingerprintType < -1 or fingerprintType > 2)
     {
         throw runtime_error("bad fingerprint type: " + to_string(fingerprintType));
     }
@@ -25,21 +25,28 @@ Fingerprints<FING_T>::Fingerprints(int fingerprintType, int lettersType)
 
     switch (fingerprintType)
     {
-        case -1:
+        case -1: // no fingerprints
             useFingerprints = false;
             break;
-        case 0:
+        case 0: // occurrence
             initCharsMap(0, lettersType);
             calcOccNMismatchesLUT();
 
             calcFingerprintFun = bind(&Fingerprints<FING_T>::calcFingerprintOcc, this, 
                 placeholders::_1, placeholders::_2);
             break;
-        case 1:
+        case 1: // count
             initCharsMap(1, lettersType);
             calcCountNMismatchesLUT();
 
             calcFingerprintFun = bind(&Fingerprints<FING_T>::calcFingerprintCount, this, 
+                placeholders::_1, placeholders::_2);
+            break;
+        case 2: // position
+            initCharsMap(2, lettersType);
+            calcPosNMismatchesLUT();
+
+            calcFingerprintFun = bind(&Fingerprints<FING_T>::calcFingerprintPos, this, 
                 placeholders::_1, placeholders::_2);
             break;
         default:
@@ -302,25 +309,25 @@ string Fingerprints<FING_T>::getCharList(size_t nChars, int lettersType) const
             switch (nChars)
             {
                 case 8:
-                    return commonLetters8;
+                    return engCommonLetters8;
                 case 16:
-                    return commonLetters16;
+                    return engCommonLetters16;
             }
         case 1: // mixed
             switch (nChars)
             {
                 case 8:
-                    return mixedLetters8;
+                    return engMixedLetters8;
                 case 16:
-                    return mixedLetters16;
+                    return engMixedLetters16;
             }
         case 2: // rare
             switch (nChars)
             {
                 case 8:
-                    return rareLetters8;
+                    return engRareLetters8;
                 case 16:
-                    return rareLetters16;
+                    return engRareLetters16;
             }
     }
 
@@ -387,6 +394,12 @@ void Fingerprints<FING_T>::calcCountNMismatchesLUT()
 
         n += 1;
     }
+}
+
+template<typename FING_T>
+void Fingerprints<FING_T>::calcPosNMismatchesLUT()
+{
+    // TODO
 }
 
 template<typename FING_T>
@@ -474,6 +487,12 @@ FING_T Fingerprints<FING_T>::calcFingerprintCount(const char *str, size_t size) 
     }
 
     return s;
+}
+
+template<typename FING_T>
+FING_T Fingerprints<FING_T>::calcFingerprintPos(const char *str, size_t size) const
+{
+    // TODO
 }
 
 template<typename FING_T>
