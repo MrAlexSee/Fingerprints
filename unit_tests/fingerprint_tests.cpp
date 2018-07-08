@@ -20,10 +20,10 @@ namespace
 
 constexpr int maxWordSize = 255;
 
-constexpr int maxNStrings = 100;
-constexpr int stringSize = 50;
+constexpr int maxNStrings = 50;
+constexpr int stringSize = 25;
 
-constexpr int maxK = 10;
+constexpr int maxK = 5;
 constexpr int nHammingRepeats = 10;
 
 vector<int> fingerprintTypes { -1, 0, 1 };
@@ -113,7 +113,7 @@ TEST_CASE("is searching words exact randomized correct", "[fingerprints]")
     for (int nStrings = 1; nStrings <= maxNStrings; ++nStrings)
     {
         vector<string> words;
-        repeat(nStrings, [&words] { 
+        repeat(nStrings, [&words] {
             words.emplace_back(Helpers::genRandomStringAlphNum(stringSize));
         });
 
@@ -126,7 +126,6 @@ TEST_CASE("is searching words exact randomized correct", "[fingerprints]")
             {   
                 Fingerprints<FING_T> curF(fingerprintType, lettersType);
                 curF.preprocess(words);
-
 
                 REQUIRE(curF.test(words, 0) == words.size());
                 REQUIRE(curF.test(patternsOut, 0) == 0);
@@ -199,6 +198,53 @@ TEST_CASE("is searching words for k = 1 one-by-one correct", "[fingerprints]")
             for (const string &patternOut : patternsOut)
             {
                 REQUIRE(curF.test(vector<string> { patternOut }, 1) == 0);
+            }
+        }
+    }
+}
+
+TEST_CASE("is searching words for various k randomized correct", "[fingerprints]")
+{
+    for (int k = 1; k <= maxK; ++k)
+    {
+        REQUIRE(k <= stringSize);
+
+        for (int nStrings = 1; nStrings <= maxNStrings; ++nStrings)
+        {
+            vector<string> words;
+            repeat(nStrings, [&words] {
+                words.emplace_back(Helpers::genRandomStringAlphNum(stringSize));
+            });
+
+            // Use different sizes than stringSize here.
+            vector<string> patternsOut { "not", "in", "this", "dict" };
+            vector<string> patternsIn;
+
+            for (const string &word : words)
+            {
+                string curWord = word;
+                set<int> indexList = Helpers::randNumbersFromRange(0, word.size() - 1, k);
+
+                for (int index : indexList)
+                {
+                    curWord[index] = 'N';
+                }
+
+                patternsIn.emplace_back(move(curWord));
+            }
+
+            for (int fingerprintType : fingerprintTypes)
+            {
+                for (int lettersType : letterTypes)
+                {   
+                    Fingerprints<FING_T> curF(fingerprintType, lettersType);
+                    curF.preprocess(words);
+
+                    // Note: there might be more matches due to randomization, but at least one word
+                    // must have at least a single match.
+                    REQUIRE(curF.test(patternsIn, k) >= words.size());
+                    REQUIRE(curF.test(patternsOut, k) == 0);
+                }
             }
         }
     }
