@@ -26,10 +26,9 @@ constexpr int stringSize = 50;
 constexpr int maxK = 10;
 constexpr int nHammingRepeats = 10;
 
-}
-
 using FING_T = uint16_t;
 
+}
 
 TEST_CASE("is initializing using fingerprints correct", "[fingerprints]")
 {
@@ -43,14 +42,67 @@ TEST_CASE("is initializing using fingerprints correct", "[fingerprints]")
     REQUIRE(FingerprintsWhitebox::getUseFingerprints(f1) == true);
 }
 
-TEST_CASE("is preprocessing correct", "[fingerprints]")
+TEST_CASE("is searching empty words correct", "[fingerprints]")
 {
-    // TODO
+    vector<string> words;
+    vector<string> patterns { "ala", "ma", "kota", "a", "jarek", "ma", "psa" };
+
+    for (int fingerprintType : { -1, 0, 1 })
+    {
+        for (int lettersType : { 0, 1, 2 })
+        {
+            Fingerprints<FING_T> curF(fingerprintType, lettersType);
+            curF.preprocess(words);
+
+            for (int k = 0; k <= maxK; ++k)
+            {
+                REQUIRE(curF.test(patterns, k) == 0);
+            }
+        }
+    }
 }
 
-TEST_CASE("is testing correct", "[fingerprints]")
+TEST_CASE("is searching words exact correct", "[fingerprints]")
 {
-    // TODO
+    vector<string> words { "ala", "ma", "kota", "a", "jarek", "ma", "psa" };
+    vector<string> patterns { "not", "in", "this", "dict" };
+
+    for (int fingerprintType : { -1, 0, 1 })
+    {
+        for (int lettersType : { 0, 1, 2 })
+        {
+            Fingerprints<FING_T> curF(fingerprintType, lettersType);
+            curF.preprocess(words);
+
+            REQUIRE(curF.test(words, 0) == words.size());
+            REQUIRE(curF.test(patterns, 0) == 0);
+        }
+    }
+}
+
+TEST_CASE("is searching words exact one-by-one correct", "[fingerprints]")
+{
+    vector<string> words { "ala", "ma", "kota", "a", "jarek", "ma", "psa" };
+    vector<string> patterns { "not", "in", "this", "dict" };
+
+    for (int fingerprintType : { -1, 0, 1 })
+    {
+        for (int lettersType : { 0, 1, 2 })
+        {
+            Fingerprints<FING_T> curF(fingerprintType, lettersType);
+            curF.preprocess(words);
+
+            for (const string &word : words)
+            {
+                REQUIRE(curF.test(vector<string> { word }, 0) == 1);
+            }
+
+            for (const string &pattern : patterns)
+            {
+                REQUIRE(curF.test(vector<string> { pattern }, 0) == 0);
+            }
+        }
+    }
 }
 
 TEST_CASE("is initializing errors LUT correct", "[fingerprints]")
