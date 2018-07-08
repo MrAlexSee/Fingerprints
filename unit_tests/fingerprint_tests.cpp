@@ -26,6 +26,9 @@ constexpr int stringSize = 50;
 constexpr int maxK = 10;
 constexpr int nHammingRepeats = 10;
 
+vector<int> fingerprintTypes { -1, 0, 1 };
+vector<int> letterTypes { 0, 1, 2 };
+
 using FING_T = uint16_t;
 
 }
@@ -47,9 +50,9 @@ TEST_CASE("is searching empty words correct", "[fingerprints]")
     vector<string> words;
     vector<string> patterns { "ala", "ma", "kota", "a", "jarek", "ma", "psa" };
 
-    for (int fingerprintType : { -1, 0, 1 })
+    for (int fingerprintType : fingerprintTypes)
     {
-        for (int lettersType : { 0, 1, 2 })
+        for (int lettersType : letterTypes)
         {
             Fingerprints<FING_T> curF(fingerprintType, lettersType);
             curF.preprocess(words);
@@ -67,9 +70,9 @@ TEST_CASE("is searching words exact correct", "[fingerprints]")
     vector<string> words { "ala", "ma", "kota", "a", "jarek", "ma", "psa" };
     vector<string> patternsOut { "not", "in", "this", "dict" };
 
-    for (int fingerprintType : { -1, 0, 1 })
+    for (int fingerprintType : fingerprintTypes)
     {
-        for (int lettersType : { 0, 1, 2 })
+        for (int lettersType : letterTypes)
         {
             Fingerprints<FING_T> curF(fingerprintType, lettersType);
             curF.preprocess(words);
@@ -85,9 +88,9 @@ TEST_CASE("is searching words exact one-by-one correct", "[fingerprints]")
     vector<string> words { "ala", "ma", "kota", "a", "jarek", "ma", "psa" };
     vector<string> patternsOut { "not", "in", "this", "dict" };
 
-    for (int fingerprintType : { -1, 0, 1 })
+    for (int fingerprintType : fingerprintTypes)
     {
-        for (int lettersType : { 0, 1, 2 })
+        for (int lettersType : letterTypes)
         {
             Fingerprints<FING_T> curF(fingerprintType, lettersType);
             curF.preprocess(words);
@@ -100,6 +103,33 @@ TEST_CASE("is searching words exact one-by-one correct", "[fingerprints]")
             for (const string &patternOut : patternsOut)
             {
                 REQUIRE(curF.test(vector<string> { patternOut }, 0) == 0);
+            }
+        }
+    }
+}
+
+TEST_CASE("is searching words exact randomized correct", "[fingerprints]")
+{
+    for (int nStrings = 1; nStrings <= maxNStrings; ++nStrings)
+    {
+        vector<string> words;
+        repeat(nStrings, [&words] { 
+            words.emplace_back(Helpers::genRandomStringAlphNum(stringSize));
+        });
+
+        // Use different sizes than stringSize here.
+        vector<string> patternsOut { "not", "in", "this", "dict" };
+
+        for (int fingerprintType : fingerprintTypes)
+        {
+            for (int lettersType : letterTypes)
+            {   
+                Fingerprints<FING_T> curF(fingerprintType, lettersType);
+                curF.preprocess(words);
+
+
+                REQUIRE(curF.test(words, 0) == words.size());
+                REQUIRE(curF.test(patternsOut, 0) == 0);
             }
         }
     }
@@ -123,9 +153,9 @@ TEST_CASE("is searching words for k = 1 correct", "[fingerprints]")
         }
     }
 
-    for (int fingerprintType : { -1, 0, 1 })
+    for (int fingerprintType : fingerprintTypes)
     {
-        for (int lettersType : { 0, 1, 2 })
+        for (int lettersType : letterTypes)
         {
             Fingerprints<FING_T> curF(fingerprintType, lettersType);
             curF.preprocess(words);
@@ -154,9 +184,9 @@ TEST_CASE("is searching words for k = 1 one-by-one correct", "[fingerprints]")
         }
     }
 
-    for (int fingerprintType : { -1, 0, 1 })
+    for (int fingerprintType : fingerprintTypes)
     {
-        for (int lettersType : { 0, 1, 2 })
+        for (int lettersType : letterTypes)
         {
             Fingerprints<FING_T> curF(fingerprintType, lettersType);
             curF.preprocess(words);
