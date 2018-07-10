@@ -520,29 +520,36 @@ TEST_CASE("is calculating position fingerprint for common letters correct", "[fi
     auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
 
     // Fingerprints are constructed from the right-hand side (i.e. from the least significant bit).
-
-    REQUIRE(fun("ala", 3) == 0b0000000000000000);
+    REQUIRE(fun("ala", 3) == 0b0111111000111111);
     REQUIRE(fun("instance", 8) == 0b1000111100011111);
-    REQUIRE(fun("aaaaa", 5) == 0b0000000000000000);
-    REQUIRE(fun("ebiz", 4) == 0b0010000000000000);
+    REQUIRE(fun("aaaaa", 5) == 0b0111111000111111);
+    REQUIRE(fun("ebiz", 4) == 0b0010111111111000);
 }
 
 TEST_CASE("is calculating position fingerprint for mixed letters correct", "[fingerprints]")
 {
     // Passing fingerprint type 2 -- position, letters type 1 - mixed (etakvb).
-    // Fingerprints<FING_T> fingerprints(2, 1);
-    // auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
+    Fingerprints<FING_T> fingerprints(2, 1);
+    auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
 
-    // TODO
+    // Fingerprints are constructed from the right-hand side (i.e. from the least significant bit).
+    REQUIRE(fun("ala", 3) == 0b0111111000111111);
+    REQUIRE(fun("instance", 8) == 0b0111111100011111);
+    REQUIRE(fun("aaaaa", 5) == 0b0111111000111111);
+    REQUIRE(fun("ebiz", 4) == 0b1111111111111000);
 }
 
 TEST_CASE("is calculating position fingerprint for rare letters correct", "[fingerprints]")
 {
     // Passing fingerprint type 2 -- position, letters type 2 - rare (zqxjkv).
-    // Fingerprints<FING_T> fingerprints(2, 2);
-    // auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
+    Fingerprints<FING_T> fingerprints(2, 2);
+    auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
 
-    // TODO
+    // Fingerprints are constructed from the right-hand side (i.e. from the least significant bit).
+    REQUIRE(fun("ala", 3) == 0b0111111111111111);
+    REQUIRE(fun("instance", 8) == 0b0111111111111111);
+    REQUIRE(fun("aaaaa", 5) == 0b0111111111111111);
+    REQUIRE(fun("ebiz", 4) == 0b0111111111111011);
 }
 
 TEST_CASE("is Hamming weight calculation correct", "[fingerprints]")
