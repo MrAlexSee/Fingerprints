@@ -51,7 +51,12 @@ private:
 
     void initNErrorsLUT();
     
+    /** Initializes the character map for [fingerprintType] (occurrence, count) and [lettersType] (common, mixed, rare). */
     void initCharsMap(int fingerprintType, int lettersType);
+    /** Initializes the character list for position fingerprint and [lettersType] (common, mixed, rare). */
+    void initCharList(int lettersType);
+    
+    /** Returns the character list for [nChars] count and [lettersType] (common, mixed, rare). */
     string getCharList(size_t nChars, int lettersType) const;
 
     /** Calculates mismatches LUT (nMismatchesLUT) for occurrence fingerprints. */
@@ -103,7 +108,7 @@ private:
 
     /** Number of bits per position in a position fingerprint. */
     static constexpr size_t nBitsPerPos = 3;
-
+    
     /*
      *** ARRAYS, MAPS, AND LOOKUP TABLES
      */
@@ -113,8 +118,11 @@ private:
     /** Points to the beginning of each word size bracket in fingArray. */
     char *fingArrayEntries[maxWordSize + 1];
 
-    /** Maps chars to their positions in fingerprints. */
+    /** Maps chars to their positions in fingerprints, used for occurrence and count fingerprints. */
     unsigned char *charsMap = nullptr;
+
+    /** Character list, used for position fingerprints. */
+    unsigned char *charList = nullptr;
 
     /** Stores the minimum number of actual errors for a given number of fingerprint mismatches. */
     unsigned char *nErrorsLUT = nullptr;

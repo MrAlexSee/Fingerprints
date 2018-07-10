@@ -33,6 +33,7 @@ namespace
 {
 
 Params params;
+using FING_T = uint16_t;
 
 }
 
@@ -177,7 +178,6 @@ int run()
 
 void runFingerprints(const vector<string> &words, const vector<string> &patterns)
 {
-    using FING_T = uint16_t;
     dumpParamInfoToStdout(sizeof(FING_T));
 
     Fingerprints<FING_T> fingerprints(params.fingerprintType, params.lettersType);

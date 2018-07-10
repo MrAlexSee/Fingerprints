@@ -43,7 +43,7 @@ Fingerprints<FING_T>::Fingerprints(int fingerprintType, int lettersType)
                 placeholders::_1, placeholders::_2);
             break;
         case 2: // position
-            initCharsMap(2, lettersType);
+            initCharList(lettersType);
             calcPosNMismatchesLUT();
 
             calcFingerprintFun = bind(&Fingerprints<FING_T>::calcFingerprintPos, this, 
@@ -58,6 +58,7 @@ template<typename FING_T>
 Fingerprints<FING_T>::~Fingerprints()
 {
     delete[] charsMap;
+    delete[] charList;
 
     delete[] nErrorsLUT;
     delete[] nMismatchesLUT;
@@ -286,21 +287,34 @@ void Fingerprints<FING_T>::initCharsMap(int fingerprintType, int lettersType)
         case 1: // count
             nChars = sizeof(FING_T) * 4;
             break;
-        case 2: // position
-            nChars = sizeof(FING_T) * 8 / 3;
-            break;
-        default:
+         default:
             assert(false);
     }
 
     string charList = getCharList(nChars, lettersType);
+    assert(charList.size() == nChars);
 
-    assert(nChars == charList.size());
     for (size_t i = 0; i < nChars; ++i)
     {
         const char c = charList[i];
         charsMap[static_cast<size_t>(c)] = i;
     }
+}
+
+template<typename FING_T>
+void Fingerprints<FING_T>::initCharList(int lettersType)
+{
+    size_t nChars = sizeof(FING_T) * 8 / nBitsPerPos;
+    string curList = getCharList(nChars, lettersType);
+
+    charList = new unsigned char[curList.size() + 1];
+
+    for (size_t i = 0; i < curList.size(); ++i)
+    {
+        charList[i] = curList[i];
+    }
+
+    charList[curList.size()] = '\0';
 }
 
 template<typename FING_T>
@@ -350,7 +364,7 @@ void Fingerprints<FING_T>::calcOccNMismatchesLUT()
     FING_T maxVal = std::numeric_limits<FING_T>::max();
     nMismatchesLUT = new unsigned char[maxVal + 1];
 
-    FING_T n = 0;
+    FING_T n = 0x0U;
 
     while (true)
     {
@@ -359,7 +373,9 @@ void Fingerprints<FING_T>::calcOccNMismatchesLUT()
 
         // Beware of overflows here.
         if (n == maxVal)
+        {
             break;
+        }
 
         n += 1;
     }
@@ -373,8 +389,8 @@ void Fingerprints<FING_T>::calcCountNMismatchesLUT()
     FING_T maxVal = std::numeric_limits<FING_T>::max();
     nMismatchesLUT = new unsigned char[maxVal + 1];
 
-    FING_T mask = 0b011;
-    FING_T n = 0;
+    FING_T mask = 0b011U;
+    FING_T n = 0x0U;
 
     while (true)
     {
@@ -382,24 +398,24 @@ void Fingerprints<FING_T>::calcCountNMismatchesLUT()
 
         for (int iM = 0; iM < 8; ++iM)
         {
-            FING_T curDiff = n & (mask << (2 * iM));
-
             // Unfortunately each difference in a count can lead only up to max 1 error.
             // Example: fingerprint 01 (letter count = 1) xored with fingerprint 10 (letter count = 2) 
             // -> results in 11.
             // Two bits are set in the result but they translate to only 1 error.
-            if (curDiff)
+            if (n & (mask << (2 * iM)))
             {
                 nErrors += 1;
             }
-
-            assert(nErrors >= 0 and nErrors <= 8);
-            nMismatchesLUT[n] = nErrors;
         }
+
+        assert(nErrors >= 0 and nErrors <= 8);
+        nMismatchesLUT[n] = nErrors;
 
         // Beware of overflows here.
         if (n == maxVal)
+        {
             break;
+        }
 
         n += 1;
     }
@@ -408,7 +424,47 @@ void Fingerprints<FING_T>::calcCountNMismatchesLUT()
 template<typename FING_T>
 void Fingerprints<FING_T>::calcPosNMismatchesLUT()
 {
-    // TODO
+    assert(sizeof(FING_T) == 2);
+
+    FING_T maxVal = std::numeric_limits<FING_T>::max();
+    nMismatchesLUT = new unsigned char[maxVal + 1];
+
+    FING_T mask = 0b0111U;
+    FING_T n = 0x0U;
+
+    while (true)
+    {
+        unsigned char nErrors = 0;
+
+        // If there is any difference between the corresponding positions,
+        // then at least one of the bits in the triplet will be set.
+        for (int iM = 0; iM < 5; ++iM)
+        {
+            if (n & (mask << (nBitsPerPos * iM)))
+            {
+                nErrors += 1;
+            }
+        }
+
+        assert(nErrors >= 0 and nErrors <= 5);
+
+        // The last bit is used for a single occurrence.
+        if (n & (0x1U << 15))
+        {
+            nErrors += 1;
+        }
+
+        assert(nErrors >= 0 and nErrors <= 6);
+        nMismatchesLUT[n] = nErrors;
+
+        // Beware of overflows here.
+        if (n == maxVal)
+        {
+            break;
+        }
+
+        n += 1;
+    }
 }
 
 template<typename FING_T>
@@ -435,8 +491,8 @@ FING_T Fingerprints<FING_T>::calcFingerprintOcc(const char *str, size_t size) co
 {
     assert(charsMap != nullptr);
 
-    FING_T s = 0x0;
-    FING_T mask = 0x1;
+    FING_T fing = 0x0U;
+    FING_T mask = 0x1U;
 
     for (size_t i = 0; i < size; ++i)
     {
@@ -445,63 +501,107 @@ FING_T Fingerprints<FING_T>::calcFingerprintOcc(const char *str, size_t size) co
 
         if (index != noCharIndex)
         {
-            s |= (mask << index);
+            fing |= (mask << index);
         }
     }
 
-    return s;
+    return fing;
 }
 
 template<typename FING_T>
 FING_T Fingerprints<FING_T>::calcFingerprintCount(const char *str, size_t size) const
 {
+    assert(charsMap != nullptr);
+    
+    // 2 byte == 16 bit fingerprints, 2 bits per count -> counts for 8 letters.
     assert(sizeof(FING_T) == 2);
-    FING_T s = 0x0;
+
+    FING_T fing = 0x0U;
 
     for (size_t i = 0; i < size; ++i)
     {
-        FING_T mask = 0x1;
+        FING_T mask = 0x1U;
         unsigned char index = charsMap[static_cast<size_t>(str[i])];
 
-        // Index < size of sketch in bits / 2 (count sketch = 2 bits per character).
+        // Index < size of fingerprint in bits / 2 (count fingerprint -> 2 bits per character).
         assert(index < sizeof(FING_T) * 4 or index == noCharIndex);
 
         if (index != noCharIndex)
         {
-            // In a count sketch we use two bits per index, hence we shift the mask twice in order
+            // In a count fingerprint we use two bits per index, hence we shift the mask twice in order
             // to set it to the relevant position.
             mask <<= index;
             mask <<= index;
 
             // If right bit is 0, we set it to 1 (0->1 or 2->3).
-            if (not (s & mask))
+            if (not (fing & mask))
             {
-                s |= mask;
+                fing |= mask;
             }
             else // Otherwise either 1->2 or 2->3.
             {
                 mask <<= 1;
 
-                if (s & mask) // 2 -> 3 or 3 -> 3 (no change)
+                if (fing & mask) // 2 -> 3 or 3 -> 3 (no change)
                 {
-                    s |= (mask >> 1);
+                    fing |= (mask >> 1);
                 }
                 else // 1 -> 2
                 {
-                    s |= mask;
-                    s &= ~(mask >> 1);
+                    fing |= mask;
+                    fing &= ~(mask >> 1);
                 }
             }
         }
     }
 
-    return s;
+    return fing;
 }
 
 template<typename FING_T>
 FING_T Fingerprints<FING_T>::calcFingerprintPos(const char *str, size_t size) const
 {
-    // TODO
+    assert(charList != nullptr);
+
+    // 2 byte == 16 bit fingerprints, 3 bits per position -> positions for 5 letters.
+    // 1 bit (the last one) is unused for positions and it is used for storing the occurrence of one additional letter.
+    assert(sizeof(FING_T) == 2);
+
+    FING_T fing = 0x0U;
+
+    // We iterate excluding the last occurrence letter.
+    for (size_t i = 0; i < 5; ++i)
+    {
+        FING_T mask = 0b111U;
+        size_t stop = min(static_cast<FING_T>(size), mask);
+
+        // We look for the first position at the defined index.
+        for (size_t iC = 0; iC < stop; ++iC)
+        {
+            if (str[iC] == charList[i])
+            {
+                mask = iC;
+                break;
+            }
+        }
+        
+        // We encode this position in the fingerprint.
+        fing |= (mask << (i * nBitsPerPos));
+    }
+
+    // Finally we encode the last occurrence bit.
+    const char occChar = charList[5];
+
+    for (size_t iC = 0; iC < size; ++iC)
+    {
+        if (str[iC] == occChar)
+        {
+            fing |= (0x1U << 15);
+            return fing;
+        }
+    }
+
+    return fing;
 }
 
 template<typename FING_T>
