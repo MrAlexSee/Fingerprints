@@ -26,8 +26,8 @@ constexpr int stringSize = 25;
 constexpr int maxK = 5;
 constexpr int nHammingRepeats = 10;
 
-vector<int> fingerprintTypes { -1, 0, 1 };
-vector<int> letterTypes { 0, 1, 2 };
+vector<int> fingerprintTypes { -1, 0, 1, 2 };
+vector<int> lettersTypes { 0, 1, 2 };
 
 using FING_T = uint16_t;
 
@@ -35,14 +35,20 @@ using FING_T = uint16_t;
 
 TEST_CASE("is initializing using fingerprints correct", "[fingerprints]")
 {
-    Fingerprints<FING_T> fno(-1, 0);
-    REQUIRE(FingerprintsWhitebox::getUseFingerprints(fno) == false);
+    for (int lettersType : lettersTypes)
+    {
+        Fingerprints<FING_T> fno(-1, lettersType);
+        REQUIRE(FingerprintsWhitebox::getUseFingerprints(fno) == false);
 
-    Fingerprints<FING_T> f0(0, 0);
-    REQUIRE(FingerprintsWhitebox::getUseFingerprints(f0) == true);
+        Fingerprints<FING_T> f0(0, lettersType);
+        REQUIRE(FingerprintsWhitebox::getUseFingerprints(f0) == true);
 
-    Fingerprints<FING_T> f1(1, 0);
-    REQUIRE(FingerprintsWhitebox::getUseFingerprints(f1) == true);
+        Fingerprints<FING_T> f1(1, lettersType);
+        REQUIRE(FingerprintsWhitebox::getUseFingerprints(f1) == true);
+
+        Fingerprints<FING_T> f2(2, lettersType);
+        REQUIRE(FingerprintsWhitebox::getUseFingerprints(f2) == true);
+    }
 }
 
 TEST_CASE("is searching empty words correct", "[fingerprints]")
@@ -52,7 +58,7 @@ TEST_CASE("is searching empty words correct", "[fingerprints]")
 
     for (int fingerprintType : fingerprintTypes)
     {
-        for (int lettersType : letterTypes)
+        for (int lettersType : lettersTypes)
         {
             Fingerprints<FING_T> curF(fingerprintType, lettersType);
             curF.preprocess(words);
@@ -72,7 +78,7 @@ TEST_CASE("is searching words exact correct", "[fingerprints]")
 
     for (int fingerprintType : fingerprintTypes)
     {
-        for (int lettersType : letterTypes)
+        for (int lettersType : lettersTypes)
         {
             Fingerprints<FING_T> curF(fingerprintType, lettersType);
             curF.preprocess(words);
@@ -90,7 +96,7 @@ TEST_CASE("is searching words exact one-by-one correct", "[fingerprints]")
 
     for (int fingerprintType : fingerprintTypes)
     {
-        for (int lettersType : letterTypes)
+        for (int lettersType : lettersTypes)
         {
             Fingerprints<FING_T> curF(fingerprintType, lettersType);
             curF.preprocess(words);
@@ -122,7 +128,7 @@ TEST_CASE("is searching words exact randomized correct", "[fingerprints]")
 
         for (int fingerprintType : fingerprintTypes)
         {
-            for (int lettersType : letterTypes)
+            for (int lettersType : lettersTypes)
             {   
                 Fingerprints<FING_T> curF(fingerprintType, lettersType);
                 curF.preprocess(words);
@@ -154,7 +160,7 @@ TEST_CASE("is searching words for k = 1 correct", "[fingerprints]")
 
     for (int fingerprintType : fingerprintTypes)
     {
-        for (int lettersType : letterTypes)
+        for (int lettersType : lettersTypes)
         {
             Fingerprints<FING_T> curF(fingerprintType, lettersType);
             curF.preprocess(words);
@@ -185,7 +191,7 @@ TEST_CASE("is searching words for k = 1 one-by-one correct", "[fingerprints]")
 
     for (int fingerprintType : fingerprintTypes)
     {
-        for (int lettersType : letterTypes)
+        for (int lettersType : lettersTypes)
         {
             Fingerprints<FING_T> curF(fingerprintType, lettersType);
             curF.preprocess(words);
@@ -235,7 +241,7 @@ TEST_CASE("is searching words for various k randomized correct", "[fingerprints]
 
             for (int fingerprintType : fingerprintTypes)
             {
-                for (int lettersType : letterTypes)
+                for (int lettersType : lettersTypes)
                 {   
                     Fingerprints<FING_T> curF(fingerprintType, lettersType);
                     curF.preprocess(words);
@@ -277,6 +283,11 @@ TEST_CASE("is initializing chars map for 16 common letters correct", "[fingerpri
     {
         REQUIRE(charsMap[static_cast<size_t>(letters[i])] == i);
     }
+}
+
+TEST_CASE("is initializing char list for 5 common letters correct", "[fingerprints]")
+{
+    // TODO
 }
 
 TEST_CASE("is calculating mismatches LUT for occurrence fingerprints correct", "[fingerprints]")
