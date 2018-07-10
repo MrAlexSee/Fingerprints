@@ -72,6 +72,20 @@ TEST_CASE("is reading words correct", "[files]")
     REQUIRE(Helpers::isFileReadable(tmpFileName) == false);
 }
 
+TEST_CASE("is reading words with semicolon separator correct", "[files]")
+{
+    string str = "ala;ma;kota";
+    Helpers::dumpToFile(str, tmpFileName, false);
+
+    vector<string> words = Helpers::readWords(tmpFileName, ";");
+
+    REQUIRE(words.size() == 3);
+    REQUIRE(words == vector<string> { "ala", "ma", "kota" });
+
+    Helpers::removeFile(tmpFileName);
+    REQUIRE(Helpers::isFileReadable(tmpFileName) == false);
+}
+
 TEST_CASE("is reading words with whitespace correct", "[files]")
 {
     string str = "ala\nma  \n\n\n\n\n kota  \n";
