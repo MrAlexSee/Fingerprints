@@ -328,7 +328,10 @@ TEST_CASE("is calculating mismatches LUT for occurrence fingerprints correct", "
             REQUIRE(nMismatchesLUT[kv.first] == kv.second);
         }
 
+        REQUIRE(nMismatchesLUT[0b000001010101] == 4);
         REQUIRE(nMismatchesLUT[0b000111010110] == 6);
+        REQUIRE(nMismatchesLUT[0b000111010110] == 6);
+        REQUIRE(nMismatchesLUT[0b000111111111] == 9);
     }
 }
 
@@ -345,9 +348,10 @@ TEST_CASE("is calculating mismatches LUT for count fingerprints correct", "[fing
             REQUIRE(nMismatchesLUT[kv.first] == kv.second);
         }
 
+        REQUIRE(nMismatchesLUT[0b000001010101] == 4);
+        REQUIRE(nMismatchesLUT[0b000111010110] == 5);
         REQUIRE(nMismatchesLUT[0b000111010110] == 5);
         REQUIRE(nMismatchesLUT[0b000111111111] == 5);
-        REQUIRE(nMismatchesLUT[0b000001010101] == 4);
     }
 }
 
@@ -358,7 +362,17 @@ TEST_CASE("is calculating mismatches LUT for position fingerprints correct", "[f
         Fingerprints<FING_T> fingerprints(2, lettersType);
         const unsigned char *nMismatchesLUT = FingerprintsWhitebox::getNMismatchesLUT(fingerprints);
 
-        // TODO
+        // We check the mismatches for selected predefined results below.
+        for (const auto &kv : map<size_t, size_t>({ { 0, 0 }, { 1, 1 }, { 2, 1 }, { 4, 1 }, { 5, 1 }, { 6, 1 }, { 7, 1 }, { 8, 1 } }))
+        {
+            REQUIRE(nMismatchesLUT[kv.first] == kv.second);
+        }
+
+        REQUIRE(nMismatchesLUT[0b000001010101] == 3);
+        REQUIRE(nMismatchesLUT[0b100001010101] == 4);
+        REQUIRE(nMismatchesLUT[0b000111010110] == 3);
+        REQUIRE(nMismatchesLUT[0b000111010110] == 3);
+        REQUIRE(nMismatchesLUT[0b000111111111] == 3);
     }
 }
 
@@ -502,10 +516,15 @@ TEST_CASE("is calculating count fingerprint for rare letters correct", "[fingerp
 TEST_CASE("is calculating position fingerprint for common letters correct", "[fingerprints]")
 {
     // Passing fingerprint type 2 -- position, letters type 0 - common (etaoin).
-    // Fingerprints<FING_T> fingerprints(2, 0);
-    // auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
+    Fingerprints<FING_T> fingerprints(2, 0);
+    auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
 
-    // TODO
+    // Fingerprints are constructed from the right-hand side (i.e. from the least significant bit).
+
+    REQUIRE(fun("ala", 3) == 0b0000000000000000);
+    REQUIRE(fun("instance", 8) == 0b1000111100011111);
+    REQUIRE(fun("aaaaa", 5) == 0b0000000000000000);
+    REQUIRE(fun("ebiz", 4) == 0b0010000000000000);
 }
 
 TEST_CASE("is calculating position fingerprint for mixed letters correct", "[fingerprints]")

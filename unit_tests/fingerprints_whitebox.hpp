@@ -47,18 +47,6 @@ public:
     }
 
     template<typename FING_T>
-    inline static void calcOccNMismatchesLUT(Fingerprints<FING_T> &fingerprints)
-    {
-        fingerprints.calcOccNMismatchesLUT();
-    }
-
-    template<typename FING_T>
-    inline static void calcCountNMismatchesLUT(Fingerprints<FING_T> &fingerprints)
-    {
-        fingerprints.calcCountNMismatchesLUT();
-    }
-
-    template<typename FING_T>
     inline static const unsigned char *getNMismatchesLUT(const Fingerprints<FING_T> &fingerprints)
     {
         return fingerprints.nMismatchesLUT;
