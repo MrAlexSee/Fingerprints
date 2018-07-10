@@ -968,6 +968,126 @@ TEST_CASE("is calculating number of errors for position fingerprint for rare let
     REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f4, f3) == 0);
 }
 
+TEST_CASE("is calculating number of errors for occurrence halved fingerprint for common letters correct", "[fingerprints]")
+{
+    // Passing fingerprint type 3 -- occurrence halved, letters type 0 - common (etaoinsh).
+    Fingerprints<FING_T> fingerprints(3, 0);
+    auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
+
+    string str1 = "ala ma kota"; // ala m|a kota
+    string str2 = "ala ma koto";
+    string str3 = "ala ma kkkk";
+    string str4 = "bla ma kota";
+
+    FING_T f1 = fun(str1.c_str(), str1.size());
+    FING_T f2 = fun(str2.c_str(), str2.size());
+    FING_T f3 = fun(str3.c_str(), str3.size());
+    FING_T f4 = fun(str4.c_str(), str4.size());
+
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f1, f1) == 0);
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f2, f2) == 0);
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f3, f3) == 0);
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f4, f4) == 0);
+    
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f1, f2) == 0);
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f2, f1) == 0);
+
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f1, f3) == 1);
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f3, f1) == 1);
+
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f2, f3) == 1);
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f3, f2) == 1);
+
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f1, f4) == 0);
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f4, f1) == 0);
+
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f2, f4) == 0);
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f4, f2) == 0);
+
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f3, f4) == 1);
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f4, f3) == 1);
+}
+
+TEST_CASE("is calculating number of errors for occurrence halved fingerprint for mixed letters correct", "[fingerprints]")
+{
+    // Passing fingerprint type 3 -- occurrence halved, letters type 1 - mixed (etaokvbp).
+    Fingerprints<FING_T> fingerprints(3, 1);
+    auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
+
+    string str1 = "ala ma kota"; // ala m|a kota
+    string str2 = "ala ma koto";
+    string str3 = "ala ma kkkk";
+    string str4 = "bla ma kota";
+
+    FING_T f1 = fun(str1.c_str(), str1.size());
+    FING_T f2 = fun(str2.c_str(), str2.size());
+    FING_T f3 = fun(str3.c_str(), str3.size());
+    FING_T f4 = fun(str4.c_str(), str4.size());
+
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f1, f1) == 0);
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f2, f2) == 0);
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f3, f3) == 0);
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f4, f4) == 0);
+    
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f1, f2) == 0);
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f2, f1) == 0);
+
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f1, f3) == 1);
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f3, f1) == 1);
+
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f2, f3) == 1);
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f3, f2) == 1);
+
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f1, f4) == 1);
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f4, f1) == 1);
+
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f2, f4) == 1);
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f4, f2) == 1);
+
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f3, f4) == 2);
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f4, f3) == 2);
+}
+
+TEST_CASE("is calculating number of errors for occurrence halved fingerprint for rare letters correct", "[fingerprints]")
+{
+    // Passing fingerprint type 3 -- occurrence halved, letters type 2 - rare (zqxjkvbp).
+    Fingerprints<FING_T> fingerprints(3, 2);
+    auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
+
+    string str1 = "ala ma kota"; // ala m|a kota
+    string str2 = "ala ma koto";
+    string str3 = "ala ma kkkk";
+    string str4 = "bla ma kota";
+
+    FING_T f1 = fun(str1.c_str(), str1.size());
+    FING_T f2 = fun(str2.c_str(), str2.size());
+    FING_T f3 = fun(str3.c_str(), str3.size());
+    FING_T f4 = fun(str4.c_str(), str4.size());
+
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f1, f1) == 0);
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f2, f2) == 0);
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f3, f3) == 0);
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f4, f4) == 0);
+    
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f1, f2) == 0);
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f2, f1) == 0);
+
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f1, f3) == 0);
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f3, f1) == 0);
+
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f2, f3) == 0);
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f3, f2) == 0);
+
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f1, f4) == 1);
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f4, f1) == 1);
+
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f2, f4) == 1);
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f4, f2) == 1);
+
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f3, f4) == 1);
+    REQUIRE(FingerprintsWhitebox::calcNErrors(fingerprints, f4, f3) == 1);
+}
+
 TEST_CASE("is Hamming at most k for empty calculation correct", "[fingerprints]")
 {
     string empty = "";
