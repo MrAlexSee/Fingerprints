@@ -87,6 +87,8 @@ private:
     FING_T calcFingerprintCount(const char *str, size_t size) const;
     /** Returns a position fingerprint for string [str] having [size] chars. */
     FING_T calcFingerprintPos(const char *str, size_t size) const;
+    /** Returns an occurrence halved fingerprint for string [str] having [size] chars. */
+    FING_T calcFingerprintOccHalved(const char *str, size_t size) const;
 
     /** Returns the Hamming weight for number [n]. */
     static unsigned int calcHammingWeight(unsigned int n);
@@ -144,8 +146,8 @@ private:
     const string engMixedLetters8 = "etaokvbp";
     const string engRareLetters8 = "zqxjkvbp";
 
-    // These collections use 5 letters for a position fingerprint and a single,
-    // additional character for occurrence.
+    // These collections use 5 letters for a position fingerprint 
+    // and a single, additional character for occurrence.
     const string engCommonLettersPos5 = "etaoin";
     const string engMixedLettersPos5 = "etakvb";
     const string engRareLettersPos5 = "zqxjkv";

@@ -12,7 +12,7 @@ namespace fingerprints
 template<typename FING_T>
 Fingerprints<FING_T>::Fingerprints(int fingerprintType, int lettersType)
 {
-    if (fingerprintType < -1 or fingerprintType > 2)
+    if (fingerprintType < -1 or fingerprintType > 3)
     {
         throw runtime_error("bad fingerprint type: " + to_string(fingerprintType));
     }
@@ -47,6 +47,13 @@ Fingerprints<FING_T>::Fingerprints(int fingerprintType, int lettersType)
             calcPosNMismatchesLUT();
 
             calcFingerprintFun = bind(&Fingerprints<FING_T>::calcFingerprintPos, this, 
+                placeholders::_1, placeholders::_2);
+            break;
+        case 3: // occurrence halved
+            initCharsMap(3, lettersType);
+            calcOccNMismatchesLUT();
+
+            calcFingerprintFun = bind(&Fingerprints<FING_T>::calcFingerprintOccHalved, this, 
                 placeholders::_1, placeholders::_2);
             break;
         default:
@@ -287,7 +294,10 @@ void Fingerprints<FING_T>::initCharsMap(int fingerprintType, int lettersType)
         case 1: // count
             nChars = sizeof(FING_T) * 4;
             break;
-         default:
+        case 3: // occurrence halved
+            nChars = sizeof(FING_T) * 4;
+            break;
+        default:
             assert(false);
     }
 
@@ -600,6 +610,32 @@ FING_T Fingerprints<FING_T>::calcFingerprintPos(const char *str, size_t size) co
         {
             fing |= (0x1U << 15);
             return fing;
+        }
+    }
+
+    return fing;
+}
+
+template<typename FING_T>
+FING_T Fingerprints<FING_T>::calcFingerprintOccHalved(const char *str, size_t size) const
+{
+    assert(charsMap != nullptr);
+
+    FING_T fing = 0x0U;
+    FING_T mask = 0x1U;
+
+    const size_t stop = size / 2;
+
+    for (size_t i = 0; i < stop; ++i)
+    {
+        unsigned char index = charsMap[static_cast<size_t>(str[i])];
+
+        if (index != noCharIndex)
+        {
+            index *= 2;
+            assert(index < sizeof(FING_T) * 8);
+        
+            fing |= (mask << index);
         }
     }
 
