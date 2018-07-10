@@ -164,6 +164,7 @@ int run()
             patterns.resize(params.nPatterns);
         }
 
+        cout << "=====" << endl;
         cout << boost::format("Read #words = %1%, #queries = %2%") % dict.size() % patterns.size() << endl;
         runFingerprints(dict, patterns);
     }
@@ -227,7 +228,7 @@ void dumpRunInfo(float elapsedUs, const vector<string> &words, const vector<stri
             % params.inDictFile % params.inPatternFile % dictSizeMB % elapsedPerWordNs % throughputMBs).str();
 
         Helpers::dumpToFile(outStr, params.outFile, true);
-        cout << "Dumped info to: " << params.outFile << endl;
+        cout << "Dumped info to: " << params.outFile << endl << endl;
     }
 }
 
