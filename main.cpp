@@ -223,8 +223,8 @@ void dumpRunInfo(float elapsedUs, const vector<string> &words, const vector<stri
 
     if (params.dumpToFile)
     {
-        string outStr = (boost::format("%1% %2% %3% %4% %5%") % params.inDictFile % params.inPatternFile
-            % dictSizeMB % elapsedPerWordNs % throughputMBs).str();
+        string outStr = (boost::format("%1% %2% %3% %4% %5% %6% %7%") % params.fingerprintType % params.lettersType
+            % params.inDictFile % params.inPatternFile % dictSizeMB % elapsedPerWordNs % throughputMBs).str();
 
         Helpers::dumpToFile(outStr, params.outFile, true);
         cout << "Dumped info to: " << params.outFile << endl;
