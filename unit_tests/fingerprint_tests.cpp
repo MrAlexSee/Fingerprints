@@ -40,14 +40,11 @@ TEST_CASE("is initializing using fingerprints correct", "[fingerprints]")
         Fingerprints<FING_T> fno(-1, lettersType);
         REQUIRE(FingerprintsWhitebox::getUseFingerprints(fno) == false);
 
-        Fingerprints<FING_T> f0(0, lettersType);
-        REQUIRE(FingerprintsWhitebox::getUseFingerprints(f0) == true);
-
-        Fingerprints<FING_T> f1(1, lettersType);
-        REQUIRE(FingerprintsWhitebox::getUseFingerprints(f1) == true);
-
-        Fingerprints<FING_T> f2(2, lettersType);
-        REQUIRE(FingerprintsWhitebox::getUseFingerprints(f2) == true);
+        for (int fingerprintType : { 0, 1, 2 })
+        {
+            Fingerprints<FING_T> f(fingerprintType, lettersType);
+            REQUIRE(FingerprintsWhitebox::getUseFingerprints(f) == true);
+        }
     }
 }
 
@@ -258,28 +255,47 @@ TEST_CASE("is searching words for various k randomized correct", "[fingerprints]
 
 TEST_CASE("is initializing errors LUT correct", "[fingerprints]")
 {
-    Fingerprints<FING_T> fingerprints(0, 0);
-    FingerprintsWhitebox::initNErrorsLUT(fingerprints);
+    for (int fingerprintType : fingerprintTypes)
+    {
+        for (int lettersType : lettersTypes)
+        {
+            Fingerprints<FING_T> fingerprints(fingerprintType, lettersType);
 
-    const unsigned char *nErrorsLUT = FingerprintsWhitebox::getNErrorsLUT(fingerprints);
+            const unsigned char *nErrorsLUT = FingerprintsWhitebox::getNErrorsLUT(fingerprints);
 
-    REQUIRE(nErrorsLUT[0] == 0);
-    REQUIRE(nErrorsLUT[1] == 1);
-    REQUIRE(nErrorsLUT[2] == 1);
-    REQUIRE(nErrorsLUT[3] == 2);
-    REQUIRE(nErrorsLUT[4] == 2);
-    REQUIRE(nErrorsLUT[16] == 8);
+            REQUIRE(nErrorsLUT[0] == 0);
+            REQUIRE(nErrorsLUT[1] == 1);
+            REQUIRE(nErrorsLUT[2] == 1);
+            REQUIRE(nErrorsLUT[3] == 2);
+            REQUIRE(nErrorsLUT[4] == 2);
+            REQUIRE(nErrorsLUT[16] == 8);
+        }
+    }
 }
 
 TEST_CASE("is initializing chars map for 16 common letters correct", "[fingerprints]")
 {
+    // This is checked for an occurrence fingerprint.
     Fingerprints<FING_T> fingerprints(0, 0);
-    FingerprintsWhitebox::initCharsMap(fingerprints, 0, 0);
 
     const unsigned char *charsMap = FingerprintsWhitebox::getCharsMap(fingerprints);
     string letters = "etaoinshrdlcumwf";
 
-    for (size_t i = 0; i < 16; ++i)
+    for (size_t i = 0; i < letters.size(); ++i)
+    {
+        REQUIRE(charsMap[static_cast<size_t>(letters[i])] == i);
+    }
+}
+
+TEST_CASE("is initializing chars map for 8 common letters correct", "[fingerprints]")
+{
+    // This is checked for a count fingerprint.
+    Fingerprints<FING_T> fingerprints(1, 0);
+
+    const unsigned char *charsMap = FingerprintsWhitebox::getCharsMap(fingerprints);
+    string letters = "etaoinsh";
+
+    for (size_t i = 0; i < letters.size(); ++i)
     {
         REQUIRE(charsMap[static_cast<size_t>(letters[i])] == i);
     }
@@ -287,7 +303,16 @@ TEST_CASE("is initializing chars map for 16 common letters correct", "[fingerpri
 
 TEST_CASE("is initializing char list for 5 common letters correct", "[fingerprints]")
 {
-    // TODO
+    // This is checked for a position fingerprint.
+    Fingerprints<FING_T> fingerprints(2, 0);
+
+    const unsigned char *charList = FingerprintsWhitebox::getCharList(fingerprints);
+    string letters = "etaoin";
+
+    for (size_t i = 0; i < letters.size(); ++i)
+    {
+        REQUIRE(charList[i] == letters[i]);
+    }
 }
 
 TEST_CASE("is calculating mismatches LUT for occurrence fingerprints correct", "[fingerprints]")

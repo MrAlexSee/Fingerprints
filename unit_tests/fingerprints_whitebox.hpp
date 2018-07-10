@@ -29,27 +29,21 @@ public:
     }
 
     template<typename FING_T>
-    inline static void initNErrorsLUT(Fingerprints<FING_T> &fingerprints)
-    {
-        fingerprints.initNErrorsLUT();
-    }
-
-    template<typename FING_T>
     inline static unsigned char *getNErrorsLUT(const Fingerprints<FING_T> &fingerprints)
     {
         return fingerprints.nErrorsLUT;
     }
 
     template<typename FING_T>
-    inline static void initCharsMap(Fingerprints<FING_T> &fingerprints, int fingerprintType, int lettersType)
-    {
-        fingerprints.initCharsMap(fingerprintType, lettersType);
-    }
-
-    template<typename FING_T>
     inline static const unsigned char *getCharsMap(const Fingerprints<FING_T> &fingerprints)
     {
         return fingerprints.charsMap;
+    }
+
+    template<typename FING_T>
+    inline static const unsigned char *getCharList(const Fingerprints<FING_T> &fingerprints)
+    {
+        return fingerprints.charList;
     }
 
     template<typename FING_T>
