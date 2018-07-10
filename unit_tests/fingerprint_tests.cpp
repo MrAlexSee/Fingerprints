@@ -26,7 +26,7 @@ constexpr int stringSize = 25;
 constexpr int maxK = 5;
 constexpr int nHammingRepeats = 10;
 
-vector<int> fingerprintTypes { -1, 0, 1, 2 };
+vector<int> fingerprintTypes { -1, 0, 1, 2, 3 };
 vector<int> lettersTypes { 0, 1, 2 };
 
 using FING_T = uint16_t;
@@ -550,6 +550,45 @@ TEST_CASE("is calculating position fingerprint for rare letters correct", "[fing
     REQUIRE(fun("instance", 8) == 0b0111111111111111);
     REQUIRE(fun("aaaaa", 5) == 0b0111111111111111);
     REQUIRE(fun("ebiz", 4) == 0b0111111111111011);
+}
+
+TEST_CASE("is calculating occurrence halved fingerprint for common letters correct", "[fingerprints]")
+{
+    // Passing fingerprint type 3 -- occurrence halved, letters type 0 - common (etaoinsh).
+    Fingerprints<FING_T> fingerprints(3, 0);
+    auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
+
+    // Fingerprints are constructed from the right-hand side (i.e. from the least significant bit).
+    REQUIRE(fun("ala", 3) == 0b0000000000110000);
+    REQUIRE(fun("instance", 8) == 0b0001110100100110);
+    REQUIRE(fun("aaaaa", 5) == 0b0000000000110000);
+    REQUIRE(fun("ebiz", 4) == 0b0000001000000001);
+}
+
+TEST_CASE("is calculating occurrence halved fingerprint for mixed letters correct", "[fingerprints]")
+{
+    // Passing fingerprint type 3 -- occurrence halved, letters type 1 - mixed (etaokvbp).
+    Fingerprints<FING_T> fingerprints(3, 1);
+    auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
+
+    // Fingerprints are constructed from the right-hand side (i.e. from the least significant bit).
+    REQUIRE(fun("ala", 3) == 0b0000000000110000);
+    REQUIRE(fun("instance", 8) == 0b0000000000100110);
+    REQUIRE(fun("aaaaa", 5) == 0b0000000000110000);
+    REQUIRE(fun("ebiz", 4) == 0b0001000000000001);
+}
+
+TEST_CASE("is calculating occurrence halved fingerprint for rare letters correct", "[fingerprints]")
+{
+    // Passing fingerprint type 3 -- occurrence halved, letters type 2 - rare (zqxjkvbp).
+    Fingerprints<FING_T> fingerprints(3, 2);
+    auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
+
+    // Fingerprints are constructed from the right-hand side (i.e. from the least significant bit).
+    REQUIRE(fun("ala", 3) == 0b0000000000000000);
+    REQUIRE(fun("instance", 8) == 0b0000000000000000);
+    REQUIRE(fun("aaaaa", 5) == 0b0000000000000000);
+    REQUIRE(fun("ebiz", 4) == 0b0001000000000010);
 }
 
 TEST_CASE("is Hamming weight calculation correct", "[fingerprints]")
