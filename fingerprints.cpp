@@ -572,6 +572,8 @@ FING_T Fingerprints<FING_T>::calcFingerprintPos(const char *str, size_t size) co
     // We iterate excluding the last occurrence letter.
     for (size_t i = 0; i < 5; ++i)
     {
+        // 0-based index == position of the first (leftmost) occurrence, 
+        // 0b111 indicates position >= 6 or no match.
         size_t index = 0b111U;
         size_t stop = min(size, index);
 
@@ -586,7 +588,7 @@ FING_T Fingerprints<FING_T>::calcFingerprintPos(const char *str, size_t size) co
         }
         
         // We encode this position in the fingerprint.
-        fing |= (index << (i * nBitsPerPos));
+        fing |= (static_cast<FING_T>(index) << (i * nBitsPerPos));
     }
 
     // Finally we encode the last occurrence bit.
