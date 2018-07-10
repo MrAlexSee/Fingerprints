@@ -307,7 +307,15 @@ void Fingerprints<FING_T>::initCharsMap(int fingerprintType, int lettersType)
     for (size_t i = 0; i < nChars; ++i)
     {
         const char c = charList[i];
-        charsMap[static_cast<size_t>(c)] = i;
+
+        if (fingerprintType == 3) // occurrence halved
+        {
+            charsMap[static_cast<size_t>(c)] = 2 * i;
+        }
+        else
+        {
+            charsMap[static_cast<size_t>(c)] = i;
+        }
     }
 }
 
@@ -624,17 +632,27 @@ FING_T Fingerprints<FING_T>::calcFingerprintOccHalved(const char *str, size_t si
     FING_T fing = 0x0U;
     FING_T mask = 0x1U;
 
-    const size_t stop = size / 2;
+    const size_t mid = size / 2;
 
-    for (size_t i = 0; i < stop; ++i)
+    for (size_t i = 0; i < mid; ++i)
     {
         unsigned char index = charsMap[static_cast<size_t>(str[i])];
+        assert(index == noCharIndex or index < sizeof(FING_T) * 8);
 
         if (index != noCharIndex)
         {
-            index *= 2;
-            assert(index < sizeof(FING_T) * 8);
-        
+            fing |= (mask << index);
+        }
+    }
+
+    for (size_t i = mid; i < size; ++i)
+    {
+        unsigned char index = charsMap[static_cast<size_t>(str[i])];
+        assert(index == noCharIndex or (index + 1U) < sizeof(FING_T) * 8);
+
+        if (index != noCharIndex)
+        {
+            index += 1; // Second half
             fing |= (mask << index);
         }
     }

@@ -111,6 +111,8 @@ private:
     /** Number of bits per position in a position fingerprint. */
     static constexpr size_t nBitsPerPos = 3;
     
+    enum class FingerprintType { NO_FING = -1, OCC = 0, COUNT = 1, POS = 2, OCC_HALVED = 3 };
+
     /*
      *** ARRAYS, MAPS, AND LOOKUP TABLES
      */
