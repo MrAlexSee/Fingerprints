@@ -1,11 +1,7 @@
 /*
- ***
- A proof-of-concept program for lightweight fingerprints for fast approximate keyword matching using bitwise operations.
- ***
- Authors: Aleksander Cisłak, Szymon Grabowski. License: GNU LGPL v3.
- ***
- Set BOOST_DIR in makefile and type "make" for optimized compile.
- ***
+ *** A proof-of-concept program for lightweight fingerprints for fast approximate keyword matching using bitwise operations.
+ *** Authors: Aleksander Cisłak, Szymon Grabowski. License: GNU LGPL v3.
+ *** Set BOOST_DIR in makefile and type "make" for optimized compile.
  */
 
 #include <boost/format.hpp>
