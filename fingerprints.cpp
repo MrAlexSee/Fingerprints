@@ -23,34 +23,34 @@ Fingerprints<FING_T>::Fingerprints(int fingerprintType, int lettersType)
 
     initNErrorsLUT();
 
-    switch (fingerprintType)
+    switch (static_cast<FingerprintType>(fingerprintType))
     {
-        case -1: // no fingerprints
+        case FingerprintType::NoFing:
             useFingerprints = false;
             break;
-        case 0: // occurrence
-            initCharsMap(0, lettersType);
+        case FingerprintType::Occ:
+            initCharsMap(fingerprintType, lettersType);
             calcOccNMismatchesLUT();
 
             calcFingerprintFun = bind(&Fingerprints<FING_T>::calcFingerprintOcc, this, 
                 placeholders::_1, placeholders::_2);
             break;
-        case 1: // count
-            initCharsMap(1, lettersType);
+        case FingerprintType::Count:
+            initCharsMap(fingerprintType, lettersType);
             calcCountNMismatchesLUT();
 
             calcFingerprintFun = bind(&Fingerprints<FING_T>::calcFingerprintCount, this, 
                 placeholders::_1, placeholders::_2);
             break;
-        case 2: // position
+        case FingerprintType::Pos:
             initCharList(lettersType);
             calcPosNMismatchesLUT();
 
             calcFingerprintFun = bind(&Fingerprints<FING_T>::calcFingerprintPos, this, 
                 placeholders::_1, placeholders::_2);
             break;
-        case 3: // occurrence halved
-            initCharsMap(3, lettersType);
+        case FingerprintType::OccHalved:
+            initCharsMap(fingerprintType, lettersType);
             calcOccNMismatchesLUT();
 
             calcFingerprintFun = bind(&Fingerprints<FING_T>::calcFingerprintOccHalved, this, 
@@ -286,15 +286,16 @@ void Fingerprints<FING_T>::initCharsMap(int fingerprintType, int lettersType)
     }
 
     size_t nChars;
-    switch (fingerprintType)
+
+    switch (static_cast<FingerprintType>(fingerprintType))
     {
-        case 0: // occurrence
+        case FingerprintType::Occ:
             nChars = sizeof(FING_T) * 8;
             break;
-        case 1: // count
+        case FingerprintType::Count:
             nChars = sizeof(FING_T) * 4;
             break;
-        case 3: // occurrence halved
+        case FingerprintType::OccHalved:
             nChars = sizeof(FING_T) * 4;
             break;
         default:
@@ -308,7 +309,7 @@ void Fingerprints<FING_T>::initCharsMap(int fingerprintType, int lettersType)
     {
         const char c = charList[i];
 
-        if (fingerprintType == 3) // occurrence halved
+        if (static_cast<FingerprintType>(fingerprintType) == FingerprintType::OccHalved)
         {
             charsMap[static_cast<size_t>(c)] = 2 * i;
         }
@@ -338,9 +339,9 @@ void Fingerprints<FING_T>::initCharList(int lettersType)
 template<typename FING_T>
 string Fingerprints<FING_T>::getCharList(size_t nChars, int lettersType) const
 {
-    switch (lettersType)
+    switch (static_cast<LettersType>(lettersType))
     {
-        case 0: // common
+        case LettersType::Common:
             switch (nChars)
             {
                 case 5:
@@ -350,7 +351,7 @@ string Fingerprints<FING_T>::getCharList(size_t nChars, int lettersType) const
                 case 16:
                     return engCommonLetters16;
             }
-        case 1: // mixed
+        case LettersType::Mixed:
             switch (nChars)
             {
                 case 5:
@@ -360,7 +361,7 @@ string Fingerprints<FING_T>::getCharList(size_t nChars, int lettersType) const
                 case 16:
                     return engMixedLetters16;
             }
-        case 2: // rare
+        case LettersType::Rare:
             switch (nChars)
             {
                 case 5:

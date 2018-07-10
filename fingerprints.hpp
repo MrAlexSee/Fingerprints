@@ -102,6 +102,9 @@ private:
      *** CONSTANTS
      */
 
+    enum class FingerprintType { NoFing = -1, Occ = 0, Count = 1, Pos = 2, OccHalved = 3 };
+    enum class LettersType { Common = 0, Mixed = 1, Rare = 2 };
+
     static constexpr size_t maxWordSize = 255;
     static constexpr size_t charsMapSize = 255;
 
@@ -111,8 +114,6 @@ private:
     /** Number of bits per position in a position fingerprint. */
     static constexpr size_t nBitsPerPos = 3;
     
-    enum class FingerprintType { NO_FING = -1, OCC = 0, COUNT = 1, POS = 2, OCC_HALVED = 3 };
-
     /*
      *** ARRAYS, MAPS, AND LOOKUP TABLES
      */
