@@ -82,9 +82,10 @@ int handleParams(int argc, const char **argv)
        ("approx,k", po::value<int>(&params.kApprox)->required(), "perform approximate search (Hamming distance) for k errors")
        ("letters-type,l", po::value<int>(&params.lettersType), "letters type: 0 -> common, 1 -> mixed, 2 -> rare (default = 0)")
        ("out-file,o", po::value<string>(&params.outFile), "output file path")
-       ("pattern-count,p", po::value<int>(&params.nPatterns), "maximum number of patterns read from top of the patterns (non-positive values are ignored)")
+       ("pattern-count,p", po::value<int>(&params.nPatterns), "maximum number of patterns read from top of the patterns file (non-positive values are ignored)")
        ("separator,s", po::value<string>(&params.separator), "input data (dictionary and patterns) separator")
-       ("version,v", "display version info");
+       ("version,v", "display version info")
+       ("word-count,w", po::value<int>(&params.nWords), "Maximum number of words read from top of the dict file (non-positive values are ignored)");
 
     po::positional_options_description positionalOptions;
 
@@ -157,8 +158,12 @@ int run()
     try
     {
         vector<string> dict = Helpers::readWords(params.inDictFile, params.separator);
-        vector<string> patterns = Helpers::readWords(params.inPatternFile, params.separator);
+        if (params.nWords > 0)
+        {
+            dict.resize(params.nWords);
+        }
 
+        vector<string> patterns = Helpers::readWords(params.inPatternFile, params.separator);
         if (params.nPatterns > 0)
         {
             patterns.resize(params.nPatterns);

@@ -28,9 +28,14 @@ struct Params
     /** Number of errors for approximate search (Hamming).
      * noValue = perform exact search. Cmd arg -k. */
     int kApprox = noValue;
+    
     /** Maximum number of patterns read from top of the patterns file.
      * noValue = ignore the pattern count limit. Cmd arg -p. */
     int nPatterns = noValue;
+
+    /** Maximum number of words read from top of the dict file.
+     * noValue = ignore the word count limit. Cmd arg -w. */
+    int nWords = noValue;
 
     /** Input dictionary file path (positional arg 1). */
     string inDictFile = "";
