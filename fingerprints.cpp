@@ -280,11 +280,14 @@ void Fingerprints<FING_T>::initCharsMap(int fingerprintType, int lettersType)
     size_t nChars;
     switch (fingerprintType)
     {
-        case 0:
+        case 0: // occurrence
             nChars = sizeof(FING_T) * 8;
             break;
-        case 1:
+        case 1: // count
             nChars = sizeof(FING_T) * 4;
+            break;
+        case 2: // position
+            nChars = sizeof(FING_T) * 8 / 3;
             break;
         default:
             assert(false);
@@ -308,6 +311,8 @@ string Fingerprints<FING_T>::getCharList(size_t nChars, int lettersType) const
         case 0: // common
             switch (nChars)
             {
+                case 5:
+                    return engCommonLettersPos5;
                 case 8:
                     return engCommonLetters8;
                 case 16:
@@ -316,6 +321,8 @@ string Fingerprints<FING_T>::getCharList(size_t nChars, int lettersType) const
         case 1: // mixed
             switch (nChars)
             {
+                case 5:
+                    return engMixedLettersPos5;
                 case 8:
                     return engMixedLetters8;
                 case 16:
@@ -324,6 +331,8 @@ string Fingerprints<FING_T>::getCharList(size_t nChars, int lettersType) const
         case 2: // rare
             switch (nChars)
             {
+                case 5:
+                    return engRareLettersPos5;
                 case 8:
                     return engRareLetters8;
                 case 16:

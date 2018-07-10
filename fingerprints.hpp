@@ -66,7 +66,7 @@ private:
      * (passed array must be of size maxWordSize + 1). */
     static size_t calcTotalSize(const vector<string> &words, size_t *wordCountsBySize);
 
-    /** Set to false if the user selected the mode without fingeprints (where only words are stored). */
+    /** Set to false if the user selected the mode without fingeprints (where only the words are stored). */
     bool useFingerprints = true;
 
     /*
@@ -82,7 +82,6 @@ private:
     FING_T calcFingerprintCount(const char *str, size_t size) const;
     /** Returns a position fingerprint for string [str] having [size] chars. */
     FING_T calcFingerprintPos(const char *str, size_t size) const;
-
 
     /** Returns the Hamming weight for number [n]. */
     static unsigned int calcHammingWeight(unsigned int n);
@@ -101,6 +100,9 @@ private:
 
     /** Indicates that a character is not stored in a fingerprint. */
     static constexpr unsigned char noCharIndex = 255;
+
+    /** Number of bits per position in a position fingerprint. */
+    static constexpr size_t nBitsPerPos = 3;
 
     /*
      *** ARRAYS, MAPS, AND LOOKUP TABLES
