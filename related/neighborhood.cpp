@@ -30,10 +30,13 @@ int main(int argc, const char **argv)
     vector<string> dict = Helpers::readWords(argv[1], separator);
     vector<string> patterns = Helpers::readWords(argv[2], separator);
 
+    cout << boost::format("Read #words = %1%, #patterns = %2%") % dict.size() % patterns.size() << endl;
     unordered_set<string> wordSet(dict.begin(), dict.end());
 
     double elapsedUs = run(wordSet, patterns);
-    cout << boost::format("Elapsed = %1%us") % elapsedUs << endl;
+    double elapsedPerWordNs = (1'000.0 * elapsedUs) / (dict.size() * patterns.size());
+
+    cout << boost::format("Elapsed = %1%us, per word = %2%ns") % elapsedUs % elapsedPerWordNs << endl;
 }
 
 double run(const unordered_set<string> &wordSet, const vector<string> &patterns)
