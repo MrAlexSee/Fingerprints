@@ -1,14 +1,15 @@
 /*
  *** This is an implementation of a related neighborhood generation method for approximate searching.
- *** Compile as follows: g++ -Wall -pedantic -std=c++14 neighborhood.cpp -o neighborhood
+ *** Compile as follows: g++ -Wall -pedantic -std=c++14 -I$(BOOST_DIR)$ neighborhood.cpp -o neighborhood
  */
 
+#include <boost/format.hpp>
 #include <iostream>
 #include <string>
 #include <unordered_set>
 #include <vector>
 
-#include "helpers.hpp"
+#include "../helpers.hpp"
 
 using namespace fingerprints;
 using namespace std;
@@ -17,11 +18,11 @@ namespace
 {
 
 const string separator = "\n";
-constexpr int k = 1;
 
 }
 
 double run(const set<string> &wordSet, const vector<string> &patterns);
+string getAlphabet(const set<string> &wordSet);
 
 int main(int argc, const char **argv)
 {
@@ -31,7 +32,7 @@ int main(int argc, const char **argv)
     set<string> wordSet(dict.begin(), dict.end());
 
     double elapsedUs = run(wordSet, patterns);
-    cout << "Elapsed = " << elapsedUs << "us" << endl;
+    cout << boost::format("Elapsed = %1%us)") % elapsedUs << endl;
 }
 
 double run(const set<string> &wordSet, const vector<string> &patterns)
@@ -39,15 +40,34 @@ double run(const set<string> &wordSet, const vector<string> &patterns)
     int nMatches = 0;
     clock_t start, end;
 
-    const char *neighborhood;
+    string alphabet = getAlphabet(wordSet);
+    cout << "Alphabet size = " << alphabet.size() << endl;
 
     start = std::clock();
 
     for (const string &pattern : patterns) 
     {
-        // 1. We generate the neighborhood.
+        vector<string> cands;
+        cands.reserve(patterns.size() * (alphabet.size() - 1));
 
-        // 2. We search for all words from the neighborhood.
+        // This search assumes k = 1.
+        for (size_t i = 0; i < pattern.size(); ++i)
+        {
+            for (const char c : alphabet)
+            {
+                if (c == pattern[i])
+                {
+                    continue;
+                }
+
+                string cand = pattern.substr(0, i) + string(1, c) + pattern.substr(i + 1, string::npos);
+
+                if (wordSet.find(cand) != wordSet.end())
+                {
+                    nMatches += 1;
+                }
+            }
+        }
     }    
 
     end = std::clock();
@@ -56,4 +76,26 @@ double run(const set<string> &wordSet, const vector<string> &patterns)
 
     double elapsedS = (end - start) / static_cast<double>(CLOCKS_PER_SEC);
     return elapsedS * 1'000'000;
+}
+
+string getAlphabet(const set<string> &wordSet)
+{
+    set<char> alph;
+
+    for (const string &word : wordSet)
+    {
+        for (const char c : word)
+        {
+            alph.insert(c);
+        }
+    }
+
+    string res;
+
+    for (const char c : alph)
+    {
+        res += c;
+    }
+
+    return res;
 }
