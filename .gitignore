@@ -1,5 +1,6 @@
 /*.o
 data/dict_urls.txt
 fingerprints
+related/neighborhood
 unit_tests/*.o
 unit_tests/main_tests
