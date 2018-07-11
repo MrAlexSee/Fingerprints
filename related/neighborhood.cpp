@@ -5,6 +5,7 @@
 
 #include <boost/format.hpp>
 #include <iostream>
+#include <set>
 #include <string>
 #include <unordered_set>
 #include <vector>
@@ -21,21 +22,21 @@ const string separator = "\n";
 
 }
 
-double run(const set<string> &wordSet, const vector<string> &patterns);
-string getAlphabet(const set<string> &wordSet);
+double run(const unordered_set<string> &wordSet, const vector<string> &patterns);
+string getAlphabet(const unordered_set<string> &wordSet);
 
 int main(int argc, const char **argv)
 {
     vector<string> dict = Helpers::readWords(argv[1], separator);
     vector<string> patterns = Helpers::readWords(argv[2], separator);
 
-    set<string> wordSet(dict.begin(), dict.end());
+    unordered_set<string> wordSet(dict.begin(), dict.end());
 
     double elapsedUs = run(wordSet, patterns);
-    cout << boost::format("Elapsed = %1%us)") % elapsedUs << endl;
+    cout << boost::format("Elapsed = %1%us") % elapsedUs << endl;
 }
 
-double run(const set<string> &wordSet, const vector<string> &patterns)
+double run(const unordered_set<string> &wordSet, const vector<string> &patterns)
 {
     int nMatches = 0;
     clock_t start, end;
@@ -47,8 +48,10 @@ double run(const set<string> &wordSet, const vector<string> &patterns)
 
     for (const string &pattern : patterns) 
     {
-        vector<string> cands;
-        cands.reserve(patterns.size() * (alphabet.size() - 1));
+        if (wordSet.find(pattern) != wordSet.end())
+        {
+            nMatches += 1;
+        }
 
         // This search assumes k = 1.
         for (size_t i = 0; i < pattern.size(); ++i)
@@ -78,7 +81,7 @@ double run(const set<string> &wordSet, const vector<string> &patterns)
     return elapsedS * 1'000'000;
 }
 
-string getAlphabet(const set<string> &wordSet)
+string getAlphabet(const unordered_set<string> &wordSet)
 {
     set<char> alph;
 
