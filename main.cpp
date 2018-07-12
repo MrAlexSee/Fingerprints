@@ -154,13 +154,13 @@ int run()
     try
     {
         vector<string> dict = Helpers::readWords(params.inDictFile, params.separator);
-        if (params.nWords > 0)
+        if (params.nWords > 0 and static_cast<size_t>(params.nWords) < dict.size())
         {
             dict.resize(params.nWords);
         }
 
         vector<string> patterns = Helpers::readWords(params.inPatternFile, params.separator);
-        if (params.nPatterns > 0)
+        if (params.nPatterns > 0 and static_cast<size_t>(params.nPatterns) < patterns.size())
         {
             patterns.resize(params.nPatterns);
         }
