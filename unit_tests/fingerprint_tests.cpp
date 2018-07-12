@@ -1212,7 +1212,7 @@ TEST_CASE("is calculating number of errors for occurrence halved fingerprint for
     }
 }
 
-TEST_CASE("is Hamming at most k for empty calculation correct", "[fingerprints]")
+TEST_CASE("is Hamming at most k for empty calculation correct", "[distance]")
 {
     string empty = "";
 
@@ -1222,7 +1222,7 @@ TEST_CASE("is Hamming at most k for empty calculation correct", "[fingerprints]"
     }
 }
 
-TEST_CASE("is Hamming at most k calculation for self correct", "[fingerprints]")
+TEST_CASE("is Hamming at most k calculation for self correct", "[distance]")
 {
     string str1 = "ala ma kota";
 
@@ -1232,7 +1232,7 @@ TEST_CASE("is Hamming at most k calculation for self correct", "[fingerprints]")
     }
 }
 
-TEST_CASE("is Hamming at most k=1 calculation correct", "[fingerprints]")
+TEST_CASE("is Hamming at most k=1 calculation correct", "[distance]")
 {
     string str = "ala ma kota";
     
@@ -1246,7 +1246,7 @@ TEST_CASE("is Hamming at most k=1 calculation correct", "[fingerprints]")
     }
 }
 
-TEST_CASE("is Hamming at most k=1,2,3,4 randomized calculation correct", "[fingerprints]")
+TEST_CASE("is Hamming at most k=1,2,3,4 randomized calculation correct", "[distance]")
 {
     string str = "ala ma kota";
 
@@ -1271,6 +1271,22 @@ TEST_CASE("is Hamming at most k=1,2,3,4 randomized calculation correct", "[finge
             }
         });
     };
+}
+
+TEST_CASE("is Leven at most k=1 calculation correct", "[distance]")
+{
+    string str = "ala ma kota";
+    // Passing distance type 1 -- Levenshtein, fingerprint and letter types don't matter here.
+    Fingerprints<FING_T> fingerprints(1, 0, 0);
+
+    for (size_t i = 0; i < str.size(); ++i)
+    {
+        string cur = str;
+        cur[i] = 'N';
+
+        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, cur.c_str(), cur.size(), str.c_str(), str.size(), 0) == false);
+        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, cur.c_str(), cur.size(), str.c_str(), str.size(), 1) == true);
+    }
 }
 
 } // namespace fingerprints

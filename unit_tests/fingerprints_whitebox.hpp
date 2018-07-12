@@ -92,6 +92,12 @@ public:
     {
         return Fingerprints<FING_T>::isHamAMK(str1, str2, size, k);
     }
+
+    template<typename FING_T>
+    inline static bool isLevAMK(Fingerprints<FING_T> &fingerprints, const char *str1, size_t size1, const char *str2, size_t size2, int k)
+    {
+        return fingerprints.isLevAMK(str1, size1, str2, size2, k);
+    }
 };
 
 } // namespace fingerprints
