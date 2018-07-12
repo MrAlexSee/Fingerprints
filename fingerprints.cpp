@@ -239,7 +239,7 @@ int Fingerprints<FING_T>::testFingerprintsHamming(const vector<string> &patterns
     for (const string &pattern : patterns) 
     {
         const size_t curSize = pattern.size();
-        FING_T patFingerprint = calcFingerprintFun(pattern.c_str(), curSize);
+        const FING_T patFingerprint = calcFingerprintFun(pattern.c_str(), curSize);
 
         char *curEntry = fingArrayEntries[curSize];
         char *nextEntry = fingArrayEntries[curSize + 1];
@@ -280,7 +280,7 @@ int Fingerprints<FING_T>::testFingerprintsLeven(const vector<string> &patterns, 
     for (const string &pattern : patterns) 
     {
         const size_t patSize = pattern.size();
-        FING_T patFingerprint = calcFingerprintFun(pattern.c_str(), patSize);
+        const FING_T patFingerprint = calcFingerprintFun(pattern.c_str(), patSize);
 
         for (size_t curSize = 1; curSize <= maxWordSize; ++curSize)
         {
