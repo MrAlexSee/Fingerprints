@@ -18,9 +18,9 @@ template<typename FING_T>
 class Fingerprints
 {
 public:
-    /** Constructs a fingerprints object for [fingerprintType] and [lettersType].
+    /** Constructs a fingerprints object for [distanceType], [fingerprintType], and [lettersType].
      * Consult params.hpp for more information regarding the parameters. */
-    Fingerprints(int fingerprintType, int lettersType);
+    Fingerprints(int distanceType, int fingerprintType, int lettersType);
     ~Fingerprints();
 
     /** Constructs an array which stores [words],

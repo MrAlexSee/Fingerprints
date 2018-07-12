@@ -10,8 +10,12 @@ namespace fingerprints
 {
 
 template<typename FING_T>
-Fingerprints<FING_T>::Fingerprints(int fingerprintType, int lettersType)
+Fingerprints<FING_T>::Fingerprints(int distanceType, int fingerprintType, int lettersType)
 {
+    if (distanceType < 0 or distanceType > 1)
+    {
+        throw runtime_error("bad distance type: " + to_string(distanceType));
+    }
     if (fingerprintType < -1 or fingerprintType > 3)
     {
         throw runtime_error("bad fingerprint type: " + to_string(fingerprintType));
