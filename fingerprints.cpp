@@ -3,6 +3,7 @@
 #include <cassert>
 #include <cstring>
 #include <chrono>
+#include <iostream>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
@@ -814,6 +815,18 @@ bool Fingerprints<FING_T>::isHamAMK(const char *str1, const char *str2, size_t s
 template<typename FING_T>
 bool Fingerprints<FING_T>::isLevAMK(const char *str1, size_t size1, const char *str2, size_t size2, int k)
 {
+    if (k == 0)
+    {
+        if (size1 == size2)
+        {
+            return strncmp(str1, str2, size1) == 0;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     for (size_t j = 0; j < size1 + 1; ++j)
     {
         levV0[j] = j;
@@ -823,10 +836,10 @@ bool Fingerprints<FING_T>::isLevAMK(const char *str1, size_t size1, const char *
     {
         levV1[0] = i + 1;
 
-        int left = max(1UL, i + 1 - k);
-        int right = min(size1 + 1, i + k + 2);
+        size_t left = max(1UL, i + 1 - k);
+        size_t right = min(size1 + 1, i + k + 2);
 
-        int j = left;
+        size_t j = left;
         const char curC = str2[i];
 
         levV1[j] = (curC != str1[j-1] ? 1 + min(levV0[j-1], levV0[j]) : levV0[j-1]);
