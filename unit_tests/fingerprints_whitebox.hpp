@@ -85,7 +85,7 @@ public:
     template<typename FING_T>
     inline static bool isHamAMK(const char *str1, const char *str2, size_t size, int k)
     {
-        return Fingerprints<FING_T>::isHamAMK(str1, str2, size, k);
+        return Fingerprints<FING_T>::isHamAMK(str1, size, str2, size, k);
     }
 };
 

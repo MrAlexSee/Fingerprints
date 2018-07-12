@@ -629,7 +629,7 @@ TEST_CASE("is calculating occurrence halved fingerprint for common letters corre
         REQUIRE(fun("instance", 8) == 0b0001110100100110);
         REQUIRE(fun("aaaaa", 5) == 0b0000000000110000);
         REQUIRE(fun("ebiz", 4) == 0b0000001000000001);
-        }
+    }
 }
 
 TEST_CASE("is calculating occurrence halved fingerprint for mixed letters correct", "[fingerprints]")
