@@ -42,12 +42,19 @@ private:
     /** Constructs an array which stores only [words]. */
     void preprocessWords(vector<string> words);
 
-    /** Performs approximate matching for [patterns] and [k] errors using fingerprints.
+    /** Performs approximate matching for [patterns] and [k] errors using fingerprints for Hamming distance.
      * Returns the total number of matches. Sets elapsedUs to time elapsed during this matching. */
-    int testFingerprints(const vector<string> &patterns, int k);
-    /** Performs approximate matching for [patterns] and [k] errors without fingerprints.
+    int testFingerprintsHamming(const vector<string> &patterns, int k);
+    /** Performs approximate matching for [patterns] and [k] errors using fingerprints for Levenshtein distance.
      * Returns the total number of matches. Sets elapsedUs to time elapsed during this matching. */
-    int testWords(const vector<string> &patterns, int k);
+    int testFingerprintsLeven(const vector<string> &patterns, int k);
+
+    /** Performs approximate matching for [patterns] and [k] errors without fingerprints for Hamming distance.
+     * Returns the total number of matches. Sets elapsedUs to time elapsed during this matching. */
+    int testWordsHamming(const vector<string> &patterns, int k);
+    /** Performs approximate matching for [patterns] and [k] errors without fingerprints for Levenshtein distance.
+     * Returns the total number of matches. Sets elapsedUs to time elapsed during this matching. */
+    int testWordsLeven(const vector<string> &patterns, int k);
 
     void initNErrorsLUT();
     
@@ -73,12 +80,15 @@ private:
 
     /** Set to false if the user selected the mode without fingeprints (where only the words are stored). */
     bool useFingerprints = true;
+    /** Set to false if the user selected the Levenshtein distance. */
+    bool useHamming = true;
 
     /*
      *** FINGERPRINT CALCULATION
      */
 
-    /** Returns a fingerprint of the current type, set to one of the specific functions listed below. */
+    /** Returns a fingerprint of the current type for a string.
+     * Set to one of the specific functions listed below. */
     function<FING_T(const char *, size_t)> calcFingerprintFun;
 
     /** Returns an occurrence fingerprint for string [str] having [size] chars. */
@@ -97,6 +107,9 @@ private:
 
     /** Returns true if Hamming distance between [str1] and [str2] both of [size] is at most [k] (i.e. <= k). */
     static bool isHamAMK(const char *str1, const char *str2, size_t size, int k);
+
+    /** Returns true if Levenshtein distance between [str1] of [size1] and [str2] of [size2] is at most [k] (i.e. <= k). */
+    static bool isLevAMK(const char *str1, size_t size1, const char *str2, size_t size2, int k);
 
     /*
      *** CONSTANTS

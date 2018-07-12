@@ -26,6 +26,11 @@ Fingerprints<FING_T>::Fingerprints(int distanceType, int fingerprintType, int le
     }
 
     initNErrorsLUT();
+    
+    if (static_cast<DistanceType>(distanceType) != DistanceType::Hamming)
+    {
+        useHamming = false;
+    }
 
     switch (static_cast<FingerprintType>(fingerprintType))
     {
@@ -102,11 +107,25 @@ int Fingerprints<FING_T>::test(const vector<string> &patterns, int k)
 {
     if (useFingerprints)
     {
-        return testFingerprints(patterns, k);
+        if (useHamming)
+        {
+            return testFingerprintsHamming(patterns, k);
+        }
+        else
+        {
+            return testFingerprintsLeven(patterns, k);
+        }
     }
     else
     {
-        return testWords(patterns, k);
+        if (useHamming)
+        {
+            return testWordsHamming(patterns, k);
+        }
+        else
+        {
+            return testWordsLeven(patterns, k);
+        }
     }
 }
 
@@ -183,7 +202,7 @@ void Fingerprints<FING_T>::preprocessWords(vector<string> words)
 }
 
 template<typename FING_T>
-int Fingerprints<FING_T>::testFingerprints(const vector<string> &patterns, int k)
+int Fingerprints<FING_T>::testFingerprintsHamming(const vector<string> &patterns, int k)
 {
     int nMatches = 0;
     clock_t start, end;
@@ -232,7 +251,13 @@ int Fingerprints<FING_T>::testFingerprints(const vector<string> &patterns, int k
 }
 
 template<typename FING_T>
-int Fingerprints<FING_T>::testWords(const vector<string> &patterns, int k)
+int Fingerprints<FING_T>::testFingerprintsLeven(const vector<string> &patterns, int k)
+{
+    return 0;
+}
+
+template<typename FING_T>
+int Fingerprints<FING_T>::testWordsHamming(const vector<string> &patterns, int k)
 {
     int nMatches = 0;
     clock_t start, end;
@@ -265,6 +290,12 @@ int Fingerprints<FING_T>::testWords(const vector<string> &patterns, int k)
     elapsedUs = elapsedS * 1'000'000;
 
     return nMatches;
+}
+
+template<typename FING_T>
+int Fingerprints<FING_T>::testWordsLeven(const vector<string> &patterns, int k)
+{
+    return 0;
 }
 
 template<typename FING_T>
@@ -700,6 +731,12 @@ bool Fingerprints<FING_T>::isHamAMK(const char *str1, const char *str2, size_t s
     }
 
     return true;
+}
+
+template<typename FING_T>
+bool Fingerprints<FING_T>::isLevAMK(const char *str1, size_t size1, const char *str2, size_t size2, int k)
+{
+    return false;
 }
 
 } // namespace fingerprints
