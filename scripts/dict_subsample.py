@@ -19,7 +19,7 @@ def readWords(inFile):
     with open(inFile, "r") as f:
         words = f.read()
 
-    words = words.split()
+    words = words.split("\n")
     print "Read #words = {0}".format(len(words))
 
     return words

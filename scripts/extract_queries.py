@@ -10,7 +10,7 @@ pNQueries = 10000
 
 # Size of each query (#chars).
 pQuerySize = 69
-# Maximum number of errors (e), will be sampled from [1, e].
+# Maximum number of errors (e), number of errors will be sampled from [1, e].
 pMaxNErrors = 2
 
 # Input file path.
@@ -24,7 +24,7 @@ def readWords(inFile, wordSize):
     with open(inFile, "r") as f:
         words = f.read()
 
-    words = words.split()
+    words = words.split("\n")
     print "Read #words = {0}".format(len(words))
 
     words = [w for w in words if len(w) == wordSize]
@@ -34,6 +34,8 @@ def readWords(inFile, wordSize):
 
 def extractQueries(words, nQueries, maxNErrors):
     alphabet = list(set("".join(words)))
+    print "Sampled alphabet of size = {0}".format(len(alphabet))
+
     queries = []
 
     for _ in xrange(nQueries):
