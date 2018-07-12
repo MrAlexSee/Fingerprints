@@ -2,6 +2,7 @@
 Generates a synthetic dictionary based on English alphabet letter frequencies.
 """
 
+import os
 import sys
 import string
 
@@ -15,16 +16,16 @@ pFreqList = [8.167, 1.492, 2.782, 4.253, 12.702, 2.228, 2.015, 6.094, 6.966, 0.1
 pLetters = [c for c in string.ascii_lowercase]
 
 # Number of letters per word.
-pWordSize = 5
+pWordSize = 8
 # Total number of words.
 pNWords = 1000
 
-# Output file path.
+# Output (base) file path.
 pOutFile = "dict.txt"
 
 def genWord(wordSize, letters, freqList):
     pFreq = [0.01 * f for f in freqList]
-    curLetters = np.random.choice(letters, size = wordSize, replace = False, p = pFreq)
+    curLetters = np.random.choice(letters, size = wordSize, replace = True, p = pFreq)
 
     return "".join(curLetters)
 
@@ -44,11 +45,14 @@ def main():
     print "Generating {0} words...".format(pNWords)
     words = genWords(pNWords, pWordSize, pLetters, pFreqList)
 
-    with open(pOutFile, "w") as f:
+    tup = os.path.splitext(pOutFile)
+    outFileName = "{0}{1}{2}".format(tup[0], pWordSize, tup[1])
+
+    with open(outFileName, "w") as f:
         f.write("\n".join(words))
 
     assert len(words) == pNWords
-    print "Dumped to: {0}, #words = {1}, word size = {2}".format(pOutFile, pNWords, pWordSize)
+    print "Dumped to: {0}, #words = {1}, word size = {2}".format(outFileName, pNWords, pWordSize)
 
 if __name__ == "__main__":
     main()
