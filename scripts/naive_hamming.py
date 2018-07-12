@@ -19,7 +19,7 @@ def readWords(inFile):
     with open(inFile, "r") as f:
         words = f.read()
 
-    words = words.split()
+    words = words.split("\n")
     print "Read #words = {0}".format(len(words))
 
     return words
@@ -44,15 +44,17 @@ def main():
     nTotalMatches = 0
 
     for iP, pattern in enumerate(patterns):
-        print "Pattern: {0} ({1}/{2})".format(pattern, iP + 1, len(patterns))
+        print "\nPattern: {0} ({1}/{2})".format(pattern, iP + 1, len(patterns))
         matches = set()
 
         for iW, word in enumerate(words):
             if len(pattern) == len(word) and calcHamming(pattern, word) <= pK:
                 matches.add((word, iW))
 
-        print "Matches: {0}".format(matches)
-        print "#matches = {0}\n".format(len(matches))
+        print "#matches = {0}".format(len(matches))
+        
+        if len(matches):
+            print "Matches: {0}".format(list(matches))
 
         nTotalMatches += len(matches)
 
