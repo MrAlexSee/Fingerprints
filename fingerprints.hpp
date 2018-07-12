@@ -109,7 +109,10 @@ private:
     static bool isHamAMK(const char *str1, const char *str2, size_t size, int k);
 
     /** Returns true if Levenshtein distance between [str1] of [size1] and [str2] of [size2] is at most [k] (i.e. <= k). */
-    static bool isLevAMK(const char *str1, size_t size1, const char *str2, size_t size2, int k);
+    bool isLevAMK(const char *str1, size_t size1, const char *str2, size_t size2, int k);
+
+    /** Elapsed time in microseconds. */
+    float elapsedUs = 0.0f;
 
     /*
      *** CONSTANTS
@@ -135,7 +138,7 @@ private:
     /** Stores contiguously pairs (fingerprint, word) sorted by word size. */
     char *fingArray = nullptr;
     /** Points to the beginning of each word size bracket in fingArray. */
-    char *fingArrayEntries[maxWordSize + 1];
+    char *fingArrayEntries[maxWordSize + 2];
 
     /** Maps chars to their positions in fingerprints, used for occurrence and count fingerprints. */
     unsigned char *charsMap = nullptr;
@@ -148,8 +151,10 @@ private:
     /** Stores the number of fingerprint mismatches resulting from fingerprint comparison. */
     unsigned char *nMismatchesLUT = nullptr;
 
-    /** Elapsed time in microseconds. */
-    float elapsedUs = 0.0f;
+    /** Stores intermediate results of Levenshtein distance calculation. */
+    size_t *levV0 = nullptr;
+    /** Stores intermediate results of Levenshtein distance calculation. */
+    size_t *levV1 = nullptr;
 
     /*
      *** FINGERPRINT LETTER COLLECTIONS

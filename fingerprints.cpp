@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <bitset>
 #include <cassert>
 #include <cstring>
@@ -30,6 +31,9 @@ Fingerprints<FING_T>::Fingerprints(int distanceType, int fingerprintType, int le
     if (static_cast<DistanceType>(distanceType) != DistanceType::Hamming)
     {
         useHamming = false;
+        
+        levV0 = new size_t[maxWordSize];
+        levV1 = new size_t[maxWordSize];
     }
 
     switch (static_cast<FingerprintType>(fingerprintType))
@@ -73,13 +77,16 @@ Fingerprints<FING_T>::Fingerprints(int distanceType, int fingerprintType, int le
 template<typename FING_T>
 Fingerprints<FING_T>::~Fingerprints()
 {
+    delete[] fingArray;
+
     delete[] charsMap;
     delete[] charList;
 
     delete[] nErrorsLUT;
     delete[] nMismatchesLUT;
 
-    delete[] fingArray;
+    delete[] levV0;
+    delete[] levV1;
 }
 
 template<typename FING_T>
@@ -105,28 +112,49 @@ void Fingerprints<FING_T>::preprocess(const vector<string> &words)
 template<typename FING_T>
 int Fingerprints<FING_T>::test(const vector<string> &patterns, int k)
 {
+    if (k < 0)
+    {
+        throw runtime_error("bad k: " + to_string(k));
+    }
+
+    int nMatches;
+    clock_t start, end;
+
     if (useFingerprints)
     {
         if (useHamming)
         {
-            return testFingerprintsHamming(patterns, k);
+            start = std::clock();
+            nMatches = testFingerprintsHamming(patterns, k);
+            end = std::clock();
         }
         else
         {
-            return testFingerprintsLeven(patterns, k);
+            start = std::clock();
+            nMatches = testFingerprintsLeven(patterns, k);
+            end = std::clock();
         }
     }
     else
     {
         if (useHamming)
         {
-            return testWordsHamming(patterns, k);
+            start = std::clock();
+            nMatches = testWordsHamming(patterns, k);
+            end = std::clock();
         }
         else
         {
-            return testWordsLeven(patterns, k);
+            start = std::clock();
+            nMatches = testWordsLeven(patterns, k);
+            end = std::clock();
         }
     }
+
+    double elapsedS = (end - start) / static_cast<double>(CLOCKS_PER_SEC);
+    elapsedUs = elapsedS * 1'000'000;
+
+    return nMatches;
 }
 
 template<typename FING_T>
@@ -163,6 +191,7 @@ void Fingerprints<FING_T>::preprocessFingerprints(vector<string> words)
         }
     }
 
+    fingArrayEntries[maxWordSize + 1] = curEntry;
     assert(iWord == words.size()); // Making sure that all words have been processed.
 }
 
@@ -198,6 +227,7 @@ void Fingerprints<FING_T>::preprocessWords(vector<string> words)
         }
     }
 
+    fingArrayEntries[maxWordSize + 1] = curEntry;
     assert(iWord == words.size()); // Making sure that all words have been processed.
 }
 
@@ -205,9 +235,6 @@ template<typename FING_T>
 int Fingerprints<FING_T>::testFingerprintsHamming(const vector<string> &patterns, int k)
 {
     int nMatches = 0;
-    clock_t start, end;
-
-    start = std::clock();
 
     for (const string &pattern : patterns) 
     {
@@ -242,28 +269,58 @@ int Fingerprints<FING_T>::testFingerprintsHamming(const vector<string> &patterns
         }
     }
 
-    end = std::clock();
-
-    double elapsedS = (end - start) / static_cast<double>(CLOCKS_PER_SEC);
-    elapsedUs = elapsedS * 1'000'000;
-
     return nMatches;
 }
 
 template<typename FING_T>
 int Fingerprints<FING_T>::testFingerprintsLeven(const vector<string> &patterns, int k)
 {
-    return 0;
+    int nMatches = 0;
+
+    for (const string &pattern : patterns) 
+    {
+        const size_t patSize = pattern.size();
+        FING_T patFingerprint = calcFingerprintFun(pattern.c_str(), patSize);
+
+        for (size_t curSize = 1; curSize <= maxWordSize; ++curSize)
+        {
+            char *curEntry = fingArrayEntries[curSize];
+            char *nextEntry = fingArrayEntries[curSize + 1];
+
+            while (curEntry != nextEntry)
+            {
+                // We iterate over all words and calculate the Hamming distance only
+                // when the fingerprint comparison is not successful.
+                if (calcNErrors(patFingerprint, *(reinterpret_cast<FING_T *>(curEntry))) <= k)
+                {
+                    curEntry += sizeof(FING_T);
+
+                    if (isLevAMK(pattern.c_str(), patSize, curEntry, curSize, k))
+                    {
+                        // Make sure that the number of results is returned in order to
+                        // prevent the compiler from overoptimizing unused results.
+                        nMatches += 1;
+                    }
+
+                    curEntry += curSize;
+                }
+                else
+                {
+                    curEntry += sizeof(FING_T);
+                    curEntry += curSize;
+                }
+            }
+        }
+    }
+
+    return nMatches;
 }
 
 template<typename FING_T>
 int Fingerprints<FING_T>::testWordsHamming(const vector<string> &patterns, int k)
 {
     int nMatches = 0;
-    clock_t start, end;
-
-    start = std::clock();
-
+   
     for (const string &pattern : patterns) 
     {
         const size_t curSize = pattern.size();
@@ -284,18 +341,38 @@ int Fingerprints<FING_T>::testWordsHamming(const vector<string> &patterns, int k
         }
     }
 
-    end = std::clock();
-
-    double elapsedS = (end - start) / static_cast<double>(CLOCKS_PER_SEC);
-    elapsedUs = elapsedS * 1'000'000;
-
     return nMatches;
 }
 
 template<typename FING_T>
 int Fingerprints<FING_T>::testWordsLeven(const vector<string> &patterns, int k)
 {
-    return 0;
+    int nMatches = 0;
+
+    for (const string &pattern : patterns) 
+    {
+        const size_t patSize = pattern.size();
+
+        for (size_t curSize = 1; curSize <= maxWordSize; ++curSize)
+        {
+            char *curEntry = fingArrayEntries[curSize];
+            char *nextEntry = fingArrayEntries[curSize + 1];
+
+            while (curEntry != nextEntry)
+            {
+                if (isLevAMK(pattern.c_str(), patSize, curEntry, curSize, k))
+                {
+                    // Make sure that the number of results is returned in order to
+                    // prevent the compiler from overoptimizing unused results.
+                    nMatches += 1;
+                }
+
+                curEntry += curSize;
+            }
+        }
+    }
+
+    return nMatches;
 }
 
 template<typename FING_T>
@@ -733,10 +810,41 @@ bool Fingerprints<FING_T>::isHamAMK(const char *str1, const char *str2, size_t s
     return true;
 }
 
+// Calculates only the 2k + 1 strip since we are only interested in distance <= k.
 template<typename FING_T>
 bool Fingerprints<FING_T>::isLevAMK(const char *str1, size_t size1, const char *str2, size_t size2, int k)
 {
-    return false;
+    for (size_t j = 0; j < size1 + 1; ++j)
+    {
+        levV0[j] = j;
+    }
+
+    for (size_t i = 0; i < size2; ++i)
+    {
+        levV1[0] = i + 1;
+
+        int left = max(1UL, i + 1 - k);
+        int right = min(size1 + 1, i + k + 2);
+
+        int j = left;
+        const char curC = str2[i];
+
+        levV1[j] = (curC != str1[j-1] ? 1 + min(levV0[j-1], levV0[j]) : levV0[j-1]);
+
+        for (j = left + 1; j < right - 1; ++j)
+        {
+            levV1[j] = (curC != str1[j-1] ? 1 + min(min(levV0[j-1], levV0[j]), levV1[j-1]) : levV0[j-1]);
+        }
+
+        j = right - 1;
+        levV1[j] = (curC != str1[j-1] ? 1 + min(levV0[j-1], levV1[j-1]) : levV0[j-1]);
+
+        size_t *temp = levV0;
+        levV0 = levV1;
+        levV1 = temp;
+    }
+
+    return levV0[size1] <= static_cast<size_t>(k);
 }
 
 } // namespace fingerprints

@@ -209,7 +209,8 @@ void dumpParamInfoToStdout(int fingSizeB)
         cout << "Using fingerprint type: " << params.fingerprintType << endl; 
     }
 
-    cout << "Using letters type: " << params.lettersType << endl << endl;
+    cout << "Using letters type: " << params.lettersType << endl;
+    cout << "Using k = " << params.kApprox << endl << endl;
 }
 
 void dumpRunInfo(float elapsedUs, const vector<string> &words, const vector<string> &patterns)
