@@ -1,5 +1,6 @@
 """
-Transforms input text to a dictionary, splitting words on any whitespace.
+Transforms input text to a dictionary.
+Splits words on any whitespace and includes only words (without duplicates) having printable characters.
 """
 
 import string
@@ -9,8 +10,10 @@ pInFile = "english200.txt"
 # Output file path.
 pOutFile = "dict.txt"
 
+printableSet = set(string.printable)
+
 def isWordOK(s):
-    return len(s) == len([c for c in s if c in string.printable])
+    return len(s) == len([c for c in s if c in printableSet])
 
 def readWordsFilt(inFile):
     print "Reading from: {0}".format(inFile)
@@ -32,8 +35,8 @@ def readWordsFilt(inFile):
 def main():
     wordsFilt = readWordsFilt(pInFile)
 
-    nChars = len(set("".join(wordsFilt)))
-    print "Alphabet size = {0}".format(nChars)
+    alphSize = len(set("".join(wordsFilt)))
+    print "Alphabet size = {0}".format(alphSize)
 
     wordsFilt.sort()
 
