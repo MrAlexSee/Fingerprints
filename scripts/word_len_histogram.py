@@ -3,7 +3,7 @@ Prints a histogram of word lengths and mode length for a dictionary.
 """
 
 # Input file path.
-pInFile = "../data/dict_iamerican_insane.txt"
+pInFile = "../data/dict_urls.txt"
 
 def readWords(inFile):
     print "Reading from: {0}".format(inFile)
@@ -11,7 +11,7 @@ def readWords(inFile):
     with open(inFile, "r") as f:
         words = f.read()
 
-    words = words.split()
+    words = words.split("\n")
     print "Read #words = {0}".format(len(words))
 
     return words
