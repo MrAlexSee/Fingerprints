@@ -26,7 +26,7 @@ constexpr int stringSize = 25;
 constexpr int maxK = 5;
 constexpr int nHammingRepeats = 10;
 
-vector<int> distanceTypes { 0, 1 };
+vector<int> distanceTypes { 0 }; // { 0, 1 }
 vector<int> fingerprintTypes { -1, 0, 1, 2, 3 };
 vector<int> lettersTypes { 0, 1, 2 };
 
@@ -92,7 +92,7 @@ TEST_CASE("is searching empty words correct", "[fingerprints]")
 
 TEST_CASE("is searching words exact correct", "[fingerprints]")
 {
-    vector<string> words { "ala", "ma", "kota", "a", "jarek", "ma", "psa" };
+    vector<string> words { "ala", "ma", "kota", "a", "jarek", "ma", "psa", "ma" };
     vector<string> patternsOut { "not", "in", "this", "dict" };
 
     for (int distanceType : distanceTypes)
@@ -113,7 +113,7 @@ TEST_CASE("is searching words exact correct", "[fingerprints]")
 
 TEST_CASE("is searching words exact one-by-one correct", "[fingerprints]")
 {
-    vector<string> words { "ala", "ma", "kota", "a", "jarek", "ma", "psa" };
+    vector<string> words { "ala", "ma", "kota", "a", "jarek", "ma", "psa", "ma" };
     vector<string> patternsOut { "not", "in", "this", "dict" };
 
     for (int distanceType : distanceTypes)
@@ -1246,6 +1246,15 @@ TEST_CASE("is Hamming at most k=1 calculation correct", "[distance]")
     }
 }
 
+TEST_CASE("is Hamming at most k=1 calculation selected words correct", "[distance]")
+{
+    string str1 = "aaaa", str2 = "aaab";
+    REQUIRE(FingerprintsWhitebox::isHamAMK<FING_T>(str1.c_str(), str2.c_str(), str1.size(), 1) == true);
+
+    str1 = "aaaa", str2 = "baab";
+    REQUIRE(FingerprintsWhitebox::isHamAMK<FING_T>(str1.c_str(), str2.c_str(), str1.size(), 1) == false);
+}
+
 TEST_CASE("is Hamming at most k=1,2,3,4 randomized calculation correct", "[distance]")
 {
     string str = "ala ma kota";
@@ -1275,9 +1284,10 @@ TEST_CASE("is Hamming at most k=1,2,3,4 randomized calculation correct", "[dista
 
 TEST_CASE("is Leven at most k=1 calculation correct", "[distance]")
 {
-    string str = "ala ma kota";
     // Passing distance type 1 -- Levenshtein, fingerprint and letter types don't matter here.
     Fingerprints<FING_T> fingerprints(1, 0, 0);
+
+    string str = "ala ma kota";
 
     for (size_t i = 0; i < str.size(); ++i)
     {
@@ -1287,6 +1297,18 @@ TEST_CASE("is Leven at most k=1 calculation correct", "[distance]")
         REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, cur.c_str(), cur.size(), str.c_str(), str.size(), 0) == false);
         REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, cur.c_str(), cur.size(), str.c_str(), str.size(), 1) == true);
     }
+}
+
+TEST_CASE("is Leven at most k=1 calculation selected words correct", "[distance]")
+{
+    // Passing distance type 1 -- Levenshtein, fingerprint and letter types don't matter here.
+    Fingerprints<FING_T> fingerprints(1, 0, 0);
+
+    string str1 = "aaaa", str2 = "aaab";
+    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 1) == true);
+
+    str1 = "aaaa", str2 = "baab";
+    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 1) == false);
 }
 
 } // namespace fingerprints
