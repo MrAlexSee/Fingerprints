@@ -52,6 +52,21 @@ TEST_CASE("is initializing using fingerprints correct", "[fingerprints]")
     }
 }
 
+TEST_CASE("is initializing using Hamming correct", "[fingerprints]")
+{
+    for (int fingerprintType : fingerprintTypes)
+    {
+        for (int lettersType : lettersTypes)
+        {
+            Fingerprints<FING_T> fham(0, fingerprintType, lettersType);
+            REQUIRE(FingerprintsWhitebox::getUseHamming(fham) == true);
+
+            Fingerprints<FING_T> flev(1, fingerprintType, lettersType);
+            REQUIRE(FingerprintsWhitebox::getUseHamming(flev) == false);
+        }
+    }
+}
+
 TEST_CASE("is searching empty words correct", "[fingerprints]")
 {
     vector<string> words;

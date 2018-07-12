@@ -21,6 +21,11 @@ public:
     {
         return fingerprints.useFingerprints;
     }
+    template<typename FING_T>
+    inline static bool getUseHamming(const Fingerprints<FING_T> &fingerprints)
+    {
+        return fingerprints.useHamming;
+    }
 
     template<typename FING_T>
     inline static function<FING_T(const char *, size_t)> getCalcFingerprintFun(Fingerprints<FING_T> &fingerprints)
@@ -85,7 +90,7 @@ public:
     template<typename FING_T>
     inline static bool isHamAMK(const char *str1, const char *str2, size_t size, int k)
     {
-        return Fingerprints<FING_T>::isHamAMK(str1, size, str2, size, k);
+        return Fingerprints<FING_T>::isHamAMK(str1, str2, size, k);
     }
 };
 
