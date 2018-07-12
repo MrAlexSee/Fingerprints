@@ -20,6 +20,8 @@ struct Params
     /** Dump input files and params info with elapsed and throughput to output file. Cmd arg -d. */
     bool dumpToFile = false;
 
+    /** Distance type: 0 -> Hamming, 1 -> Levenshtein. Cmd arg -D. */
+    int distanceType = 0;
     /** Fingerprint type: -1 -> no fingerprints, 0 -> occurrence, 1 -> count, 2 -> position, 3 -> occurrence halved. Cmd arg -f. */
     int fingerprintType = 0;
     /** Letters type: 0 -> common, 1 -> mixed, 2 -> rare. Cmd arg -l. */

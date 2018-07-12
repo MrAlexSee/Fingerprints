@@ -28,6 +28,7 @@ Unit tests are located in the `unit_tests` folder and they can be run by issuing
 Short name | Long name                | Parameter description
 ---------- | ------------------------ | ---------------------
 `-d`       | `--dump`                 | dump input files and params info with elapsed time and throughput to output file (useful for testing)
+`-D`       | `--distance`             | distance metric: 0 -> Hamming, 1 -> Levenshtein (default = 0)
 `-f`       | `--fingerprint-type arg` | fingerprint type: -1 -> no fingerprints, 0 -> occurrence, 1 -> count, 2 -> position, 3 -> occurrence halved (default = 0)
 `-h`       | `--help`                 | display help message
 `-i`       | `--in-dict-file arg`     | input dictionary file path (positional arg 1)

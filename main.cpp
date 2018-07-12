@@ -71,6 +71,7 @@ int handleParams(int argc, const char **argv)
     po::options_description options("Parameters");
     options.add_options()
        ("dump,d", "dump input files and params info with elapsed time and throughput to output file (useful for testing)")
+       ("distance,D", "distance metric: 0 -> Hamming, 1 -> Levenshtein (default = 0)")
        ("fingerprint-type,f", po::value<int>(&params.fingerprintType), "fingerprint type: -1 -> no fingerprints, 0 -> occurrence, 1 -> count, 2 -> position, 3 -> occurrence halved (default = 0)")
        ("help,h", "display help message")
        ("in-dict-file,i", po::value<string>(&params.inDictFile)->required(), "input dictionary file path (positional arg 1)")
@@ -196,6 +197,7 @@ void runFingerprints(const vector<string> &words, const vector<string> &patterns
 
 void dumpParamInfoToStdout(int fingSizeB)
 {
+    cout << "Using distance type: " << params.distanceType << endl;
     cout << boost::format("Using fingerprint size: %1% bytes") % fingSizeB << endl; 
     
     if (params.fingerprintType == -1)

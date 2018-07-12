@@ -102,6 +102,7 @@ private:
      *** CONSTANTS
      */
 
+    enum class DistanceType { Hamming = 0, Leven = 1 };
     enum class FingerprintType { NoFing = -1, Occ = 0, Count = 1, Pos = 2, OccHalved = 3 };
     enum class LettersType { Common = 0, Mixed = 1, Rare = 2 };
 
