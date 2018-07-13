@@ -1,12 +1,16 @@
 """
-Performs approximate Hamming distance matching for a dictionary and patterns
-using a naive algorithm.
+Performs approximate (Hamming or Levenshtein) matching for a dictionary and patterns.
 """
+
+from nltk.metrics import edit_distance
 
 # Input dictionary file path.
 pInDictFile = "../data/dict_iamerican_insane.txt"
 # Input patterns file path.
 pInPatternsFile = "../data/queries_iamerican_insane_8.txt"
+
+# Set to false in order to use Levenshtein distance.
+pUseHamming = False
 
 # Number of patterns, set to -1 to ignore.
 pNPatterns = 50
@@ -34,7 +38,18 @@ def calcHamming(str1, str2):
     
     return nErrors
 
+def calcLeven(str1, str2):
+    return edit_distance(str1, str2)
+
+def isMatch(word, pattern, k, useHamming):
+    if useHamming:
+        return len(word) == len(pattern) and calcHamming(word, pattern) <= pK
+    else:
+        return calcLeven(pattern, word) <= pK
+
 def main():
+    print "Using distance: Ham = {0}".format(pUseHamming)
+
     words = readWords(pInDictFile)
     patterns = readWords(pInPatternsFile)
 
@@ -48,7 +63,7 @@ def main():
         matches = set()
 
         for iW, word in enumerate(words):
-            if len(pattern) == len(word) and calcHamming(pattern, word) <= pK:
+            if isMatch(word, pattern, pK, pUseHamming):
                 matches.add((word, iW))
 
         print "#matches = {0}".format(len(matches))
@@ -58,7 +73,7 @@ def main():
 
         nTotalMatches += len(matches)
 
-    print "Total #matches = {0} for k = {1}".format(nTotalMatches, pK)
+    print "\nTotal #matches = {0} for k = {1}".format(nTotalMatches, pK)
 
 if __name__ == "__main__":
     main()
