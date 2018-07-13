@@ -9,7 +9,7 @@ INCLUDE   = -I$(BOOST_DIR)
 TEST_FILES    = catch.hpp repeat.hpp
 
 EXE 	      = main_tests
-OBJ           = main_tests.o fingerprint_tests.o helpers_tests.o
+OBJ           = main_tests.o distance_tests.o fingerprint_tests.o helpers_tests.o
 
 all: $(EXE)
 
@@ -18,6 +18,9 @@ $(EXE): $(OBJ)
 
 main_tests.o: main_tests.cpp catch.hpp
 	$(CC) $(CCFLAGS) $(OPTFLAGS) $(INCLUDE) -c main_tests.cpp
+
+distance_tests.o: distance_tests.cpp fingerprints_whitebox.hpp ../fingerprints.hpp ../fingerprints.cpp ../helpers.hpp $(TEST_FILES)
+	$(CC) $(CCFLAGS) $(OPTFLAGS) $(INCLUDE) -c distance_tests.cpp
 
 fingerprint_tests.o: fingerprint_tests.cpp fingerprints_whitebox.hpp ../fingerprints.hpp ../fingerprints.cpp ../helpers.hpp $(TEST_FILES)
 	$(CC) $(CCFLAGS) $(OPTFLAGS) $(INCLUDE) -c fingerprint_tests.cpp
