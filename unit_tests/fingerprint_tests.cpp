@@ -1,4 +1,3 @@
-#include <iostream>
 #include <map>
 
 #include "catch.hpp"
@@ -320,13 +319,59 @@ TEST_CASE("is searching words for k = 1 for Levenshtein one-by-one correct", "[f
 
             for (const string &patternIn : patternsIn)
             {
-                cout << patternIn << endl;
                 REQUIRE(curF.test(vector<string> { patternIn }, 1) == 1);
             }
 
             for (const string &patternOut : patternsOut)
             {
                 REQUIRE(curF.test(vector<string> { patternOut }, 1) == 0);
+            }
+        }
+    }
+}
+
+TEST_CASE("is searching words for k = 2 for Levenshtein correct", "[fingerprints]")
+{
+    vector<string> words { "ala", "kota", "jarek", "psa", "pies", "stolik" };
+    
+    vector<string> patternsIn { "blb", "kota", "alla", "allla", "jak", "jarrrek", "stok", "stol" };
+    vector<string> patternsOut { "not", "in", "this", "dict" };
+
+    for (int fingerprintType : fingerprintTypes)
+    {
+        for (int lettersType : lettersTypes)
+        {
+            Fingerprints<FING_T> curF(1, fingerprintType, lettersType);
+            curF.preprocess(words);
+
+            REQUIRE(curF.test(patternsIn, 2) == patternsIn.size());
+            REQUIRE(curF.test(patternsOut, 2) == 0);
+        }
+    }
+}
+
+TEST_CASE("is searching words for k = 2 for Levenshtein one-by-one correct", "[fingerprints]")
+{
+    vector<string> words { "ala", "kota", "jarek", "psa", "pies", "stolik" };
+    
+    vector<string> patternsIn { "blb", "kota", "alla", "allla", "jak", "jarrrek", "stok", "stol" };
+    vector<string> patternsOut { "not", "in", "this", "dict" };
+
+    for (int fingerprintType : fingerprintTypes)
+    {
+        for (int lettersType : lettersTypes)
+        {
+            Fingerprints<FING_T> curF(1, fingerprintType, lettersType);
+            curF.preprocess(words);
+
+            for (const string &patternIn : patternsIn)
+            {
+                REQUIRE(curF.test(vector<string> { patternIn }, 2) == 1);
+            }
+
+            for (const string &patternOut : patternsOut)
+            {
+                REQUIRE(curF.test(vector<string> { patternOut }, 2) == 0);
             }
         }
     }
