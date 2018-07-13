@@ -158,6 +158,22 @@ TEST_CASE("is Leven at most k=1 calculation selected words correct", "[distance]
     str1 = "ala", str2 = "aa";
     REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 1) == true);
     REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 1) == true);
+
+    str1 = "jarek", str2 = "jaek";
+    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 1) == true);
+    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 1) == true);
+
+    str1 = "jarek", str2 = "jarrek";
+    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 1) == true);
+    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 1) == true);
+
+    str1 = "jarek", str2 = "jak";
+    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 1) == false);
+    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 1) == false);
+
+    str1 = "jarek", str2 = "jarrrek";
+    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 1) == false);
+    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 1) == false);
 }
 
 TEST_CASE("is Leven at most k=1 calculation after match for selected words correct", "[distance]")

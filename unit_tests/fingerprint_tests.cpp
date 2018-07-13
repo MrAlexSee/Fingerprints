@@ -1,3 +1,4 @@
+#include <iostream>
 #include <map>
 
 #include "catch.hpp"
@@ -283,6 +284,54 @@ TEST_CASE("is searching words for various k for Hamming randomized correct", "[f
     }
 }
 
+TEST_CASE("is searching words for k = 1 for Levenshtein correct", "[fingerprints]")
+{
+    vector<string> words { "ala", "ma", "kota", "a", "jarek", "ma", "psa" };
+    
+    vector<string> patternsIn { "bla", "alak", "alla", "darek", "jaek", "jarrek", "ps" };
+    vector<string> patternsOut { "not", "in", "this", "dict" };
+
+    for (int fingerprintType : fingerprintTypes)
+    {
+        for (int lettersType : lettersTypes)
+        {
+            Fingerprints<FING_T> curF(1, fingerprintType, lettersType);
+            curF.preprocess(words);
+
+            REQUIRE(curF.test(patternsIn, 1) == patternsIn.size());
+            REQUIRE(curF.test(patternsOut, 1) == 0);
+        }
+    }
+}
+
+TEST_CASE("is searching words for k = 1 for Levenshtein one-by-one correct", "[fingerprints]")
+{
+    vector<string> words { "ala", "ma", "kota", "a", "jarek", "ma", "psa" };
+    
+    vector<string> patternsIn { "bla", "alak", "alla", "darek", "jaek", "jarrek", "ps" };
+    vector<string> patternsOut { "not", "in", "this", "dict" };
+
+    for (int fingerprintType : fingerprintTypes)
+    {
+        for (int lettersType : lettersTypes)
+        {
+            Fingerprints<FING_T> curF(1, fingerprintType, lettersType);
+            curF.preprocess(words);
+
+            for (const string &patternIn : patternsIn)
+            {
+                cout << patternIn << endl;
+                REQUIRE(curF.test(vector<string> { patternIn }, 1) == 1);
+            }
+
+            for (const string &patternOut : patternsOut)
+            {
+                REQUIRE(curF.test(vector<string> { patternOut }, 1) == 0);
+            }
+        }
+    }
+}
+
 TEST_CASE("is initializing errors LUT correct", "[fingerprints]")
 {
     for (int distanceType : distanceTypes)
@@ -320,7 +369,7 @@ TEST_CASE("is initializing chars map for 16 common letters correct", "[fingerpri
         {
             REQUIRE(charsMap[static_cast<size_t>(letters[i])] == i);
         }
-        }
+    }
 }
 
 TEST_CASE("is initializing chars map for 8 common letters correct", "[fingerprints]")
@@ -354,7 +403,7 @@ TEST_CASE("is initializing char list for 5 common letters correct", "[fingerprin
         {
             REQUIRE(charList[i] == letters[i]);
         }
-        }
+    }
 }
 
 TEST_CASE("is calculating mismatches LUT for occurrence fingerprints correct", "[fingerprints]")
@@ -377,7 +426,7 @@ TEST_CASE("is calculating mismatches LUT for occurrence fingerprints correct", "
             REQUIRE(nMismatchesLUT[0b000111010110] == 6);
             REQUIRE(nMismatchesLUT[0b000111111111] == 9);
         }
-        }
+    }
 }
 
 TEST_CASE("is calculating mismatches LUT for count fingerprints correct", "[fingerprints]")
@@ -400,7 +449,7 @@ TEST_CASE("is calculating mismatches LUT for count fingerprints correct", "[fing
             REQUIRE(nMismatchesLUT[0b000111010110] == 5);
             REQUIRE(nMismatchesLUT[0b000111111111] == 5);
         }
-        }
+    }
 }
 
 TEST_CASE("is calculating mismatches LUT for position fingerprints correct", "[fingerprints]")
@@ -424,7 +473,7 @@ TEST_CASE("is calculating mismatches LUT for position fingerprints correct", "[f
             REQUIRE(nMismatchesLUT[0b000111010110] == 3);
             REQUIRE(nMismatchesLUT[0b000111111111] == 3);
         }
-        }
+    }
 }
 
 TEST_CASE("is calculating words total size and counts correct for empty", "[fingerprints]")
@@ -501,7 +550,7 @@ TEST_CASE("is calculating occurrence fingerprint for common letters correct", "[
         REQUIRE(fun("instance", 8) == 0b0000100001110111);
         REQUIRE(fun("aaaaa", 5) == 0b0000000000000100);
         REQUIRE(fun("ebiz", 4) == 0b0000000000010001);
-        }
+    }
 }
 
 TEST_CASE("is calculating occurrence fingerprint for mixed letters correct", "[fingerprints]")
@@ -531,7 +580,7 @@ TEST_CASE("is calculating occurrence fingerprint for rare letters correct", "[fi
         REQUIRE(fun("instance", 8) == 0b0100000000000000);
         REQUIRE(fun("aaaaa", 5) == 0b0000000000000000);
         REQUIRE(fun("ebiz", 4) == 0b0000000001000001);
-        }
+    }
 }
 
 TEST_CASE("is calculating count fingerprint for common letters correct", "[fingerprints]")
@@ -547,7 +596,7 @@ TEST_CASE("is calculating count fingerprint for common letters correct", "[finge
         REQUIRE(fun("instance", 8) == 0b0001100100010101);
         REQUIRE(fun("aaaaa", 5) == 0b0000000000110000);
         REQUIRE(fun("ebiz", 4) == 0b0000000100000001);
-        }
+    }
 }
 
 TEST_CASE("is calculating count fingerprint for mixed letters correct", "[fingerprints]")
@@ -563,7 +612,7 @@ TEST_CASE("is calculating count fingerprint for mixed letters correct", "[finger
         REQUIRE(fun("instance", 8) == 0b0000000000010101);
         REQUIRE(fun("aaaaa", 5) == 0b0000000000110000);
         REQUIRE(fun("ebiz", 4) == 0b0001000000000001);
-        }
+    }
 }
 
 TEST_CASE("is calculating count fingerprint for rare letters correct", "[fingerprints]")
@@ -611,7 +660,7 @@ TEST_CASE("is calculating position fingerprint for mixed letters correct", "[fin
         REQUIRE(fun("instance", 8) == 0b0111111100011111);
         REQUIRE(fun("aaaaa", 5) == 0b0111111000111111);
         REQUIRE(fun("ebiz", 4) == 0b1111111111111000);
-        }
+    }
 }
 
 TEST_CASE("is calculating position fingerprint for rare letters correct", "[fingerprints]")
