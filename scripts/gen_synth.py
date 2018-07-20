@@ -15,8 +15,13 @@ pFreqList = [8.167, 1.492, 2.782, 4.253, 12.702, 2.228, 2.015, 6.094, 6.966, 0.1
 # English letters for sampling.
 pLetters = [c for c in string.ascii_lowercase]
 
+# If true, generates words of size pWordSize, otherwise generates words with sizes from pWordSizeRange.
+pSingleSize = False
 # Number of letters per word.
-pWordSize = 8
+pWordSize = 5
+# Range of number of letters per word.
+pWordSizeRange = range(1, 32 + 1, 1)
+
 # Total number of words.
 pNWords = 1000
 
@@ -34,7 +39,7 @@ def genWords(nWords, wordSize, letters, freqList):
 
     for i in xrange(nWords):
         perc = round(100.0 * (i + 1) / nWords)
-        sys.stdout.write("\r{0}/{1} ({2}%)".format(i + 1, nWords, perc))
+        sys.stdout.write("\r{0}: {1}/{2} ({3}%)".format(wordSize, i + 1, nWords, perc))
 
         words += [genWord(wordSize, letters, freqList)]
 
@@ -43,16 +48,27 @@ def genWords(nWords, wordSize, letters, freqList):
 
 def main():
     print "Generating {0} words...".format(pNWords)
-    words = genWords(pNWords, pWordSize, pLetters, pFreqList)
-
     tup = os.path.splitext(pOutFile)
-    outFileName = "{0}{1}{2}".format(tup[0], pWordSize, tup[1])
+
+    if pSingleSize:
+        print "Single word size = {0}".format(pWordSize)
+        outFileName = "{0}{1}{2}".format(tup[0], pWordSize, tup[1])
+
+        words = genWords(pNWords, pWordSize, pLetters, pFreqList)
+    else:
+        print "Word sizes = [{0}, {1}]".format(pWordSizeRange[0], pWordSizeRange[-1])
+        outFileName = "{0}{1}-{2}{3}".format(tup[0], pWordSizeRange[0], pWordSizeRange[-1], tup[1])
+
+        words = []
+        nWords = int(pNWords / len(pWordSizeRange))
+
+        for curWordSize in pWordSizeRange:
+            words += genWords(nWords, curWordSize, pLetters, pFreqList)
 
     with open(outFileName, "w") as f:
         f.write("\n".join(words))
 
-    assert len(words) == pNWords
-    print "Dumped to: {0}, #words = {1}, word size = {2}".format(outFileName, pNWords, pWordSize)
+    print "Dumped to: {0}, #words = {1}".format(outFileName, len(words))
 
 if __name__ == "__main__":
     main()
