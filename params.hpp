@@ -27,16 +27,14 @@ struct Params
     /** Letters type: 0 -> common, 1 -> mixed, 2 -> rare. Cmd arg -l. */
     int lettersType = 0;
 
-    /** Number of errors for approximate search (Hamming).
-     * noValue = perform exact search. Cmd arg -k. */
+    /** Number of errors for approximate search (Hamming or Levenshtein). Cmd arg -k. */
     int kApprox = noValue;
-    
-    /** Maximum number of patterns read from top of the patterns file.
-     * noValue = ignore the pattern count limit. Cmd arg -p. */
+   
+    /** Maximum number of patterns read from top of the patterns file. Cmd arg -p. */
     int nPatterns = noValue;
-
-    /** Maximum number of words read from top of the dict file.
-     * noValue = ignore the word count limit. Cmd arg -w. */
+    /** If set, only patterns of this size (letter count) will be read from the pattern file. */
+    int patternSize = noValue;
+    /** Maximum number of words read from top of the dictionary file. Cmd arg -w. */
     int nWords = noValue;
 
     /** Input dictionary file path (positional arg 1). */

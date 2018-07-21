@@ -39,6 +39,8 @@ int handleParams(int argc, const char **argv);
 bool checkInputFiles(const char *execName);
 /** Runs the main program and returns the program exit code. */
 int run();
+/** Filters input data (dictionary and patterns) based on cmd-line parameters. */
+void filterInput(vector<string> &dict, vector<string> &patterns);
 
 void runFingerprints(const vector<string> &words, const vector<string> &patterns);
 
@@ -76,10 +78,11 @@ int handleParams(int argc, const char **argv)
        ("help,h", "display help message")
        ("in-dict-file,i", po::value<string>(&params.inDictFile)->required(), "input dictionary file path (positional arg 1)")
        ("in-pattern-file,I", po::value<string>(&params.inPatternFile)->required(), "input pattern file path (positional arg 2)")
-       ("approx,k", po::value<int>(&params.kApprox)->required(), "perform approximate search (Hamming distance) for k errors")
+       ("approx,k", po::value<int>(&params.kApprox)->required(), "perform approximate search (Hamming or Levenshtein) for k errors")
        ("letters-type,l", po::value<int>(&params.lettersType), "letters type: 0 -> common, 1 -> mixed, 2 -> rare (default = 0)")
        ("out-file,o", po::value<string>(&params.outFile), "output file path")
-       ("pattern-count,p", po::value<int>(&params.nPatterns), "maximum number of patterns read from top of the patterns file (non-positive values are ignored)")
+       ("pattern-count,p", po::value<int>(&params.nPatterns), "maximum number of patterns read from top of the pattern file (non-positive values are ignored)")
+       ("pattern-size", po::value<int>(&params.patternSize), "if set, only patterns of this size (letter count) will be read from the pattern file (non-positive values are ignored)")
        ("separator,s", po::value<string>(&params.separator), "input data (dictionary and patterns) separator")
        ("version,v", "display version info")
        ("word-count,w", po::value<int>(&params.nWords), "maximum number of words read from top of the dictionary file (non-positive values are ignored)");
@@ -155,19 +158,13 @@ int run()
     try
     {
         vector<string> dict = Helpers::readWords(params.inDictFile, params.separator);
-        if (params.nWords > 0 and static_cast<size_t>(params.nWords) < dict.size())
-        {
-            dict.resize(params.nWords);
-        }
-
         vector<string> patterns = Helpers::readWords(params.inPatternFile, params.separator);
-        if (params.nPatterns > 0 and static_cast<size_t>(params.nPatterns) < patterns.size())
-        {
-            patterns.resize(params.nPatterns);
-        }
+       
+        filterInput(dict, patterns);
 
         cout << "=====" << endl;
         cout << boost::format("Read #words = %1%, #queries = %2%") % dict.size() % patterns.size() << endl;
+     
         runFingerprints(dict, patterns);
     }
     catch (const exception &e)
@@ -193,6 +190,34 @@ void runFingerprints(const vector<string> &words, const vector<string> &patterns
     cout << "Got #matches = " << nMatches << endl;
 
     dumpRunInfo(fingerprints.getElapsedUs(), words, patterns);
+}
+
+void filterInput(vector<string> &dict, vector<string> &patterns)
+{
+    if (params.nWords > 0 and static_cast<size_t>(params.nWords) < dict.size())
+    {
+        dict.resize(params.nWords);
+    }
+    
+    if (params.nPatterns > 0 and static_cast<size_t>(params.nPatterns) < patterns.size())
+    {
+        patterns.resize(params.nPatterns);
+    }
+    
+    if (params.patternSize > 0)
+    {
+        for (auto it = patterns.begin(); it != patterns.end(); )
+        {
+            if (it->size() != static_cast<size_t>(params.patternSize))
+            {
+                it = patterns.erase(it);
+            }
+            else
+            {
+                ++it;
+            }
+        }
+    }
 }
 
 void dumpParamInfoToStdout(int fingSizeB)

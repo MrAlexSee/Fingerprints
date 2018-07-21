@@ -836,7 +836,7 @@ bool Fingerprints<FING_T>::isLevAMK(const char *str1, size_t size1, const char *
     {
         levV1[0] = i + 1;
 
-        size_t left = max(1UL, i + 1 - k);
+        size_t left = max(static_cast<size_t>(1), i + 1 - k);
         size_t right = min(size1 + 1, i + k + 2);
 
         size_t j = left;

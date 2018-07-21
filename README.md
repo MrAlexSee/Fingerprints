@@ -33,10 +33,11 @@ Short name | Long name                | Parameter description
 `-h`       | `--help`                 | display help message
 `-i`       | `--in-dict-file arg`     | input dictionary file path (positional arg 1)
 `-I`       | `--in-pattern-file arg`  | input pattern file path (positional arg 2)
-`-k`       | `--approx arg`           | perform approximate search (Hamming distance) for k errors
+`-k`       | `--approx arg`           | perform approximate search (Hamming or Levenshtein) for k errors
 `-l`       | `--letters-type arg`     | letters type: 0 -> common, 1 -> mixed, 2 -> rare (default = 0)
 `-o`       | `--out-file arg`         | output file path
-`-p`       | `--pattern-count arg`    | maximum number of patterns read from top of the patterns file
+`-p`       | `--pattern-count arg`    | maximum number of patterns read from top of the pattern file
+&nbsp;     | `--pattern-size arg`     | if set, only patterns of this size (letter count) will be read from the pattern file
 `-s`       | `--separator arg`        | input data (dictionary and patterns) separator
 `-v`       | `--version`              | display version info
 `-w`       | `--word-count arg`       | maximum number of words read from top of the dictionary file
