@@ -20,7 +20,7 @@ pSingleSize = False
 # Number of letters per word.
 pWordSize = 5
 # Range of number of letters per word.
-pWordSizeRange = range(1, 32 + 1, 1)
+pWordSizeRange = range(2, 34 + 1, 1)
 
 # Total number of words.
 pNWords = 1000
@@ -29,8 +29,10 @@ pNWords = 1000
 pOutFile = "dict.txt"
 
 def genWord(wordSize, letters, freqList):
-    pFreq = [0.01 * f for f in freqList]
-    curLetters = np.random.choice(letters, size = wordSize, replace = True, p = pFreq)
+    fracFreqList = [0.01 * f for f in freqList]
+    
+    assert len(letters) == len(fracFreqList)
+    curLetters = np.random.choice(letters, size = wordSize, replace = True, p = fracFreqList)
 
     return "".join(curLetters)
 
@@ -68,7 +70,7 @@ def main():
     with open(outFileName, "w") as f:
         f.write("\n".join(words))
 
-    print "Dumped to: {0}, #words = {1}".format(outFileName, len(words))
+    print "Dumped to: {0}, total #words = {1}".format(outFileName, len(words))
 
 if __name__ == "__main__":
     main()
