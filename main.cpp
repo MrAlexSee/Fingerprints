@@ -193,15 +193,16 @@ void runFingerprints(const vector<string> &words, const vector<string> &patterns
    
     if (params.calcRejection)
     {
-
+        float rejectedFrac = fingerprints.testRejection(patterns, params.kApprox);
+        cout << boost::format("Rejected ratio = %1%%%") % rejectedFrac << endl;
     }
     else
     {
         int nMatches = fingerprints.test(patterns, params.kApprox);
         cout << "Got #matches = " << nMatches << endl;
-    }
 
-    dumpRunInfo(fingerprints.getElapsedUs(), words, patterns);
+        dumpRunInfo(fingerprints.getElapsedUs(), words, patterns);
+    }
 }
 
 void filterInput(vector<string> &dict, vector<string> &patterns)

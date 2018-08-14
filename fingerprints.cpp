@@ -159,6 +159,28 @@ int Fingerprints<FING_T>::test(const vector<string> &patterns, int k)
 }
 
 template<typename FING_T>
+float Fingerprints<FING_T>::testRejection(const vector<string> &patterns, int k)
+{
+    if (k < 0)
+    {
+        throw runtime_error("bad k: " + to_string(k));
+    }
+
+    float res;
+
+    if (useHamming)
+    {
+        res = testRejectionHamming(patterns, k);
+    }
+    else
+    {
+        res = testRejectionLeven(patterns, k);
+    }
+
+    return res;
+}
+
+template<typename FING_T>
 void Fingerprints<FING_T>::preprocessFingerprints(vector<string> words)
 {
     size_t wordCountsBySize[maxWordSize + 1];
@@ -374,6 +396,42 @@ int Fingerprints<FING_T>::testWordsLeven(const vector<string> &patterns, int k)
     }
 
     return nMatches;
+}
+
+template<typename FING_T>
+float Fingerprints<FING_T>::testRejectionHamming(const vector<string> &patterns, int k)
+{
+    int nRejected = 0, nTested = 0;
+
+    for (const string &pattern : patterns) 
+    {
+        const size_t curSize = pattern.size();
+        const FING_T patFingerprint = calcFingerprintFun(pattern.c_str(), curSize);
+
+        char *curEntry = fingArrayEntries[curSize];
+        char *nextEntry = fingArrayEntries[curSize + 1];
+
+        while (curEntry != nextEntry)
+        {
+            if (calcNErrors(patFingerprint, *(reinterpret_cast<FING_T *>(curEntry))) > k)
+            {
+                nRejected += 1;
+            }
+
+            curEntry += sizeof(FING_T);
+            curEntry += curSize;
+        
+            nTested += 1;
+        }
+    }
+
+    return static_cast<float>(nRejected) / nTested;
+}
+
+template<typename FING_T>
+float Fingerprints<FING_T>::testRejectionLeven(const vector<string> &patterns, int k)
+{
+    return 0.0f;
 }
 
 template<typename FING_T>

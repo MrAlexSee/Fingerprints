@@ -26,9 +26,14 @@ public:
     /** Constructs an array which stores [words],
      * if [useFingerprints] is true together with their corresponding fingerprints. */
     void preprocess(const vector<string> &words);
+
     /** Performs approximate matching for [patterns] and [k] errors.
      * Returns the total number of matches. Sets elapsedUs to time elapsed during this matching. */
     int test(const vector<string> &patterns, int k);
+
+    /** Performs approximate matching for [patterns] and [k] errors using fingerprints.
+     * Returns the fraction of words which were rejected by fingerprints. */
+    float testRejection(const vector<string> &patterns, int k);
 
     float getElapsedUs() const { return elapsedUs; }
 
@@ -55,6 +60,15 @@ private:
     /** Performs approximate matching for [patterns] and [k] errors without fingerprints for Levenshtein distance.
      * Returns the total number of matches. Sets elapsedUs to time elapsed during this matching. */
     int testWordsLeven(const vector<string> &patterns, int k);
+
+    /** Performs approximate matching for [patterns] and [k] errors using fingerprints for Hamming distance.
+     * Returns the fraction of words which were rejected by fingerprints. */
+    float testRejectionHamming(const vector<string> &patterns, int k);
+
+    /** Performs approximate matching for [patterns] and [k] errors using fingerprints for Levenshtein distance.
+     * Returns the fraction of words which were rejected by fingerprints. */
+    float testRejectionLeven(const vector<string> &patterns, int k);
+
 
     void initNErrorsLUT();
     
