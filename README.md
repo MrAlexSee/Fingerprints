@@ -27,6 +27,7 @@ Unit tests are located in the `unit_tests` folder and they can be run by issuing
 
 Short name | Long name                | Parameter description
 ---------- | ------------------------ | ---------------------
+&nbsp;     | `--calc-rejection`       | calculate percentages of rejected words instead of measuring time
 `-d`       | `--dump`                 | dump input files and params info with elapsed time and throughput to output file (useful for testing)
 `-D`       | `--distance arg`         | distance metric: 0 &rarr; Hamming, 1 &rarr; Levenshtein (default = 0)
 `-f`       | `--fingerprint-type arg` | fingerprint type: -1 &rarr; no fingerprints, 0 &rarr; occurrence, 1 &rarr; count, 2 &rarr; position, 3 &rarr; occurrence halved (default = 0)
