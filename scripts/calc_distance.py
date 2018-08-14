@@ -9,11 +9,11 @@ pInDictFile = "../data/dict_iamerican_insane.txt"
 # Input patterns file path.
 pInPatternsFile = "../data/queries_iamerican_insane_8.txt"
 
-# Set to false in order to use Levenshtein distance.
-pUseHamming = False
+# Set to true to use Hamming distance, set to false to use Levenshtein distance.
+pUseHamming = True
 
 # Number of patterns, set to -1 to ignore.
-pNPatterns = 50
+pNPatterns = 3
 # Number of mismatches.
 pK = 1 
 
@@ -59,7 +59,7 @@ def main():
     nTotalMatches = 0
 
     for iP, pattern in enumerate(patterns):
-        print "\nPattern: {0} ({1}/{2})".format(pattern, iP + 1, len(patterns))
+        print "\nTesting pattern: {0} ({1}/{2})".format(pattern, iP + 1, len(patterns))
         matches = set()
 
         for iW, word in enumerate(words):
@@ -68,12 +68,12 @@ def main():
 
         print "#matches = {0}".format(len(matches))
         
-        if len(matches):
+        if matches:
             print "Matches: {0}".format(list(matches))
 
         nTotalMatches += len(matches)
 
-    print "\nTotal #matches = {0} for k = {1}".format(nTotalMatches, pK)
+    print "\nTotal #matches = {0} for #patterns = {1} for k = {2}".format(nTotalMatches, len(patterns), pK)
 
 if __name__ == "__main__":
     main()
