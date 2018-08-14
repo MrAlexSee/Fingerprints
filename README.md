@@ -19,7 +19,7 @@ Basic usage: `./fingerprints [options] <input dictionary file> <input pattern fi
 
 Input dictionary file (positional parameter 1 or named parameter `-i` or `--in-dict-file`) should contain the list of words, separated with newline characters.
 Input pattern file (positional parameter 2 or named parameter `-I` or `--in-pattern-file`) should contain the list of patterns, separated with newline characters.
-Attached as part of this package is a script `run_all.sh`, which allows for processing multiple input dictionary and pattern files.
+Attached as part of this package are scripts `test_real.sh` for testing on real-world data and `test_synth.sh` for testing on synthetic data.
 
 Unit tests are located in the `unit_tests` folder and they can be run by issuing the `make run` command in that folder.
 
