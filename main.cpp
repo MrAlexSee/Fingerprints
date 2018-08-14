@@ -72,6 +72,7 @@ int handleParams(int argc, const char **argv)
 {
     po::options_description options("Parameters");
     options.add_options()
+       ("calc-rejection", "calculate percentages of rejected words instead of measuring time")
        ("dump,d", "dump input files and params info with elapsed time and throughput to output file (useful for testing)")
        ("distance,D", po::value<int>(&params.distanceType), "distance metric: 0 -> Hamming, 1 -> Levenshtein (default = 0)")
        ("fingerprint-type,f", po::value<int>(&params.fingerprintType), "fingerprint type: -1 -> no fingerprints, 0 -> occurrence, 1 -> count, 2 -> position, 3 -> occurrence halved (default = 0)")
@@ -124,6 +125,10 @@ int handleParams(int argc, const char **argv)
         return params.errorExitCode;
     }
 
+    if (vm.count("calc-rejection"))
+    {
+        params.calcRejection = true;
+    }
     if (vm.count("dump"))
     {
         params.dumpToFile = true;
@@ -186,8 +191,15 @@ void runFingerprints(const vector<string> &words, const vector<string> &patterns
     cout << "Preprocessed #words = " << words.size() << endl;
     cout << "Testing #queries = " << patterns.size() << endl;
    
-    int nMatches = fingerprints.test(patterns, params.kApprox);
-    cout << "Got #matches = " << nMatches << endl;
+    if (params.calcRejection)
+    {
+
+    }
+    else
+    {
+        int nMatches = fingerprints.test(patterns, params.kApprox);
+        cout << "Got #matches = " << nMatches << endl;
+    }
 
     dumpRunInfo(fingerprints.getElapsedUs(), words, patterns);
 }

@@ -17,6 +17,9 @@ struct Params
 
     // These parameters are set by handleParams() in main.cpp after parsing command line args.
 
+    /** Calculate percentages of rejected words instead of measuring time. */
+    bool calcRejection = false;
+
     /** Dump input files and params info with elapsed and throughput to output file. Cmd arg -d. */
     bool dumpToFile = false;
 
