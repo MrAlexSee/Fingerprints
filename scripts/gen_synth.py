@@ -23,7 +23,7 @@ pWordSize = 5
 pWordSizeRange = range(2, 34 + 1, 1)
 
 # Total number of words.
-pNWords = 1000
+pNWords = 500000
 
 # Output (base) file path.
 pOutFile = "dict.txt"
@@ -70,7 +70,8 @@ def main():
     with open(outFileName, "w") as f:
         f.write("\n".join(words))
 
-    print "Dumped to: {0}, total #words = {1}".format(outFileName, len(words))
+    totalSizeMB = float(sum([len(word) for word in words])) / 1000000.0
+    print "Dumped to: {0}, total #words = {1}, total size = {2:.2f} MB".format(outFileName, len(words), totalSizeMB)
 
 if __name__ == "__main__":
     main()
