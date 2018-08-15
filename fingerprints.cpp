@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <bitset>
 #include <cassert>
+#include <climits>
 #include <cstring>
 #include <chrono>
 #include <iostream>
@@ -33,8 +34,8 @@ Fingerprints<FING_T>::Fingerprints(int distanceType, int fingerprintType, int le
     {
         useHamming = false;
         
-        levV0 = new size_t[maxWordSize];
-        levV1 = new size_t[maxWordSize];
+        levV0 = new int[maxWordSize];
+        levV1 = new int[maxWordSize];
     }
 
     switch (static_cast<FingerprintType>(fingerprintType))
@@ -885,7 +886,7 @@ unsigned char Fingerprints<FING_T>::calcNErrors(FING_T f1, FING_T f2) const
 }
 
 template<typename FING_T>
-bool Fingerprints<FING_T>::isHamAMK(const char *str1, const char *str2, size_t size, int k)
+bool Fingerprints<FING_T>::isHamAMK(const char *str1, const char *str2, const size_t size, const int k)
 {
     // With compiler optimizations, this version is faster than any bitwise/avx/sse magic (tested).
     int nErrors = 0;
@@ -907,52 +908,78 @@ bool Fingerprints<FING_T>::isHamAMK(const char *str1, const char *str2, size_t s
 }
 
 // Calculates only the 2k + 1 strip since we are only interested in distance <= k.
+// Attribution: based on: https://commons.apache.org/sandbox/commons-text/jacoco/org.apache.commons.text.similarity/LevenshteinDistance.java.html
 template<typename FING_T>
-bool Fingerprints<FING_T>::isLevAMK(const char *str1, size_t size1, const char *str2, size_t size2, int k)
+bool Fingerprints<FING_T>::isLevAMK(const char *str1, const size_t size1, const char *str2, const size_t size2, const int k)
 {
-    if (k == 0)
+    const int size1s = size1;
+    const int size2s = size2;
+
+    if (size1s == 0)
     {
-        if (size1 == size2)
-        {
-            return strncmp(str1, str2, size1) == 0;
-        }
-        else
+        return size2s <= k;
+    }
+    else if (size2s == 0)
+    {
+        return size1s <= k;
+    }
+
+    const int boundary = min(size1s, k) + 1;
+    
+    for (int i1 = 0; i1 < boundary; ++i1)
+    {
+        levV0[i1] = i1;
+    }
+    for (int i1 = boundary; i1 <= size1s; ++i1)
+    {
+        levV0[i1] = INT_MAX;
+    }
+
+    for (int i2 = 0; i2 <= size1s; ++i2)
+    {
+        levV1[i2] = INT_MAX;
+    }
+
+    for (int i = 1; i <= size2s; ++i)
+    {
+        levV1[0] = i;
+
+        int left = max(1, i - k);
+        int right = min(size1s, i + k);
+
+        if (left > right)
         {
             return false;
         }
-    }
-
-    for (size_t j = 0; j < size1 + 1; ++j)
-    {
-        levV0[j] = j;
-    }
-
-    for (size_t i = 0; i < size2; ++i)
-    {
-        levV1[0] = i + 1;
-
-        size_t left = max(static_cast<size_t>(1), i + 1 - k);
-        size_t right = min(size1 + 1, i + k + 2);
-
-        size_t j = left;
-        const char curC = str2[i];
-
-        levV1[j] = (curC != str1[j-1] ? 1 + min(levV0[j-1], levV0[j]) : levV0[j-1]);
-
-        for (j = left + 1; j < right - 1; ++j)
+        if (left > 1)
         {
-            levV1[j] = (curC != str1[j-1] ? 1 + min(min(levV0[j-1], levV0[j]), levV1[j-1]) : levV0[j-1]);
+            levV1[left - 1] = INT_MAX;
         }
 
-        j = right - 1;
-        levV1[j] = (curC != str1[j-1] ? 1 + min(levV0[j-1], levV1[j-1]) : levV0[j-1]);
+        const char c = str2[i - 1];
+        assert(c != '\0');
 
-        size_t *temp = levV0;
+        for (int iCur = left; iCur <= right; ++iCur)
+        {
+            const char curC = str1[iCur - 1];
+            assert(curC != '\0');
+
+            if (curC == c)
+            {
+                levV1[iCur] = levV0[iCur - 1];               
+            }
+            else
+            {
+                levV1[iCur] = 1 + min(min(levV1[iCur - 1], levV0[iCur]), levV0[iCur - 1]);
+            }
+        }
+
+        int *temp = levV0;
         levV0 = levV1;
         levV1 = temp;
     }
 
-    return levV0[size1] <= static_cast<size_t>(k);
+    return levV0[size1] <= k;
 }
 
 } // namespace fingerprints

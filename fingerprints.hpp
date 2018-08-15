@@ -124,10 +124,11 @@ private:
     unsigned char calcNErrors(FING_T f1, FING_T f2) const;
 
     /** Returns true if Hamming distance between [str1] and [str2] both of [size] is at most [k] (i.e. <= k). */
-    static bool isHamAMK(const char *str1, const char *str2, size_t size, int k);
+    static bool isHamAMK(const char *str1, const char *str2, const size_t size, const int k);
 
-    /** Returns true if Levenshtein distance between [str1] of [size1] and [str2] of [size2] is at most [k] (i.e. <= k). */
-    bool isLevAMK(const char *str1, size_t size1, const char *str2, size_t size2, int k);
+    /** Returns true if Levenshtein distance between [str1] of [size1] and [str2] of [size2] is at most [k] (i.e. <= k).
+     * Uses the 2k + 1 strip. */
+    bool isLevAMK(const char *str1, size_t size1, const char *str2, const size_t size2, const int k);
 
     /** Elapsed time in microseconds. */
     float elapsedUs = 0.0f;
@@ -165,10 +166,10 @@ private:
     /** Stores the number of fingerprint mismatches resulting from fingerprint comparison. */
     unsigned char *nMismatchesLUT = nullptr;
 
-    /** Stores intermediate results of Levenshtein distance calculation. */
-    size_t *levV0 = nullptr;
-    /** Stores intermediate results of Levenshtein distance calculation. */
-    size_t *levV1 = nullptr;
+    /** Stores intermediate results of Levenshtein distance calculation (previous array). */
+    int *levV0 = nullptr;
+    /** Stores intermediate results of Levenshtein distance calculation (current array). */
+    int *levV1 = nullptr;
 
     /*
      *** FINGERPRINT LETTER COLLECTIONS
