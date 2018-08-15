@@ -425,13 +425,50 @@ float Fingerprints<FING_T>::testRejectionHamming(const vector<string> &patterns,
         }
     }
 
+    if (nTested == 0)
+    {
+        return 0.0f;
+    }
+
     return static_cast<float>(nRejected) / nTested;
 }
 
 template<typename FING_T>
 float Fingerprints<FING_T>::testRejectionLeven(const vector<string> &patterns, int k)
 {
-    return 0.0f;
+    int nRejected = 0, nTested = 0;
+
+    for (const string &pattern : patterns) 
+    {
+        const size_t patSize = pattern.size();
+        const FING_T patFingerprint = calcFingerprintFun(pattern.c_str(), patSize);
+
+        for (size_t curSize = 1; curSize <= maxWordSize; ++curSize)
+        {
+            char *curEntry = fingArrayEntries[curSize];
+            char *nextEntry = fingArrayEntries[curSize + 1];
+
+            while (curEntry != nextEntry)
+            {
+                if (calcNErrors(patFingerprint, *(reinterpret_cast<FING_T *>(curEntry))) > k)
+                {
+                    nRejected += 1;
+                }
+
+                curEntry += sizeof(FING_T);
+                curEntry += curSize;
+            
+                nTested += 1;
+            }
+        }
+    }
+
+    if (nTested == 0)
+    {
+        return 0.0f;
+    }
+
+    return static_cast<float>(nRejected) / nTested;
 }
 
 template<typename FING_T>

@@ -31,7 +31,7 @@ public:
      * Returns the total number of matches. Sets elapsedUs to time elapsed during this matching. */
     int test(const vector<string> &patterns, int k);
 
-    /** Performs approximate matching for [patterns] and [k] errors using fingerprints.
+    /** Tests [patterns] for [k] errors using fingerprints.
      * Returns the fraction of words which were rejected by fingerprints. */
     float testRejection(const vector<string> &patterns, int k);
 
@@ -61,11 +61,11 @@ private:
      * Returns the total number of matches. Sets elapsedUs to time elapsed during this matching. */
     int testWordsLeven(const vector<string> &patterns, int k);
 
-    /** Performs approximate matching for [patterns] and [k] errors using fingerprints for Hamming distance.
+    /** Tests [patterns] for [k] errors using fingerprints for Hamming distance.
      * Returns the fraction of words which were rejected by fingerprints. */
     float testRejectionHamming(const vector<string> &patterns, int k);
 
-    /** Performs approximate matching for [patterns] and [k] errors using fingerprints for Levenshtein distance.
+    /** Tests [patterns] for [k] errors using fingerprints for Levenshtein distance.
      * Returns the fraction of words which were rejected by fingerprints. */
     float testRejectionLeven(const vector<string> &patterns, int k);
 
