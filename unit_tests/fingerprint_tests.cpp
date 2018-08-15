@@ -377,6 +377,63 @@ TEST_CASE("is searching words for k = 2 for Levenshtein one-by-one correct", "[f
     }
 }
 
+TEST_CASE("is calculating rejection for k = 1 for occurrence common fingerprints correct", "[fingerprints]")
+{
+    vector<string> words { "kotaa", "jacek", "piesy" };
+    
+    vector<string> patternsMixed { "zzzzz", "kotaa" };
+    vector<string> patternsOut { "zzzzz", "qzxyu" };
+
+    // Distance type shouldn't matter for rejection calculation.
+    for (int distanceType : distanceTypes)
+    {
+        // Passing fingerprint type 0 -- occurrence, letters type 0 - common (etaoinshrdlcumwf).
+        Fingerprints<FING_T> fingerprints(distanceType, 0, 0);
+        fingerprints.preprocess(words);
+
+        REQUIRE(fingerprints.testRejection(patternsMixed, 1) == 1.0f);
+        REQUIRE(fingerprints.testRejection(patternsOut, 1) == Approx(0.666f));
+    }
+}
+
+TEST_CASE("is calculating rejection for k = 1 for occurrence mixed fingerprints correct", "[fingerprints]")
+{
+    vector<string> words { "kotaa", "jacek", "piesy" };
+    
+    vector<string> patternsMixed { "zzzzz", "kotaa" };
+    vector<string> patternsOut { "zzzzz", "mcuyu" };
+
+    // Distance type shouldn't matter for rejection calculation.
+    for (int distanceType : distanceTypes)
+    {
+        // Passing fingerprint type 0 -- occurrence, letters type 1 - mixed (etaoinshzqxjkvbp).
+        Fingerprints<FING_T> fingerprints(distanceType, 0, 1);
+        fingerprints.preprocess(words);
+
+        REQUIRE(fingerprints.testRejection(patternsMixed, 1) == 1.0f);
+        REQUIRE(fingerprints.testRejection(patternsOut, 1) == Approx(0.666f));
+    }
+}
+
+TEST_CASE("is calculating rejection for k = 1 for occurrence rare fingerprints correct", "[fingerprints]")
+{
+    vector<string> words { "kbpyy", "jacek", "piesy" };
+    
+    vector<string> patternsMixed { "zzzzz", "kotaa" };
+    vector<string> patternsOut { "zzzzz", "etaoi" };
+
+    // Distance type shouldn't matter for rejection calculation.
+    for (int distanceType : distanceTypes)
+    {
+        // Passing fingerprint type 0 -- occurrence, letters type 2 - rare (zqxjkvbpygfwmucl).
+        Fingerprints<FING_T> fingerprints(distanceType, 0, 2);
+        fingerprints.preprocess(words);
+
+        REQUIRE(fingerprints.testRejection(patternsMixed, 1) == 1.0f);
+        REQUIRE(fingerprints.testRejection(patternsOut, 1) == Approx(0.666f));
+    }
+}
+
 TEST_CASE("is initializing errors LUT correct", "[fingerprints]")
 {
     for (int distanceType : distanceTypes)
