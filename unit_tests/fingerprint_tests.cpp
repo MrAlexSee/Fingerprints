@@ -335,7 +335,7 @@ TEST_CASE("is searching words for k = 2 for Levenshtein correct", "[fingerprints
     vector<string> words { "ala", "kota", "jarek", "psa", "pies", "stolik" };
     
     vector<string> patternsIn { "blb", "kota", "alla", "allla", "jak", "jarrrek", "stok", "stol" };
-    vector<string> patternsOut { "not", "in", "this", "dict" };
+    vector<string> patternsOut { "isnot", "in", "this", "dict" };
 
     for (int fingerprintType : fingerprintTypes)
     {
@@ -355,7 +355,7 @@ TEST_CASE("is searching words for k = 2 for Levenshtein one-by-one correct", "[f
     vector<string> words { "ala", "kota", "jarek", "psa", "pies", "stolik" };
     
     vector<string> patternsIn { "blb", "kota", "alla", "allla", "jak", "jarrrek", "stok", "stol" };
-    vector<string> patternsOut { "not", "in", "this", "dict" };
+    vector<string> patternsOut { "isnot", "in", "this", "dict" };
 
     for (int fingerprintType : fingerprintTypes)
     {
@@ -381,8 +381,8 @@ TEST_CASE("is calculating rejection for k = 1 for occurrence common fingerprints
 {
     vector<string> words { "kotaa", "jacek", "piesy" };
     
-    vector<string> patternsMixed { "zzzzz", "kotaa" };
     vector<string> patternsOut { "zzzzz", "qzxyu" };
+    vector<string> patternsMixed { "zzzzz", "kotaa" };
 
     // Distance type shouldn't matter for rejection calculation.
     for (int distanceType : distanceTypes)
@@ -391,8 +391,8 @@ TEST_CASE("is calculating rejection for k = 1 for occurrence common fingerprints
         Fingerprints<FING_T> fingerprints(distanceType, 0, 0);
         fingerprints.preprocess(words);
 
-        REQUIRE(fingerprints.testRejection(patternsMixed, 1) == 1.0f);
-        REQUIRE(fingerprints.testRejection(patternsOut, 1) == Approx(0.666f));
+        REQUIRE(fingerprints.testRejection(patternsOut, 1) == 1.0f);
+        REQUIRE(fingerprints.testRejection(patternsMixed, 1) == Approx(0.8333333f));
     }
 }
 
@@ -400,8 +400,8 @@ TEST_CASE("is calculating rejection for k = 1 for occurrence mixed fingerprints 
 {
     vector<string> words { "kotaa", "jacek", "piesy" };
     
-    vector<string> patternsMixed { "zzzzz", "kotaa" };
     vector<string> patternsOut { "zzzzz", "mcuyu" };
+    vector<string> patternsMixed { "zzzzz", "kotaa" };
 
     // Distance type shouldn't matter for rejection calculation.
     for (int distanceType : distanceTypes)
@@ -410,17 +410,17 @@ TEST_CASE("is calculating rejection for k = 1 for occurrence mixed fingerprints 
         Fingerprints<FING_T> fingerprints(distanceType, 0, 1);
         fingerprints.preprocess(words);
 
-        REQUIRE(fingerprints.testRejection(patternsMixed, 1) == 1.0f);
-        REQUIRE(fingerprints.testRejection(patternsOut, 1) == Approx(0.666f));
+        REQUIRE(fingerprints.testRejection(patternsOut, 1) == 1.0f);
+        REQUIRE(fingerprints.testRejection(patternsMixed, 1) == Approx(0.8333333f));
     }
 }
 
 TEST_CASE("is calculating rejection for k = 1 for occurrence rare fingerprints correct", "[fingerprints]")
 {
-    vector<string> words { "kbpyy", "jacek", "piesy" };
+    vector<string> words { "kbpyy", "jacek", "piecy" };
     
-    vector<string> patternsMixed { "zzzzz", "kotaa" };
     vector<string> patternsOut { "zzzzz", "etaoi" };
+    vector<string> patternsMixed { "zzzzz", "jarek" };
 
     // Distance type shouldn't matter for rejection calculation.
     for (int distanceType : distanceTypes)
@@ -429,8 +429,8 @@ TEST_CASE("is calculating rejection for k = 1 for occurrence rare fingerprints c
         Fingerprints<FING_T> fingerprints(distanceType, 0, 2);
         fingerprints.preprocess(words);
 
-        REQUIRE(fingerprints.testRejection(patternsMixed, 1) == 1.0f);
-        REQUIRE(fingerprints.testRejection(patternsOut, 1) == Approx(0.666f));
+        REQUIRE(fingerprints.testRejection(patternsOut, 1) == 1.0f);
+        REQUIRE(fingerprints.testRejection(patternsMixed, 1) == Approx(0.8333333f));
     }
 }
 
