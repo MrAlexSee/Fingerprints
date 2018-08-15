@@ -194,7 +194,7 @@ void runFingerprints(const vector<string> &words, const vector<string> &patterns
     if (params.calcRejection)
     {
         float rejectedFrac = fingerprints.testRejection(patterns, params.kApprox);
-        cout << boost::format("Rejected ratio = %1%%%") % rejectedFrac << endl;
+        cout << boost::format("Rejected ratio = %1%%%") % (100.0f * rejectedFrac) << endl;
     }
     else
     {
@@ -235,7 +235,10 @@ void filterInput(vector<string> &dict, vector<string> &patterns)
 
 void dumpParamInfoToStdout(int fingSizeB)
 {
-    cout << "Using distance type: " << params.distanceType << endl;
+    using DType = Fingerprints<FING_T>::DistanceType;
+    string distanceStr = (static_cast<DType>(params.distanceType) == DType::Hamming) ? "Hamming" : "Levenshtein";
+
+    cout << "Using distance: " << distanceStr << endl;
     cout << boost::format("Using fingerprint size: %1% bytes") % fingSizeB << endl; 
     
     if (params.fingerprintType == -1)
@@ -256,10 +259,10 @@ void dumpRunInfo(float elapsedUs, const vector<string> &words, const vector<stri
     float elapsedS = elapsedUs / 1'000'000;
 
     size_t dictSizeB = Helpers::getTotalSize(words);
-    float dictSizeMB = static_cast<float>(dictSizeB) / 1'000'000.0;
+    float dictSizeMB = static_cast<float>(dictSizeB) / 1'000'000.0f;
 
     float throughputMBs = dictSizeMB / (elapsedS / patterns.size());
-    float elapsedPerWordNs = (1'000.0 * elapsedUs) / (words.size() * patterns.size());
+    float elapsedPerWordNs = (1'000.0f * elapsedUs) / (words.size() * patterns.size());
 
     cout << boost::format("Elapsed = %1% us, per word = %2% ns, throughput = %3% MB/s")
         % elapsedUs % elapsedPerWordNs % throughputMBs << endl;

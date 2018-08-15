@@ -37,6 +37,10 @@ public:
 
     float getElapsedUs() const { return elapsedUs; }
 
+    enum class DistanceType { Hamming = 0, Leven = 1 };
+    enum class FingerprintType { NoFing = -1, Occ = 0, Count = 1, Pos = 2, OccHalved = 3 };
+    enum class LettersType { Common = 0, Mixed = 1, Rare = 2 };
+
 private:
     /*
      *** INITIALIZIATION
@@ -69,7 +73,7 @@ private:
      * Returns the fraction of words which were rejected by fingerprints. */
     float testRejectionLeven(const vector<string> &patterns, int k);
 
-
+    /** Initializes a lookup table for true number of errors based on fingerprints errors. */
     void initNErrorsLUT();
     
     /** Initializes the character map for [fingerprintType] (occurrence, count) and [lettersType] (common, mixed, rare). */
@@ -131,10 +135,6 @@ private:
     /*
      *** CONSTANTS
      */
-
-    enum class DistanceType { Hamming = 0, Leven = 1 };
-    enum class FingerprintType { NoFing = -1, Occ = 0, Count = 1, Pos = 2, OccHalved = 3 };
-    enum class LettersType { Common = 0, Mixed = 1, Rare = 2 };
 
     static constexpr size_t maxWordSize = 255;
     static constexpr size_t charsMapSize = 255;
