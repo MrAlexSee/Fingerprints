@@ -479,7 +479,7 @@ void Fingerprints<FING_T>::initNErrorsLUT()
 
     for (size_t i = 0; i <= fingSizeBits; ++i)
     {
-        nErrorsLUT[i] = ceil(i / 2.0);
+        nErrorsLUT[i] = ceil(i / 2.0f);
     }
 }
 
