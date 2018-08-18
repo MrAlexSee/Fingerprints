@@ -448,19 +448,39 @@ TEST_CASE("is setting processed words for Hamming for a single word various iter
             Fingerprints<FING_T> fingerprints(0, fingerprintType, lettersType);
             fingerprints.preprocess(words);
 
-            for (int k = 0; k < maxK; ++k)
+            for (int k = 0; k <= maxK; ++k)
             {
                 for (int iIter = 0; iIter < maxNIter; ++iIter)
                 {
                     fingerprints.test(vector<string> { "a" }, k, iIter, true);
-                    REQUIRE(fingerprints.getProcessedWords().size() == 1);
+                    vector<string> processedWords1 = fingerprints.getProcessedWords();
+
+                    REQUIRE(processedWords1.size() == 1);
+                    REQUIRE(processedWords1[0] == "a");
+
                     fingerprints.test(vector<string> { "a" }, k, iIter, false);
                     REQUIRE(fingerprints.getProcessedWordsCount() == 1);
+                    REQUIRE(fingerprints.getProcessedWords().size() == 0);
 
                     fingerprints.test(vector<string> { "ala" }, k, iIter, true);
-                    REQUIRE(fingerprints.getProcessedWords().size() == 1);
+                    vector<string> processedWords2 = fingerprints.getProcessedWords();
+
+                    REQUIRE(processedWords2.size() == 1);
+                    REQUIRE(processedWords2[0] == "ala");
+
                     fingerprints.test(vector<string> { "ala" }, k, iIter, false);
                     REQUIRE(fingerprints.getProcessedWordsCount() == 1);
+                    REQUIRE(fingerprints.getProcessedWords().size() == 0);
+            
+                    fingerprints.test(vector<string> { "ada" }, k, iIter, true);
+                    vector<string> processedWords3 = fingerprints.getProcessedWords();
+
+                    REQUIRE(processedWords3.size() == 1);
+                    REQUIRE(processedWords3[0] == "ala");
+
+                    fingerprints.test(vector<string> { "ada" }, k, iIter, false);
+                    REQUIRE(fingerprints.getProcessedWordsCount() == 1);
+                    REQUIRE(fingerprints.getProcessedWords().size() == 0);
                 }
             }
         }
@@ -480,14 +500,26 @@ TEST_CASE("is setting processed words for Hamming correct", "[fingerprints]")
             fingerprints.preprocess(words);
 
             fingerprints.test(vector<string> { "kk" }, 1, 1, true);
-            REQUIRE(fingerprints.getProcessedWords().size() == 2);
+            vector<string> processedWords1 = fingerprints.getProcessedWords();
+
+            REQUIRE(processedWords1.size() == 2);
+            REQUIRE(find(processedWords1.begin(), processedWords1.end(), "ma") != processedWords1.end());
+            REQUIRE(find(processedWords1.begin(), processedWords1.end(), "da") != processedWords1.end());
+            
             fingerprints.test(vector<string> { "kk" }, 1, 1, false);
             REQUIRE(fingerprints.getProcessedWordsCount() == 2);
+            REQUIRE(fingerprints.getProcessedWords().size() == 0);
 
             fingerprints.test(vector<string> { "jarek" }, 1, 1, true);
-            REQUIRE(fingerprints.getProcessedWords().size() == 2);
+            vector<string> processedWords2 = fingerprints.getProcessedWords();
+
+            REQUIRE(processedWords2.size() == 2);
+            REQUIRE(find(processedWords2.begin(), processedWords2.end(), "jarek") != processedWords2.end());
+            REQUIRE(find(processedWords2.begin(), processedWords2.end(), "szopa") != processedWords2.end());
+            
             fingerprints.test(vector<string> { "jarek" }, 1, 1, false);
             REQUIRE(fingerprints.getProcessedWordsCount() == 2);
+            REQUIRE(fingerprints.getProcessedWords().size() == 0);
         }
     }
 }
@@ -504,19 +536,35 @@ TEST_CASE("is setting processed words for Levenshtein for a single word various 
             Fingerprints<FING_T> fingerprints(1, fingerprintType, lettersType);
             fingerprints.preprocess(words);
 
-            for (int k = 0; k < maxK; ++k)
+            for (int k = 0; k <= maxK; ++k)
             {
                 for (int iIter = 0; iIter < maxNIter; ++iIter)
                 {
                     fingerprints.test(vector<string> { "a" }, k, iIter, true);
-                    REQUIRE(fingerprints.getProcessedWords().size() == 7);
+                    vector<string> processedWords1 = fingerprints.getProcessedWords();
+
+                    REQUIRE(processedWords1.size() == 7);
+                    for (const string &word : words)
+                    {
+                        REQUIRE(find(processedWords1.begin(), processedWords1.end(), word) != processedWords1.end());
+                    }
+
                     fingerprints.test(vector<string> { "a" }, k, iIter, false);
                     REQUIRE(fingerprints.getProcessedWordsCount() == 7);
+                    REQUIRE(fingerprints.getProcessedWords().size() == 0);
 
                     fingerprints.test(vector<string> { "ala" }, k, iIter, true);
-                    REQUIRE(fingerprints.getProcessedWords().size() == 7);
+                    vector<string> processedWords2 = fingerprints.getProcessedWords();
+
+                    REQUIRE(processedWords2.size() == 7);
+                    for (const string &word : words)
+                    {
+                        REQUIRE(find(processedWords2.begin(), processedWords2.end(), word) != processedWords2.end());
+                    }
+
                     fingerprints.test(vector<string> { "ala" }, k, iIter, false);
                     REQUIRE(fingerprints.getProcessedWordsCount() == 7);
+                    REQUIRE(fingerprints.getProcessedWords().size() == 0);
                 }
             }
         }
@@ -536,14 +584,30 @@ TEST_CASE("is setting processed words for Levenshtein correct", "[fingerprints]"
             fingerprints.preprocess(words);
 
             fingerprints.test(vector<string> { "kk" }, 1, 1, true);
-            REQUIRE(fingerprints.getProcessedWords().size() == 9);
+            vector<string> processedWords1 = fingerprints.getProcessedWords();
+
+            REQUIRE(processedWords1.size() == 9);
+            for (const string &word : words)
+            {
+                REQUIRE(find(processedWords1.begin(), processedWords1.end(), word) != processedWords1.end());
+            }
+
             fingerprints.test(vector<string> { "kk" }, 1, 1, false);
             REQUIRE(fingerprints.getProcessedWordsCount() == 9);
+            REQUIRE(fingerprints.getProcessedWords().size() == 0);
 
             fingerprints.test(vector<string> { "jarek" }, 1, 1, true);
-            REQUIRE(fingerprints.getProcessedWords().size() == 9);
+            vector<string> processedWords2 = fingerprints.getProcessedWords();
+
+            REQUIRE(processedWords2.size() == 9);
+            for (const string &word : words)
+            {
+                REQUIRE(find(processedWords2.begin(), processedWords2.end(), word) != processedWords2.end());
+            }
+
             fingerprints.test(vector<string> { "jarek" }, 1, 1, false);
             REQUIRE(fingerprints.getProcessedWordsCount() == 9);
+            REQUIRE(fingerprints.getProcessedWords().size() == 0);
 
         }
     }
