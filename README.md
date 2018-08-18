@@ -34,6 +34,7 @@ Short name | Long name                | Parameter description
 `-h`       | `--help`                 | display help message
 `-i`       | `--in-dict-file arg`     | input dictionary file path (positional arg 1)
 `-I`       | `--in-pattern-file arg`  | input pattern file path (positional arg 2)
+&nbsp;     | `--iter arg`             | number of iterations per query lookup (default = 1)
 `-k`       | `--approx arg`           | perform approximate search (Hamming or Levenshtein) for k errors
 `-l`       | `--letters-type arg`     | letters type: 0 &rarr; common, 1 &rarr; mixed, 2 &rarr; rare (default = 0)
 `-o`       | `--out-file arg`         | output file path
