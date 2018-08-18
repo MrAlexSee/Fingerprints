@@ -45,7 +45,7 @@ void filterInput(vector<string> &dict, vector<string> &patterns);
 void runFingerprints(const vector<string> &words, const vector<string> &patterns);
 
 void dumpParamInfoToStdout(int fingSizeB);
-void dumpRunInfo(float elapsedUs, const vector<string> &words, const vector<string> &patterns);
+void dumpRunInfo(float elapsedUs, const vector<string> &words, const vector<string> &processedWords);
 
 }
 
@@ -206,7 +206,9 @@ void runFingerprints(const vector<string> &words, const vector<string> &patterns
         float elapsedPerIterUs = elapsedTotalUs / static_cast<float>(params.nIter);
 
         vector<string> processedWords = fingerprints.getProcessedWords();
-        dumpRunInfo(elapsedPerIterUs, processedWords, patterns);
+        cout << "Total (all patterns) processed #words = " << processedWords.size() << endl;
+
+        dumpRunInfo(elapsedPerIterUs, words, processedWords);
     }
 }
 
@@ -254,23 +256,19 @@ void dumpParamInfoToStdout(int fingSizeB)
     cout << "#iterations = " << params.nIter << endl << endl;
 }
 
-void dumpRunInfo(float elapsedUs, const vector<string> &words, const vector<string> &patterns)
+void dumpRunInfo(float elapsedUs, const vector<string> &words, const vector<string> &processedWords)
 {
-    float elapsedS = elapsedUs / 1'000'000.0f;
-
     size_t dictSizeB = Helpers::getTotalSize(words);
     float dictSizeMB = static_cast<float>(dictSizeB) / 1'000'000.0f;
 
-    float throughputMBs = dictSizeMB / (elapsedS / patterns.size());
-    float elapsedPerWordNs = (1'000.0f * elapsedUs) / (words.size() * patterns.size());
+    float elapsedPerWordNs = (1'000.0f * elapsedUs) / (processedWords.size());
 
-    cout << boost::format("Elapsed = %1% us, per word = %2% ns, throughput = %3% MB/s")
-        % elapsedUs % elapsedPerWordNs % throughputMBs << endl;
+    cout << boost::format("Elapsed = %1% us, per word = %2% ns") % elapsedUs % elapsedPerWordNs << endl;
 
     if (params.dumpToFile)
     {
-        string outStr = (boost::format("%1% %2% %3% %4% %5% %6% %7%") % params.fingerprintType % params.lettersType
-            % params.inDictFile % params.inPatternFile % dictSizeMB % elapsedPerWordNs % throughputMBs).str();
+        string outStr = (boost::format("%1% %2% %3% %4% %5% %6%") % params.fingerprintType % params.lettersType
+            % params.inDictFile % params.inPatternFile % dictSizeMB % elapsedPerWordNs).str();
 
         Helpers::dumpToFile(outStr, params.outFile, true);
         cout << "Dumped info to: " << params.outFile << endl << endl;

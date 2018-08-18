@@ -174,7 +174,7 @@ int Fingerprints<FING_T>::test(const vector<string> &patterns, int k, int nIter)
     }
 
     // An additional run which does not affect time measurement is performed only to set the processed words.
-    setProcessedWords();
+    setProcessedWords(patterns);
 
     float elapsedS = (end - start) / static_cast<float>(CLOCKS_PER_SEC);
     elapsedUs = elapsedS * 1'000'000.0f;
@@ -739,9 +739,35 @@ float Fingerprints<FING_T>::testRejectionLeven(const vector<string> &patterns, i
 }
 
 template<typename FING_T>
-void Fingerprints<FING_T>::setProcessedWords()
+void Fingerprints<FING_T>::setProcessedWords(const vector<string> &patterns)
 {
-    // TODO
+    processedWords.clear();
+
+    if (useHamming)
+    {
+        for (const string &pattern : patterns) 
+        {
+            const size_t curSize = pattern.size();
+
+            char *curEntry = fingArrayEntries[curSize];
+            char *nextEntry = fingArrayEntries[curSize + 1];
+
+            while (curEntry != nextEntry)
+            {
+                processedWords.push_back(string(curEntry, curSize));
+
+                if (useFingerprints)
+                {
+                    curEntry += sizeof(FING_T);
+                }
+                curEntry += curSize;
+            }
+        }
+    }
+    else
+    {
+        // TODO
+    }
 }
 
 template<typename FING_T>
