@@ -47,9 +47,10 @@ def extractQueries(words, querySize, nQueries, maxNErrors):
 
     for _ in xrange(nQueries):
         base = list(random.choice(words))
-        indList = list(xrange(len(base)))
         
         if maxNErrors >= 1:
+            indList = list(xrange(len(base)))
+
             curNErrors = random.randint(1, maxNErrors)
             curIndexes = random.sample(indList, curNErrors)
 
