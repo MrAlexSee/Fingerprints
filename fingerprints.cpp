@@ -112,7 +112,7 @@ void Fingerprints<FING_T>::preprocess(const vector<string> &words)
 }
 
 template<typename FING_T>
-int Fingerprints<FING_T>::test(const vector<string> &patterns, int k)
+int Fingerprints<FING_T>::test(const vector<string> &patterns, int k, int nIter)
 {
     if (k < 0)
     {
@@ -127,13 +127,23 @@ int Fingerprints<FING_T>::test(const vector<string> &patterns, int k)
         if (useHamming)
         {
             start = std::clock();
-            nMatches = testFingerprintsHamming(patterns, k);
+
+            for (int i = 0; i < nIter; ++i)
+            {
+                nMatches = testFingerprintsHamming(patterns, k);
+            }
+
             end = std::clock();
         }
         else
         {
             start = std::clock();
-            nMatches = testFingerprintsLeven(patterns, k);
+            
+            for (int i = 0; i < nIter; ++i)
+            {
+                nMatches = testFingerprintsLeven(patterns, k);
+            }
+
             end = std::clock();
         }
     }
@@ -142,13 +152,23 @@ int Fingerprints<FING_T>::test(const vector<string> &patterns, int k)
         if (useHamming)
         {
             start = std::clock();
-            nMatches = testWordsHamming(patterns, k);
+            
+            for (int i = 0; i < nIter; ++i)
+            {
+                nMatches = testWordsHamming(patterns, k);
+            }
+
             end = std::clock();
         }
         else
         {
             start = std::clock();
-            nMatches = testWordsLeven(patterns, k);
+            
+            for (int i = 0; i < nIter; ++i)
+            {
+                nMatches = testWordsLeven(patterns, k);
+            }
+            
             end = std::clock();
         }
     }

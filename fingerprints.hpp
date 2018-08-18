@@ -27,9 +27,9 @@ public:
      * if [useFingerprints] is true together with their corresponding fingerprints. */
     void preprocess(const vector<string> &words);
 
-    /** Performs approximate matching for [patterns] and [k] errors.
+    /** Performs approximate matching for [patterns] and [k] errors, iterates [nIter] times.
      * Returns the total number of matches. Sets elapsedUs to time elapsed during this matching. */
-    int test(const vector<string> &patterns, int k);
+    int test(const vector<string> &patterns, int k, int nIter);
 
     /** Tests [patterns] for [k] errors using fingerprints.
      * Returns the fraction of words which were rejected by fingerprints. */

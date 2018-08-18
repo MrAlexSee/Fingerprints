@@ -79,6 +79,7 @@ int handleParams(int argc, const char **argv)
        ("help,h", "display help message")
        ("in-dict-file,i", po::value<string>(&params.inDictFile)->required(), "input dictionary file path (positional arg 1)")
        ("in-pattern-file,I", po::value<string>(&params.inPatternFile)->required(), "input pattern file path (positional arg 2)")
+       ("iter", po::value<int>(&params.nIter), "number of iterations per query lookup (default = 1)")
        ("approx,k", po::value<int>(&params.kApprox)->required(), "perform approximate search (Hamming or Levenshtein) for k errors")
        ("letters-type,l", po::value<int>(&params.lettersType), "letters type: 0 -> common, 1 -> mixed, 2 -> rare (default = 0)")
        ("out-file,o", po::value<string>(&params.outFile), "output file path")
@@ -198,10 +199,13 @@ void runFingerprints(const vector<string> &words, const vector<string> &patterns
     }
     else
     {
-        int nMatches = fingerprints.test(patterns, params.kApprox);
+        int nMatches = fingerprints.test(patterns, params.kApprox, params.nIter);
         cout << "Got #matches = " << nMatches << endl;
 
-        dumpRunInfo(fingerprints.getElapsedUs(), words, patterns);
+        float elapsedTotalUs = fingerprints.getElapsedUs();
+        float elapsedPerIterUs = elapsedTotalUs / static_cast<float>(params.nIter);
+
+        dumpRunInfo(elapsedPerIterUs, words, patterns);
     }
 }
 
@@ -251,7 +255,8 @@ void dumpParamInfoToStdout(int fingSizeB)
     }
 
     cout << "Using letters type: " << params.lettersType << endl;
-    cout << "Using k = " << params.kApprox << endl << endl;
+    cout << "Using k = " << params.kApprox << endl;
+    cout << "#iterations = " << params.nIter << endl << endl;
 }
 
 void dumpRunInfo(float elapsedUs, const vector<string> &words, const vector<string> &patterns)
