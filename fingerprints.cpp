@@ -175,7 +175,14 @@ int Fingerprints<FING_T>::test(const vector<string> &patterns, int k, int nIter,
 
     // An additional run which does not affect time measurement is performed only to set the processed words count.
     // It mirrors the search which is performed above.
-    setProcessedWordsCount(patterns);
+    if (setProcessedWordsCollection)
+    {
+        setProcessedWords(patterns);
+    }
+    else
+    {
+        setProcessedWordsCount(patterns);
+    }
 
     float elapsedS = (end - start) / static_cast<float>(CLOCKS_PER_SEC);
     elapsedUs = elapsedS * 1'000'000.0f;
@@ -818,7 +825,7 @@ void Fingerprints<FING_T>::setProcessedWordsCount(const vector<string> &patterns
     }
     else
     {
-        size_t singleCollectionSize = 0;
+        size_t singleCollectionCount = 0;
 
         for (size_t curSize = 1; curSize <= maxWordSize; ++curSize)
         {
@@ -832,13 +839,13 @@ void Fingerprints<FING_T>::setProcessedWordsCount(const vector<string> &patterns
                     curEntry += sizeof(FING_T);
                 }
 
-                singleCollectionSize += 1;
+                singleCollectionCount += 1;
                 curEntry += curSize;
             }
         }   
 
         // For each pattern: all words in a collection.
-        processedWordsCount = patterns.size() * singleCollectionSize;
+        processedWordsCount = patterns.size() * singleCollectionCount;
     }
 }
 
