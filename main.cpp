@@ -261,14 +261,14 @@ void dumpRunInfo(float elapsedUs, const vector<string> &words, const vector<stri
     size_t dictSizeB = Helpers::getTotalSize(words);
     float dictSizeMB = static_cast<float>(dictSizeB) / 1'000'000.0f;
 
-    float elapsedPerWordNs = (1'000.0f * elapsedUs) / (processedWords.size());
+    float elapsedPerWordNs = (1'000.0f * elapsedUs) / static_cast<float>(processedWords.size());
 
     cout << boost::format("Elapsed = %1% us, per word = %2% ns") % elapsedUs % elapsedPerWordNs << endl;
 
     if (params.dumpToFile)
     {
-        string outStr = (boost::format("%1% %2% %3% %4% %5% %6%") % params.fingerprintType % params.lettersType
-            % params.inDictFile % params.inPatternFile % dictSizeMB % elapsedPerWordNs).str();
+        string outStr = (boost::format("%1% %2% %3% %4% %5% %6% %7%") % params.inDictFile % params.inPatternFile % dictSizeMB
+            % params.distanceType % params.fingerprintType % params.lettersType % elapsedPerWordNs).str();
 
         Helpers::dumpToFile(outStr, params.outFile, true);
         cout << "Dumped info to: " << params.outFile << endl << endl;
