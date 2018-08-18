@@ -47,6 +47,50 @@ TEST_CASE("is getting total size for repeated strings correct", "[collections]")
     }
 }
 
+TEST_CASE("is filtering empty words by size correct", "[collections]")
+{
+    vector<string> empty;
+
+    for (size_t size = 0; size < static_cast<size_t>(stringSize); ++size)
+    {
+        Helpers::filterWordsBySize(empty, size);
+        REQUIRE(empty.size() == 0);
+    }
+}
+
+TEST_CASE("is filtering words by size correct", "[collections]")
+{
+    vector<string> vec { "ala", "ma", "kota", "a", "jarek", "ma", "psa" };
+
+    vector<string> vec0(vec);
+    Helpers::filterWordsBySize(vec0, 0);
+    REQUIRE(vec0.size() == 0);
+
+    vector<string> vec1(vec);
+    Helpers::filterWordsBySize(vec1, 1);
+    REQUIRE(vec1.size() == 1);
+
+    vector<string> vec2(vec);
+    Helpers::filterWordsBySize(vec2, 2);
+    REQUIRE(vec2.size() == 2);
+
+    vector<string> vec3(vec);
+    Helpers::filterWordsBySize(vec3, 3);
+    REQUIRE(vec3.size() == 2);
+
+    vector<string> vec4(vec);
+    Helpers::filterWordsBySize(vec4, 4);
+    REQUIRE(vec4.size() == 1);
+
+    vector<string> vec5(vec);
+    Helpers::filterWordsBySize(vec5, 5);
+    REQUIRE(vec5.size() == 1);
+
+    vector<string> vec6(vec);
+    Helpers::filterWordsBySize(vec6, 6);
+    REQUIRE(vec6.size() == 0);
+}
+
 TEST_CASE("is reading empty words correct", "[files]")
 {
     Helpers::dumpToFile("", tmpFileName, false);
