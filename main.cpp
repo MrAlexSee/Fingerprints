@@ -243,7 +243,6 @@ void dumpParamInfoToStdout(int fingSizeB)
     string distanceStr = (static_cast<DType>(params.distanceType) == DType::Hamming) ? "Hamming" : "Levenshtein";
 
     cout << "Using distance: " << distanceStr << endl;
-    cout << boost::format("Using fingerprint size: %1% bytes") % fingSizeB << endl; 
     
     if (params.fingerprintType == -1)
     {
@@ -251,7 +250,12 @@ void dumpParamInfoToStdout(int fingSizeB)
     }
     else
     {
-        cout << "Using fingerprint type: " << params.fingerprintType << endl; 
+        cout << boost::format("Using fingerprint type: %1%, size = %2% bytes") % params.fingerprintType % fingSizeB << endl; 
+    }
+
+    if (params.patternSize != Params::noValue)
+    {
+        cout << "Using pattern size = " << params.patternSize << endl;
     }
 
     cout << "Using letters type: " << params.lettersType << endl;
@@ -261,7 +265,7 @@ void dumpParamInfoToStdout(int fingSizeB)
 
 void dumpRunInfo(float elapsedUs, const vector<string> &words, const vector<string> &patterns)
 {
-    float elapsedS = elapsedUs / 1'000'000;
+    float elapsedS = elapsedUs / 1'000'000.0f;
 
     size_t dictSizeB = Helpers::getTotalSize(words);
     float dictSizeMB = static_cast<float>(dictSizeB) / 1'000'000.0f;

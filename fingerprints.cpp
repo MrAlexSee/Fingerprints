@@ -168,13 +168,13 @@ int Fingerprints<FING_T>::test(const vector<string> &patterns, int k, int nIter)
             {
                 nMatches = testWordsLeven(patterns, k);
             }
-            
+
             end = std::clock();
         }
     }
 
-    double elapsedS = (end - start) / static_cast<double>(CLOCKS_PER_SEC);
-    elapsedUs = elapsedS * 1'000'000;
+    float elapsedS = (end - start) / static_cast<float>(CLOCKS_PER_SEC);
+    elapsedUs = elapsedS * 1'000'000.0f;
 
     return nMatches;
 }
