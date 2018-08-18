@@ -239,7 +239,7 @@ void dumpParamInfoToStdout(int fingSizeB)
     
     if (params.fingerprintType == -1)
     {
-        cout << "Using no fingerprints (words only)" << endl; 
+        cout << "Using words only (no fingerprints)" << endl; 
     }
     else
     {
