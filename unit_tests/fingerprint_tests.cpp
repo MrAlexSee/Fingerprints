@@ -23,6 +23,8 @@ constexpr int maxWordSize = 255;
 constexpr int maxNStrings = 50;
 constexpr int stringSize = 25;
 
+constexpr int maxNIter = 50;
+
 vector<int> distanceTypes { 0, 1 };
 vector<int> fingerprintTypes { -1, 0, 1, 2, 3 };
 vector<int> lettersTypes { 0, 1, 2 };
@@ -431,6 +433,110 @@ TEST_CASE("is calculating rejection for k = 1 for occurrence rare fingerprints c
 
         REQUIRE(fingerprints.testRejection(patternsOut, 1) == 1.0f);
         REQUIRE(fingerprints.testRejection(patternsMixed, 1) == Approx(0.8333333f));
+    }
+}
+
+TEST_CASE("is setting processed words for Hamming for a single word various iterations correct", "[fingerprints]")
+{
+    vector<string> words { "ala", "ma", "kota", "a", "jarek", "da", "szopa" };
+
+    // Note that this should work for both words only (no fingerprints) and all other fingerprint types.
+    for (int fingerprintType : fingerprintTypes)
+    {
+        for (int lettersType : lettersTypes)
+        {
+            Fingerprints<FING_T> fingerprints(0, fingerprintType, lettersType);
+            fingerprints.preprocess(words);
+
+            for (int k = 0; k < maxK; ++k)
+            {
+                for (int iIter = 0; iIter < maxNIter; ++iIter)
+                {
+                    fingerprints.test(vector<string> { "a" }, k, iIter);
+                    vector<string> processedWords1 = fingerprints.getProcessedWords();
+                    REQUIRE(processedWords1.size() == 1);
+
+                    fingerprints.test(vector<string> { "ala" }, k, iIter);
+                    vector<string> processedWords2 = fingerprints.getProcessedWords();
+                    REQUIRE(processedWords2.size() == 1);
+                }
+            }
+        }
+    }
+}
+
+TEST_CASE("is setting processed words for Hamming correct", "[fingerprints]")
+{
+    vector<string> words { "ala", "ma", "kota", "a", "jarek", "da", "psa", "i", "szopa" };
+
+    // Note that this should work for both words only (no fingerprints) and all other fingerprint types.
+    for (int fingerprintType : fingerprintTypes)
+    {
+        for (int lettersType : lettersTypes)
+        {
+            Fingerprints<FING_T> fingerprints(0, fingerprintType, lettersType);
+            fingerprints.preprocess(words);
+
+            fingerprints.test(vector<string> { "kk" }, 1);
+            vector<string> processedWords1 = fingerprints.getProcessedWords();
+            REQUIRE(processedWords1.size() == 2);
+
+            fingerprints.test(vector<string> { "jarek" }, 1);
+            vector<string> processedWords2 = fingerprints.getProcessedWords();
+            REQUIRE(processedWords2.size() == 2);
+        }
+    }
+}
+
+TEST_CASE("is setting processed words for Levenshtein for a single word various iterations correct", "[fingerprints]")
+{
+    vector<string> words { "ala", "ma", "kota", "a", "jarek", "da", "szopa" };
+
+    // Note that this should work for both words only (no fingerprints) and all other fingerprint types.
+    for (int fingerprintType : fingerprintTypes)
+    {
+        for (int lettersType : lettersTypes)
+        {
+            Fingerprints<FING_T> fingerprints(1, fingerprintType, lettersType);
+            fingerprints.preprocess(words);
+
+            for (int k = 0; k < maxK; ++k)
+            {
+                for (int iIter = 0; iIter < maxNIter; ++iIter)
+                {
+                    fingerprints.test(vector<string> { "a" }, k, iIter);
+                    vector<string> processedWords1 = fingerprints.getProcessedWords();
+                    REQUIRE(processedWords1.size() == 7);
+
+                    fingerprints.test(vector<string> { "ala" }, k, iIter);
+                    vector<string> processedWords2 = fingerprints.getProcessedWords();
+                    REQUIRE(processedWords2.size() == 7);
+                }
+            }
+        }
+    }
+}
+
+TEST_CASE("is setting processed words for Levenshtein correct", "[fingerprints]")
+{
+    vector<string> words { "ala", "ma", "kota", "a", "jarek", "da", "psa", "i", "szopa" };
+
+    // Note that this should work for both words only (no fingerprints) and all other fingerprint types.
+    for (int fingerprintType : fingerprintTypes)
+    {
+        for (int lettersType : lettersTypes)
+        {
+            Fingerprints<FING_T> fingerprints(1, fingerprintType, lettersType);
+            fingerprints.preprocess(words);
+
+            fingerprints.test(vector<string> { "kk" }, 1);
+            vector<string> processedWords1 = fingerprints.getProcessedWords();
+            REQUIRE(processedWords1.size() == 9);
+
+            fingerprints.test(vector<string> { "jarek" }, 1);
+            vector<string> processedWords2 = fingerprints.getProcessedWords();
+            REQUIRE(processedWords2.size() == 9);
+        }
     }
 }
 
