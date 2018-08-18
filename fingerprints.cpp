@@ -173,6 +173,9 @@ int Fingerprints<FING_T>::test(const vector<string> &patterns, int k, int nIter,
         }
     }
 
+    processedWords.clear();
+    processedWordsCount = 0;
+
     // An additional run which does not affect time measurement is performed only to set the processed words count.
     // It mirrors the search which is performed above.
     if (setProcessedWordsCollection)
@@ -749,8 +752,6 @@ float Fingerprints<FING_T>::testRejectionLeven(const vector<string> &patterns, i
 template<typename FING_T>
 void Fingerprints<FING_T>::setProcessedWords(const vector<string> &patterns)
 {
-    processedWords.clear();
-
     if (useHamming)
     {
         for (const string &pattern : patterns) 
@@ -800,8 +801,6 @@ void Fingerprints<FING_T>::setProcessedWords(const vector<string> &patterns)
 template<typename FING_T>
 void Fingerprints<FING_T>::setProcessedWordsCount(const vector<string> &patterns)
 {
-    processedWordsCount = 0;
-
     if (useHamming)
     {
         for (const string &pattern : patterns) 
