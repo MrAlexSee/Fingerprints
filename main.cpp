@@ -205,7 +205,8 @@ void runFingerprints(const vector<string> &words, const vector<string> &patterns
         float elapsedTotalUs = fingerprints.getElapsedUs();
         float elapsedPerIterUs = elapsedTotalUs / static_cast<float>(params.nIter);
 
-        dumpRunInfo(elapsedPerIterUs, words, patterns);
+        vector<string> processedWords = fingerprints.getProcessedWords();
+        dumpRunInfo(elapsedPerIterUs, processedWords, patterns);
     }
 }
 
@@ -223,17 +224,7 @@ void filterInput(vector<string> &dict, vector<string> &patterns)
     
     if (params.patternSize > 0)
     {
-        for (auto it = patterns.begin(); it != patterns.end(); )
-        {
-            if (it->size() != static_cast<size_t>(params.patternSize))
-            {
-                it = patterns.erase(it);
-            }
-            else
-            {
-                ++it;
-            }
-        }
+        Helpers::filterWordsBySize(patterns, params.patternSize);
     }
 }
 

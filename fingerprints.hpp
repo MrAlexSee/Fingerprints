@@ -29,13 +29,16 @@ public:
 
     /** Performs approximate matching for [patterns] and [k] errors, iterates [nIter] times.
      * Returns the total number of matches. Sets elapsedUs to time elapsed during this matching. */
-    int test(const vector<string> &patterns, int k, int nIter);
+    int test(const vector<string> &patterns, int k, int nIter = 1);
 
     /** Tests [patterns] for [k] errors using fingerprints.
      * Returns the fraction of words which were rejected by fingerprints. */
     float testRejection(const vector<string> &patterns, int k);
 
+    /** Returns total elapsed time during testing in microseconds. */
     float getElapsedUs() const { return elapsedUs; }
+    /** Returns a collection of words which were processed during testing. */
+    vector<string> getProcessedWords() const { return processedWords; }
 
     enum class DistanceType { Hamming = 0, Leven = 1 };
     enum class FingerprintType { NoFing = -1, Occ = 0, Count = 1, Pos = 2, OccHalved = 3 };
@@ -50,28 +53,6 @@ private:
     void preprocessFingerprints(vector<string> words);
     /** Constructs an array which stores only [words]. */
     void preprocessWords(vector<string> words);
-
-    /** Performs approximate matching for [patterns] and [k] errors using fingerprints for Hamming distance.
-     * Returns the total number of matches. Sets elapsedUs to time elapsed during this matching. */
-    int testFingerprintsHamming(const vector<string> &patterns, int k);
-    /** Performs approximate matching for [patterns] and [k] errors using fingerprints for Levenshtein distance.
-     * Returns the total number of matches. Sets elapsedUs to time elapsed during this matching. */
-    int testFingerprintsLeven(const vector<string> &patterns, int k);
-
-    /** Performs approximate matching for [patterns] and [k] errors without fingerprints for Hamming distance.
-     * Returns the total number of matches. Sets elapsedUs to time elapsed during this matching. */
-    int testWordsHamming(const vector<string> &patterns, int k);
-    /** Performs approximate matching for [patterns] and [k] errors without fingerprints for Levenshtein distance.
-     * Returns the total number of matches. Sets elapsedUs to time elapsed during this matching. */
-    int testWordsLeven(const vector<string> &patterns, int k);
-
-    /** Tests [patterns] for [k] errors using fingerprints for Hamming distance.
-     * Returns the fraction of words which were rejected by fingerprints. */
-    float testRejectionHamming(const vector<string> &patterns, int k);
-
-    /** Tests [patterns] for [k] errors using fingerprints for Levenshtein distance.
-     * Returns the fraction of words which were rejected by fingerprints. */
-    float testRejectionLeven(const vector<string> &patterns, int k);
 
     /** Initializes a lookup table for true number of errors based on fingerprints errors. */
     void initNErrorsLUT();
@@ -102,6 +83,40 @@ private:
     bool useHamming = true;
 
     /*
+     *** TESTING
+     */
+
+    /** Performs approximate matching for [patterns] and [k] errors using fingerprints for Hamming distance.
+     * Returns the total number of matches. Sets elapsedUs to time elapsed during this matching. */
+    int testFingerprintsHamming(const vector<string> &patterns, int k);
+    /** Performs approximate matching for [patterns] and [k] errors using fingerprints for Levenshtein distance.
+     * Returns the total number of matches. Sets elapsedUs to time elapsed during this matching. */
+    int testFingerprintsLeven(const vector<string> &patterns, int k);
+
+    /** Performs approximate matching for [patterns] and [k] errors without fingerprints for Hamming distance.
+     * Returns the total number of matches. Sets elapsedUs to time elapsed during this matching. */
+    int testWordsHamming(const vector<string> &patterns, int k);
+    /** Performs approximate matching for [patterns] and [k] errors without fingerprints for Levenshtein distance.
+     * Returns the total number of matches. Sets elapsedUs to time elapsed during this matching. */
+    int testWordsLeven(const vector<string> &patterns, int k);
+
+    /** Tests [patterns] for [k] errors using fingerprints for Hamming distance.
+     * Returns the fraction of words which were rejected by fingerprints. */
+    float testRejectionHamming(const vector<string> &patterns, int k);
+
+    /** Tests [patterns] for [k] errors using fingerprints for Levenshtein distance.
+     * Returns the fraction of words which were rejected by fingerprints. */
+    float testRejectionLeven(const vector<string> &patterns, int k);
+
+    void setProcessedWords();
+
+    /** Elapsed time in microseconds. */
+    float elapsedUs = 0.0f;
+
+    /** Processed words during testing. */
+    vector<string> processedWords;
+
+    /*
      *** FINGERPRINT CALCULATION
      */
 
@@ -123,15 +138,16 @@ private:
     /** Returns the number of errors resulting from comparing fingerprints [f1] and [f2]. */
     unsigned char calcNErrors(FING_T f1, FING_T f2) const;
 
+    /*
+     *** DISTANCE CALCULATION
+     */
+
     /** Returns true if Hamming distance between [str1] and [str2] both of [size] is at most [k] (i.e. <= k). */
     static bool isHamAMK(const char *str1, const char *str2, const size_t size, const int k);
 
     /** Returns true if Levenshtein distance between [str1] of [size1] and [str2] of [size2] is at most [k] (i.e. <= k).
      * Uses the 2k + 1 strip. */
     bool isLevAMK(const char *str1, size_t size1, const char *str2, const size_t size2, const int k);
-
-    /** Elapsed time in microseconds. */
-    float elapsedUs = 0.0f;
 
     /*
      *** CONSTANTS
