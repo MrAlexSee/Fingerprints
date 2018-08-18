@@ -262,7 +262,6 @@ void dumpRunInfo(float elapsedUs, const vector<string> &words, const vector<stri
     float dictSizeMB = static_cast<float>(dictSizeB) / 1'000'000.0f;
 
     float elapsedPerWordNs = (1'000.0f * elapsedUs) / static_cast<float>(processedWords.size());
-
     cout << boost::format("Elapsed = %1% us, per word = %2% ns") % elapsedUs % elapsedPerWordNs << endl;
 
     if (params.dumpToFile)

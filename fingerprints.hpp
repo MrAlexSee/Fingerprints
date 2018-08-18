@@ -37,7 +37,7 @@ public:
 
     /** Returns total elapsed time during testing in microseconds. */
     float getElapsedUs() const { return elapsedUs; }
-    /** Returns a collection of words which were processed during testing. */
+    /** Returns a collection of all processed words during testing. */
     vector<string> getProcessedWords() const { return processedWords; }
 
     enum class DistanceType { Hamming = 0, Leven = 1 };
@@ -110,10 +110,10 @@ private:
 
     void setProcessedWords(const vector<string> &patterns);
 
-    /** Elapsed time in microseconds. */
+    /** Elapsed (during testing) time in microseconds. */
     float elapsedUs = 0.0f;
 
-    /** Processed words during testing. */
+    /** A collection of all processed words during testing. */
     vector<string> processedWords;
 
     /*

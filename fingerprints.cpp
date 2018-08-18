@@ -174,6 +174,7 @@ int Fingerprints<FING_T>::test(const vector<string> &patterns, int k, int nIter)
     }
 
     // An additional run which does not affect time measurement is performed only to set the processed words.
+    // It mirrors the search which is performed above.
     setProcessedWords(patterns);
 
     float elapsedS = (end - start) / static_cast<float>(CLOCKS_PER_SEC);
@@ -754,19 +755,38 @@ void Fingerprints<FING_T>::setProcessedWords(const vector<string> &patterns)
 
             while (curEntry != nextEntry)
             {
-                processedWords.push_back(string(curEntry, curSize));
-
                 if (useFingerprints)
                 {
                     curEntry += sizeof(FING_T);
                 }
+
+                processedWords.push_back(string(curEntry, curSize));
                 curEntry += curSize;
             }
         }
     }
     else
     {
-        // TODO
+        // For each pattern: all words in a collection.
+        for (size_t i = 0; i < patterns.size(); ++i)
+        {
+            for (size_t curSize = 1; curSize <= maxWordSize; ++curSize)
+            {
+                char *curEntry = fingArrayEntries[curSize];
+                char *nextEntry = fingArrayEntries[curSize + 1];
+
+                while (curEntry != nextEntry)
+                {
+                    if (useFingerprints)
+                    {
+                        curEntry += sizeof(FING_T);
+                    }
+
+                    processedWords.push_back(string(curEntry, curSize));
+                    curEntry += curSize;
+                }
+            }   
+        }
     }
 }
 
