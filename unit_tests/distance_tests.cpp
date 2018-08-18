@@ -333,6 +333,29 @@ TEST_CASE("is Leven at most k=1 calculation for various insertions correct", "[d
     }
 }
 
+TEST_CASE("is Leven at most k=1 calculation for various substitutions correct", "[distance]")
+{
+    // Passing distance type 1 -- Levenshtein, fingerprint and letter types don't matter here.
+    Fingerprints<FING_T> fingerprints(1, 0, 0);
+
+    string str = "jarek";
+
+    vector<string> inStrings { "jacek", "japek", "karek", "darek", "sarek" };
+    vector<string> outStrings { "gacek", "pacek", "tadek", "radek" };
+    
+    for (const string &inStr : inStrings)
+    {
+        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str.c_str(), str.size(), inStr.c_str(), inStr.size(), 1) == true);
+        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, inStr.c_str(), inStr.size(), str.c_str(), str.size(), 1) == true);
+    }
+
+    for (const string &outStr : outStrings)
+    {
+        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str.c_str(), str.size(), outStr.c_str(), outStr.size(), 1) == false);
+        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, outStr.c_str(), outStr.size(), str.c_str(), str.size(), 1) == false);
+    }
+}
+
 TEST_CASE("is Leven at most k=2 calculation for selected words correct", "[distance]")
 {
     // Passing distance type 1 -- Levenshtein, fingerprint and letter types don't matter here.
