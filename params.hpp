@@ -40,7 +40,7 @@ struct Params
     /** Maximum number of words read from top of the dictionary file. Cmd arg -w. */
     int nWords = noValue;
 
-    /** Number of iterations per query lookup. */
+    /** Number of iterations per pattern lookup. */
     int nIter = 1;
 
     /** Input dictionary file path (positional arg 1). */
