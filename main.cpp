@@ -199,7 +199,7 @@ void runFingerprints(const vector<string> &words, const vector<string> &patterns
     }
     else
     {
-        int nMatches = fingerprints.test(patterns, params.kApprox, params.nIter);
+        int nMatches = fingerprints.test(patterns, params.kApprox, params.nIter, false);
         cout << "Got #matches = " << nMatches << endl;
 
         float elapsedTotalUs = fingerprints.getElapsedUs();
