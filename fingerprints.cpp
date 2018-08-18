@@ -119,7 +119,7 @@ int Fingerprints<FING_T>::test(const vector<string> &patterns, int k, int nIter)
         throw runtime_error("bad k: " + to_string(k));
     }
 
-    int nMatches;
+    int nMatches = 0;
     clock_t start, end;
 
     if (useFingerprints)
@@ -529,6 +529,7 @@ void Fingerprints<FING_T>::initCharsMap(int fingerprintType, int lettersType)
             break;
         default:
             assert(false);
+            return;
     }
 
     string charList = getCharList(nChars, lettersType);
