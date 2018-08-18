@@ -45,7 +45,7 @@ void filterInput(vector<string> &dict, vector<string> &patterns);
 void runFingerprints(const vector<string> &words, const vector<string> &patterns);
 
 void dumpParamInfoToStdout(int fingSizeB);
-void dumpRunInfo(float elapsedUs, const vector<string> &words, const vector<string> &processedWords);
+void dumpRunInfo(float elapsedUs, const vector<string> &words, size_t processedWordsCount);
 
 }
 
@@ -205,10 +205,10 @@ void runFingerprints(const vector<string> &words, const vector<string> &patterns
         float elapsedTotalUs = fingerprints.getElapsedUs();
         float elapsedPerIterUs = elapsedTotalUs / static_cast<float>(params.nIter);
 
-        vector<string> processedWords = fingerprints.getProcessedWords();
-        cout << "Total (all patterns) processed #words = " << processedWords.size() << endl;
+        size_t processedWordsCount = fingerprints.getProcessedWordsCount();
+        cout << "Total (all patterns) processed #words = " << processedWordsCount << endl;
 
-        dumpRunInfo(elapsedPerIterUs, words, processedWords);
+        dumpRunInfo(elapsedPerIterUs, words, processedWordsCount);
     }
 }
 
@@ -256,12 +256,12 @@ void dumpParamInfoToStdout(int fingSizeB)
     cout << "#iterations = " << params.nIter << endl << endl;
 }
 
-void dumpRunInfo(float elapsedUs, const vector<string> &words, const vector<string> &processedWords)
+void dumpRunInfo(float elapsedUs, const vector<string> &words, size_t processedWordsCount)
 {
     size_t dictSizeB = Helpers::getTotalSize(words);
     float dictSizeMB = static_cast<float>(dictSizeB) / 1'000'000.0f;
 
-    float elapsedPerWordNs = (1'000.0f * elapsedUs) / static_cast<float>(processedWords.size());
+    float elapsedPerWordNs = (1'000.0f * elapsedUs) / static_cast<float>(processedWordsCount);
     cout << boost::format("Elapsed = %1% us, per word = %2% ns") % elapsedUs % elapsedPerWordNs << endl;
 
     if (params.dumpToFile)

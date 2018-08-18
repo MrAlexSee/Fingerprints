@@ -27,9 +27,10 @@ public:
      * if [useFingerprints] is true together with their corresponding fingerprints. */
     void preprocess(const vector<string> &words);
 
-    /** Performs approximate matching for [patterns] and [k] errors, iterates [nIter] times.
+    /** Performs approximate matching for [patterns] and [k] errors, iterates [nIter] times. 
+     * If [setProcessedWordsCollection] is true, stores all processed words explicitly, otherwise stores only their count.
      * Returns the total number of matches. Sets elapsedUs to time elapsed during this matching. */
-    int test(const vector<string> &patterns, int k, int nIter = 1);
+    int test(const vector<string> &patterns, int k, int nIter = 1, bool setProcessedWordsCollection = false);
 
     /** Tests [patterns] for [k] errors using fingerprints.
      * Returns the fraction of words which were rejected by fingerprints. */
@@ -37,8 +38,11 @@ public:
 
     /** Returns total elapsed time during testing in microseconds. */
     float getElapsedUs() const { return elapsedUs; }
+    
     /** Returns a collection of all words processed during a single test iteration. */
     vector<string> getProcessedWords() const { return processedWords; }
+    /** Returns count of all words processed during a single test iteration. */
+    size_t getProcessedWordsCount() const { return processedWordsCount; }
 
     enum class DistanceType { Hamming = 0, Leven = 1 };
     enum class FingerprintType { NoFing = -1, Occ = 0, Count = 1, Pos = 2, OccHalved = 3 };
@@ -109,12 +113,16 @@ private:
     float testRejectionLeven(const vector<string> &patterns, int k);
 
     void setProcessedWords(const vector<string> &patterns);
+    void setProcessedWordsCount(const vector<string> &patterns);
 
     /** Elapsed (during testing) time in microseconds. */
     float elapsedUs = 0.0f;
 
     /** A collection of all words processed during a single test iteration. */
     vector<string> processedWords;
+
+    /** Count of all words processed during a single test iteration. */
+    size_t processedWordsCount;
 
     /*
      *** FINGERPRINT CALCULATION
