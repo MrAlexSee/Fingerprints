@@ -26,6 +26,9 @@ public:
     /** Returns the total size of all strings from [words]. */
     inline static size_t getTotalSize(const vector<string> &words);
 
+    /** Leaves only words having [size] characters in the [words] vector. */
+    inline void static filterWordsBySize(vector<string> &words, size_t size);
+
     /*
      *** FILES
      */
@@ -64,6 +67,21 @@ size_t Helpers::getTotalSize(const vector<string> &words)
     }
 
     return totalSize;
+}
+
+void Helpers::filterWordsBySize(vector<string> &words, size_t size)
+{
+    for (auto it = words.begin(); it != words.end(); )
+    {
+        if (it->size() != size)
+        {
+            it = words.erase(it);
+        }
+        else
+        {
+            ++it;
+        }
+    }
 }
 
 bool Helpers::isFileReadable(const string &filePath)
