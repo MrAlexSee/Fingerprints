@@ -795,10 +795,18 @@ void Fingerprints<FING_T>::setProcessedWords(const vector<string> &patterns, int
     }
     else
     {
-        // For each pattern: all words in a collection.
-        for (size_t i = 0; i < patterns.size(); ++i)
+        for (const string &pattern : patterns) 
         {
-            for (size_t curSize = 1; curSize <= maxWordSize; ++curSize)
+            const size_t patSize = pattern.size();
+
+            // We omit sizes which differ by more than k.
+            int left = static_cast<int>(patSize) - k;
+            size_t right = patSize + k;
+
+            const size_t start = (left < 1) ? 1u : left;
+            const size_t stop = (right > maxWordSize) ? maxWordSize : right;
+
+            for (size_t curSize = start; curSize <= stop; ++curSize)
             {
                 char *curEntry = fingArrayEntries[curSize];
                 char *nextEntry = fingArrayEntries[curSize + 1];
@@ -844,27 +852,34 @@ void Fingerprints<FING_T>::setProcessedWordsCount(const vector<string> &patterns
     }
     else
     {
-        size_t singleCollectionCount = 0;
-
-        for (size_t curSize = 1; curSize <= maxWordSize; ++curSize)
+        for (const string &pattern : patterns) 
         {
-            char *curEntry = fingArrayEntries[curSize];
-            char *nextEntry = fingArrayEntries[curSize + 1];
+            const size_t patSize = pattern.size();
 
-            while (curEntry != nextEntry)
+            // We omit sizes which differ by more than k.
+            int left = static_cast<int>(patSize) - k;
+            size_t right = patSize + k;
+
+            const size_t start = (left < 1) ? 1u : left;
+            const size_t stop = (right > maxWordSize) ? maxWordSize : right;
+
+            for (size_t curSize = start; curSize <= stop; ++curSize)
             {
-                if (useFingerprints)
+                char *curEntry = fingArrayEntries[curSize];
+                char *nextEntry = fingArrayEntries[curSize + 1];
+
+                while (curEntry != nextEntry)
                 {
-                    curEntry += sizeof(FING_T);
+                    if (useFingerprints)
+                    {
+                        curEntry += sizeof(FING_T);
+                    }
+
+                    processedWordsCount += 1;
+                    curEntry += curSize;
                 }
-
-                singleCollectionCount += 1;
-                curEntry += curSize;
-            }
-        }   
-
-        // For each pattern: all words in a collection.
-        processedWordsCount = patterns.size() * singleCollectionCount;
+            }   
+        }
     }
 }
 
