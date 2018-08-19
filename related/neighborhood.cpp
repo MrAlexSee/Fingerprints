@@ -1,6 +1,6 @@
 /*
  *** This is an implementation of a related neighborhood generation method for approximate searching.
- *** Compile as follows: g++ -Wall -pedantic -std=c++14 -I$(BOOST_DIR)$ neighborhood.cpp -o neighborhood
+ *** Compile as follows: g++ -Wall -pedantic -std=c++14 -DNDEBUG -O3 -I$(BOOST_DIR)$ neighborhood.cpp -o neighborhood
  */
 
 #include <boost/format.hpp>
@@ -22,7 +22,7 @@ const string separator = "\n";
 
 }
 
-double run(const unordered_set<string> &wordSet, const vector<string> &patterns);
+float run(const unordered_set<string> &wordSet, const vector<string> &patterns);
 string getAlphabet(const unordered_set<string> &wordSet);
 
 int main(int argc, const char **argv)
@@ -33,13 +33,15 @@ int main(int argc, const char **argv)
     cout << boost::format("Read #words = %1%, #patterns = %2%") % dict.size() % patterns.size() << endl;
     unordered_set<string> wordSet(dict.begin(), dict.end());
 
-    double elapsedUs = run(wordSet, patterns);
-    double elapsedPerWordNs = (1'000.0 * elapsedUs) / (dict.size() * patterns.size());
+    float elapsedUs = run(wordSet, patterns);
+
+    size_t processedWordsCount = dict.size() * patterns.size();
+    double elapsedPerWordNs = (1'000.0f * elapsedUs) / static_cast<float>(processedWordsCount);
 
     cout << boost::format("Elapsed = %1%us, per word = %2%ns") % elapsedUs % elapsedPerWordNs << endl;
 }
 
-double run(const unordered_set<string> &wordSet, const vector<string> &patterns)
+float run(const unordered_set<string> &wordSet, const vector<string> &patterns)
 {
     int nMatches = 0;
     clock_t start, end;
@@ -51,6 +53,7 @@ double run(const unordered_set<string> &wordSet, const vector<string> &patterns)
 
     for (const string &pattern : patterns) 
     {
+        // Checking for an exact match.
         if (wordSet.find(pattern) != wordSet.end())
         {
             nMatches += 1;
@@ -61,14 +64,15 @@ double run(const unordered_set<string> &wordSet, const vector<string> &patterns)
         {
             for (const char c : alphabet)
             {
-                if (c == pattern[i])
+                if (pattern[i] == c)
                 {
                     continue;
                 }
 
-                string cand = pattern.substr(0, i) + string(1, c) + pattern.substr(i + 1, string::npos);
+                string candidate = pattern;
+                candidate[i] = c;
 
-                if (wordSet.find(cand) != wordSet.end())
+                if (wordSet.find(candidate) != wordSet.end())
                 {
                     nMatches += 1;
                 }
@@ -80,8 +84,8 @@ double run(const unordered_set<string> &wordSet, const vector<string> &patterns)
 
     cout << "Got #matches = " << nMatches << endl;
 
-    double elapsedS = (end - start) / static_cast<double>(CLOCKS_PER_SEC);
-    return elapsedS * 1'000'000;
+    float elapsedS = (end - start) / static_cast<float>(CLOCKS_PER_SEC);
+    return elapsedS * 1'000'000.0f;
 }
 
 string getAlphabet(const unordered_set<string> &wordSet)
