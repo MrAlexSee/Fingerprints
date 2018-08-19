@@ -112,8 +112,8 @@ private:
      * Returns the fraction of words which were rejected by fingerprints. */
     float testRejectionLeven(const vector<string> &patterns, int k);
 
-    void setProcessedWords(const vector<string> &patterns);
-    void setProcessedWordsCount(const vector<string> &patterns);
+    void setProcessedWords(const vector<string> &patterns, int k);
+    void setProcessedWordsCount(const vector<string> &patterns, int k);
 
     /** Elapsed (during testing) time in microseconds. */
     float elapsedUs = 0.0f;

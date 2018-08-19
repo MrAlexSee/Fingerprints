@@ -180,11 +180,11 @@ int Fingerprints<FING_T>::test(const vector<string> &patterns, int k, int nIter,
     // It mirrors the search which is performed above.
     if (setProcessedWordsCollection)
     {
-        setProcessedWords(patterns);
+        setProcessedWords(patterns, k);
     }
     else
     {
-        setProcessedWordsCount(patterns);
+        setProcessedWordsCount(patterns, k);
     }
 
     float elapsedS = (end - start) / static_cast<float>(CLOCKS_PER_SEC);
@@ -583,7 +583,14 @@ int Fingerprints<FING_T>::testFingerprintsLeven(const vector<string> &patterns, 
         const size_t patSize = pattern.size();
         const FING_T patFingerprint = calcFingerprintFun(pattern.c_str(), patSize);
 
-        for (size_t curSize = 1; curSize <= maxWordSize; ++curSize)
+        // We omit sizes which differ by more than k.
+        int left = static_cast<int>(patSize) - k;
+        size_t right = patSize + k;
+
+        const size_t start = (left < 1) ? 1u : left;
+        const size_t stop = (right > maxWordSize) ? maxWordSize : right;
+
+        for (size_t curSize = start; curSize <= stop; ++curSize)
         {
             char *curEntry = fingArrayEntries[curSize];
             char *nextEntry = fingArrayEntries[curSize + 1];
@@ -654,7 +661,14 @@ int Fingerprints<FING_T>::testWordsLeven(const vector<string> &patterns, int k)
     {
         const size_t patSize = pattern.size();
 
-        for (size_t curSize = 1; curSize <= maxWordSize; ++curSize)
+        // We omit sizes which differ by more than k.
+        int left = static_cast<int>(patSize) - k;
+        size_t right = patSize + k;
+
+        const size_t start = (left < 1) ? 1u : left;
+        const size_t stop = (right > maxWordSize) ? maxWordSize : right;
+
+        for (size_t curSize = start; curSize <= stop; ++curSize)
         {
             char *curEntry = fingArrayEntries[curSize];
             char *nextEntry = fingArrayEntries[curSize + 1];
@@ -721,7 +735,13 @@ float Fingerprints<FING_T>::testRejectionLeven(const vector<string> &patterns, i
         const size_t patSize = pattern.size();
         const FING_T patFingerprint = calcFingerprintFun(pattern.c_str(), patSize);
 
-        for (size_t curSize = 1; curSize <= maxWordSize; ++curSize)
+        int left = static_cast<int>(patSize) - k;
+        size_t right = patSize + k;
+
+        const size_t start = (left < 1) ? 1u : left;
+        const size_t stop = (right > maxWordSize) ? maxWordSize : right;
+
+        for (size_t curSize = start; curSize <= stop; ++curSize)
         {
             char *curEntry = fingArrayEntries[curSize];
             char *nextEntry = fingArrayEntries[curSize + 1];
@@ -750,7 +770,7 @@ float Fingerprints<FING_T>::testRejectionLeven(const vector<string> &patterns, i
 }
 
 template<typename FING_T>
-void Fingerprints<FING_T>::setProcessedWords(const vector<string> &patterns)
+void Fingerprints<FING_T>::setProcessedWords(const vector<string> &patterns, int k)
 {
     if (useHamming)
     {
@@ -799,7 +819,7 @@ void Fingerprints<FING_T>::setProcessedWords(const vector<string> &patterns)
 }
 
 template<typename FING_T>
-void Fingerprints<FING_T>::setProcessedWordsCount(const vector<string> &patterns)
+void Fingerprints<FING_T>::setProcessedWordsCount(const vector<string> &patterns, int k)
 {
     if (useHamming)
     {
