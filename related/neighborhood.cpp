@@ -19,7 +19,7 @@ namespace
 {
 
 const string pSeparator = "\n";
-constexpr int pNIter = 1;
+constexpr int pNIter = 10;
 
 }
 
@@ -40,7 +40,8 @@ int main(int argc, const char **argv)
     double elapsedPerWordNs = (1'000.0f * elapsedUs) / static_cast<float>(processedWordsCount);
 
     elapsedPerWordNs /= pNIter;
-    cout << boost::format("Elapsed = %1%us, per word = %2%ns") % elapsedUs % elapsedPerWordNs << endl;
+    cout << boost::format("Elapsed = %1%us, per word = %2%ns (#iterations = %3%)") 
+        % elapsedUs % elapsedPerWordNs % pNIter << endl;
 }
 
 float run(const unordered_set<string> &wordSet, const vector<string> &patterns, int nIter)
