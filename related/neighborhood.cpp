@@ -19,7 +19,7 @@ namespace
 {
 
 const string pSeparator = "\n";
-int pNIter = 1;
+constexpr int pNIter = 1;
 
 }
 
