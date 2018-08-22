@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 inputDir="data"
 outFile="res"
