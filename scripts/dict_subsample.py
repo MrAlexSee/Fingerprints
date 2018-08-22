@@ -6,7 +6,10 @@ import os
 import random
 
 # Sizes of extracted samples.
-pSampleSizes = [64, 512, 4096, 32768, 262144]
+pSampleSizes = [64, 256, 1024, 4096, 16384]
+
+# All samples should include only words with pWordSize letter count. Set to -1 to ignore.
+pWordSize = 8
 
 # Input file path.
 pInFile = "../data/dict_iamerican_insane.txt"
@@ -24,14 +27,29 @@ def readWords(inFile):
 
     return words
 
+def doSampleWithSize(words, sampleSize, wordSize):
+    curWords = [word for word in words if len(word) == pWordSize]
+    print "Sampling {0} from #words = {1} (size = {2})".format(sampleSize, len(curWords), wordSize)
+
+    sample = random.sample(curWords, sampleSize)
+
+    assert len(sample) == sampleSize
+    return sample
+
+def doSampleAll(words, sampleSize):
+    return random.sample(words, sampleSize)
+
 def main():
     words = readWords(pInFile)
 
     for sampleSize in pSampleSizes:
-        sample = random.sample(words, sampleSize)
+        if pWordSize > 0:
+            sample = doSampleWithSize(words, sampleSize, pWordSize)
+        else:
+            sample = doSampleAll(words, sampleSize)
 
         tup = os.path.splitext(pOutFile)
-        outFileName = "{0}{1}{2}".format(tup[0], len(sample), tup[1])
+        outFileName = "{0}_{1}{2}".format(tup[0], len(sample), tup[1])
 
         with open(outFileName, "w") as f:
             f.write("\n".join(sample))
