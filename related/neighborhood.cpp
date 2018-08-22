@@ -18,30 +18,32 @@ using namespace std;
 namespace
 {
 
-const string separator = "\n";
+const string pSeparator = "\n";
+int pNIter = 1;
 
 }
 
-float run(const unordered_set<string> &wordSet, const vector<string> &patterns);
+float run(const unordered_set<string> &wordSet, const vector<string> &patterns, int nIter = 1);
 string getAlphabet(const unordered_set<string> &wordSet);
 
 int main(int argc, const char **argv)
 {
-    vector<string> dict = Helpers::readWords(argv[1], separator);
-    vector<string> patterns = Helpers::readWords(argv[2], separator);
+    vector<string> dict = Helpers::readWords(argv[1], pSeparator);
+    vector<string> patterns = Helpers::readWords(argv[2], pSeparator);
 
     cout << boost::format("Read #words = %1%, #patterns = %2%") % dict.size() % patterns.size() << endl;
     unordered_set<string> wordSet(dict.begin(), dict.end());
 
-    float elapsedUs = run(wordSet, patterns);
+    float elapsedUs = run(wordSet, patterns, pNIter);
 
     size_t processedWordsCount = dict.size() * patterns.size();
     double elapsedPerWordNs = (1'000.0f * elapsedUs) / static_cast<float>(processedWordsCount);
 
+    elapsedPerWordNs /= pNIter;
     cout << boost::format("Elapsed = %1%us, per word = %2%ns") % elapsedUs % elapsedPerWordNs << endl;
 }
 
-float run(const unordered_set<string> &wordSet, const vector<string> &patterns)
+float run(const unordered_set<string> &wordSet, const vector<string> &patterns, int nIter)
 {
     int nMatches = 0;
     clock_t start, end;
@@ -51,34 +53,37 @@ float run(const unordered_set<string> &wordSet, const vector<string> &patterns)
 
     start = std::clock();
 
-    for (const string &pattern : patterns) 
+    for (int i = 0; i < nIter; ++i)
     {
-        // Checking for an exact match.
-        if (wordSet.find(pattern) != wordSet.end())
+        for (const string &pattern : patterns) 
         {
-            nMatches += 1;
-        }
-
-        // This search assumes k = 1.
-        for (size_t i = 0; i < pattern.size(); ++i)
-        {
-            for (const char c : alphabet)
+            // Checking for an exact match.
+            if (wordSet.find(pattern) != wordSet.end())
             {
-                if (pattern[i] == c)
-                {
-                    continue;
-                }
+                nMatches += 1;
+            }
 
-                string candidate = pattern;
-                candidate[i] = c;
-
-                if (wordSet.find(candidate) != wordSet.end())
+            // This search assumes k = 1.
+            for (size_t i = 0; i < pattern.size(); ++i)
+            {
+                for (const char c : alphabet)
                 {
-                    nMatches += 1;
+                    if (pattern[i] == c)
+                    {
+                        continue;
+                    }
+
+                    string candidate = pattern;
+                    candidate[i] = c;
+
+                    if (wordSet.find(candidate) != wordSet.end())
+                    {
+                        nMatches += 1;
+                    }
                 }
             }
-        }
-    }    
+        }    
+    }
 
     end = std::clock();
 
