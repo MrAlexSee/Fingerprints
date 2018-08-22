@@ -28,7 +28,7 @@ def readWords(inFile):
     return words
 
 def doSampleWithSize(words, sampleSize, wordSize):
-    curWords = [word for word in words if len(word) == pWordSize]
+    curWords = [word for word in words if len(word) == wordSize]
     print "Sampling {0} from #words = {1} (size = {2})".format(sampleSize, len(curWords), wordSize)
 
     sample = random.sample(curWords, sampleSize)
