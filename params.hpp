@@ -63,7 +63,7 @@ struct Params
     static constexpr int noValue = -1;
 
     /** Current version: major.minor.patch */
-    const string versionInfo = "fingerprints v0.1.0";
+    const string versionInfo = "fingerprints v1.0.0";
     const string usageInfoString = "[options] <input dictionary file> <input pattern file>";
 };
 

@@ -161,7 +161,7 @@ private:
      *** CONSTANTS
      */
 
-    static constexpr size_t maxWordSize = 255;
+    static constexpr size_t maxWordSize = 2048;
     static constexpr size_t charsMapSize = 255;
 
     /** Indicates that a character is not stored in a fingerprint. */
