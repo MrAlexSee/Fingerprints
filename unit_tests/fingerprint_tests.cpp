@@ -18,7 +18,8 @@ namespace fingerprints
 namespace
 {
 
-constexpr int maxWordSize = 255;
+/** Make sure that this matches the corresponding parameter in fingerprints.hpp. */
+constexpr int maxWordSize = 2048;
 
 constexpr int maxNStrings = 50;
 constexpr int stringSize = 25;
