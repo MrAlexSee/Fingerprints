@@ -203,7 +203,7 @@ void runFingerprints(const vector<string> &words, const vector<string> &patterns
         size_t dictSizeB = Helpers::getTotalSize(words);
         float dictSizeMB = static_cast<float>(dictSizeB) / 1'000'000.0f;
 
-        float throughputMBs = dictSizeMB / (elapsedTotalUs * 1'000'000.0f);
+        float throughputMBs = dictSizeMB / (elapsedTotalUs / 1'000'000.0f);
 
          cout << boost::format("Construction: thru = %1% MB/s, elapsed = %2% us") 
             % throughputMBs % elapsedTotalUs << endl;
