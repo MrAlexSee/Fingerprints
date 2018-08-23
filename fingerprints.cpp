@@ -216,6 +216,12 @@ float Fingerprints<FING_T>::testRejection(const vector<string> &patterns, int k)
 }
 
 template<typename FING_T>
+float Fingerprints<FING_T>::testConstruction(int nIter)
+{
+    return 0.0f;
+}
+
+template<typename FING_T>
 void Fingerprints<FING_T>::preprocessFingerprints(vector<string> words)
 {
     size_t wordCountsBySize[maxWordSize + 1];

@@ -20,6 +20,9 @@ struct Params
     /** Calculate percentages of rejected words instead of measuring time. */
     bool calcRejection = false;
 
+    /** Measure fingerprint construction time instead of searching. */
+    bool measureConstruction = false;
+
     /** Dump input files and params info with elapsed and throughput to output file. Cmd arg -d. */
     bool dumpToFile = false;
 

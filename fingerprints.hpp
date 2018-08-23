@@ -36,6 +36,9 @@ public:
      * Returns the fraction of words which were rejected by fingerprints. */
     float testRejection(const vector<string> &patterns, int k);
 
+    /** Tests fingerprint construction time, iterates [nIter] times. */
+    float testConstruction(int nIter);
+
     /** Returns total elapsed time during testing in microseconds. */
     float getElapsedUs() const { return elapsedUs; }
     

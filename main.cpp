@@ -82,6 +82,7 @@ int handleParams(int argc, const char **argv)
        ("iter", po::value<int>(&params.nIter), "number of iterations per pattern lookup (default = 1)")
        ("approx,k", po::value<int>(&params.kApprox)->required(), "perform approximate search (Hamming or Levenshtein) for k errors")
        ("letters-type,l", po::value<int>(&params.lettersType), "letters type: 0 -> common, 1 -> mixed, 2 -> rare (default = 0)")
+       ("measure-construction", "measure fingerprint construction time instead of searching")
        ("out-file,o", po::value<string>(&params.outFile), "output file path")
        ("pattern-count,p", po::value<int>(&params.nPatterns), "maximum number of patterns read from top of the pattern file (non-positive values are ignored)")
        ("pattern-size", po::value<int>(&params.patternSize), "if set, only patterns of this size (letter count) will be read from the pattern file (non-positive values are ignored)")
@@ -129,6 +130,10 @@ int handleParams(int argc, const char **argv)
     if (vm.count("calc-rejection"))
     {
         params.calcRejection = true;
+    }
+    if (vm.count("measure-construction"))
+    {
+        params.measureConstruction = true;
     }
     if (vm.count("dump"))
     {
@@ -196,6 +201,13 @@ void runFingerprints(const vector<string> &words, const vector<string> &patterns
     {
         float rejectedFrac = fingerprints.testRejection(patterns, params.kApprox);
         cout << boost::format("Rejected ratio = %1%%%") % (100.0f * rejectedFrac) << endl;
+    }
+    else if (params.measureConstruction)
+    {
+        fingerprints.testConstruction(params.nIter);
+
+        float elapsedTotalUs = fingerprints.getElapsedUs();
+        cout << boost::format("Elapsed %1%us") % elapsedTotalUs << endl;
     }
     else
     {

@@ -37,6 +37,7 @@ Short name | Long name                | Parameter description
 &nbsp;     | `--iter arg`             | number of iterations per pattern lookup (default = 1)
 `-k`       | `--approx arg`           | perform approximate search (Hamming or Levenshtein) for k errors
 `-l`       | `--letters-type arg`     | letters type: 0 &rarr; common, 1 &rarr; mixed, 2 &rarr; rare (default = 0)
+&nbsp;     | `--measure-construction` | measure fingerprint construction time instead of searching
 `-o`       | `--out-file arg`         | output file path
 `-p`       | `--pattern-count arg`    | maximum number of patterns read from top of the pattern file
 &nbsp;     | `--pattern-size arg`     | if set, only patterns of this size (letter count) will be read from the pattern file
