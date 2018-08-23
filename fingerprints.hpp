@@ -23,8 +23,9 @@ public:
     Fingerprints(int distanceType, int fingerprintType, int lettersType);
     ~Fingerprints();
 
-    /** Constructs an array which stores [words],
-     * if [useFingerprints] is true together with their corresponding fingerprints. */
+    /** Constructs an array which stores [words].
+     * If [useFingerprints] is true, constructs corresponding fingerprints and
+     * sets elapsedUs to time elapsed during construction. */
     void preprocess(const vector<string> &words);
 
     /** Performs approximate matching for [patterns] and [k] errors, iterates [nIter] times. 
@@ -36,10 +37,7 @@ public:
      * Returns the fraction of words which were rejected by fingerprints. */
     float testRejection(const vector<string> &patterns, int k);
 
-    /** Tests fingerprint construction time, iterates [nIter] times. */
-    float testConstruction(int nIter);
-
-    /** Returns total elapsed time during testing in microseconds. */
+    /** Returns total elapsed time during construction or testing in microseconds. */
     float getElapsedUs() const { return elapsedUs; }
     
     /** Returns a collection of all words processed during a single test iteration. */
@@ -118,7 +116,7 @@ private:
     void setProcessedWords(const vector<string> &patterns, int k);
     void setProcessedWordsCount(const vector<string> &patterns, int k);
 
-    /** Elapsed (during testing) time in microseconds. */
+    /** Elapsed (during construction or testing) time in microseconds. */
     float elapsedUs = 0.0f;
 
     /** A collection of all words processed during a single test iteration. */

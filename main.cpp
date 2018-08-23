@@ -195,19 +195,26 @@ void runFingerprints(const vector<string> &words, const vector<string> &patterns
     fingerprints.preprocess(words);
     
     cout << "Preprocessed #words = " << words.size() << endl;
+
+    if (params.measureConstruction)
+    {
+        float elapsedTotalUs = fingerprints.getElapsedUs();
+
+        size_t dictSizeB = Helpers::getTotalSize(words);
+        float dictSizeMB = static_cast<float>(dictSizeB) / 1'000'000.0f;
+
+        float throughputMBs = dictSizeMB / (elapsedTotalUs * 1'000'000.0f);
+
+         cout << boost::format("Construction: thru = %1% MB/s, elapsed = %2% us") 
+            % throughputMBs % elapsedTotalUs << endl;
+    }
+
     cout << "Testing #queries = " << patterns.size() << endl;
    
     if (params.calcRejection)
     {
         float rejectedFrac = fingerprints.testRejection(patterns, params.kApprox);
         cout << boost::format("Rejected ratio = %1%%%") % (100.0f * rejectedFrac) << endl;
-    }
-    else if (params.measureConstruction)
-    {
-        fingerprints.testConstruction(params.nIter);
-
-        float elapsedTotalUs = fingerprints.getElapsedUs();
-        cout << boost::format("Elapsed %1%us") % elapsedTotalUs << endl;
     }
     else
     {

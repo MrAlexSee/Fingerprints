@@ -216,12 +216,6 @@ float Fingerprints<FING_T>::testRejection(const vector<string> &patterns, int k)
 }
 
 template<typename FING_T>
-float Fingerprints<FING_T>::testConstruction(int nIter)
-{
-    return 0.0f;
-}
-
-template<typename FING_T>
 void Fingerprints<FING_T>::preprocessFingerprints(vector<string> words)
 {
     size_t wordCountsBySize[maxWordSize + 1];
@@ -235,6 +229,10 @@ void Fingerprints<FING_T>::preprocessFingerprints(vector<string> words)
 
     char *curEntry = fingArray;
     size_t iWord = 0;
+
+    clock_t start, end;
+
+    start = std::clock();
 
     for (size_t wordSize = 1; wordSize <= maxWordSize; ++wordSize)
     {
@@ -257,6 +255,11 @@ void Fingerprints<FING_T>::preprocessFingerprints(vector<string> words)
 
     fingArrayEntries[maxWordSize + 1] = curEntry;
     assert(iWord == words.size()); // Making sure that all words have been processed.
+
+    end = std::clock();
+
+    float elapsedS = (end - start) / static_cast<float>(CLOCKS_PER_SEC);
+    elapsedUs = elapsedS * 1'000'000.0f;
 }
 
 template<typename FING_T>
