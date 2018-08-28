@@ -15,7 +15,7 @@ for fType in $(seq -1 3);
 do
     for lType in $(seq 0 2);
     do
-        ./fingerprints -k 1 -f $fType -l $lType dict_test.txt queries_test.txt > $outFile
+        ./fingerprints -D 0 -k 1 -f $fType -l $lType dict_test.txt queries_test.txt > $outFile
         python check_result.py
     done
 done
