@@ -21,6 +21,7 @@ Input dictionary file (positional parameter 1 or named parameter `-i` or `--in-d
 Input pattern file (positional parameter 2 or named parameter `-I` or `--in-pattern-file`) should contain the list of patterns, separated with newline characters.
 Attached as part of this package are scripts `test_real.sh` for testing on real-world data and `test_synth.sh` for testing on synthetic data.
 
+End-to-end tests are located in the `end_to_end_tests` folder and they can be run using the `run_tests.sh` script in that folder.
 Unit tests are located in the `unit_tests` folder and they can be run by issuing the `make run` command in that folder.
 
 #### Command-line parameter description
