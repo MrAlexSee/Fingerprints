@@ -16,7 +16,7 @@ do
     for lType in $(seq 0 2);
     do
         ./fingerprints -D 0 -k 1 -f $fType -l $lType dict_test.txt queries_test.txt > $outFile
-        python check_result.py
+        python check_result.py 3
     done
 done
 
