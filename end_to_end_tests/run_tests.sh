@@ -10,13 +10,23 @@ cd end_to_end_tests
 
 echo "3/4 Running"
 
-# All fingerprint and letters type combinations.
+# Hamming distance. All fingerprint and letters type combinations.
 for fType in $(seq -1 3);
 do
     for lType in $(seq 0 2);
     do
         ./fingerprints -D 0 -k 1 -f $fType -l $lType dict_test.txt queries_test.txt > $outFile
         python check_result.py 3
+    done
+done
+
+# Levenshtein distance. All fingerprint and letters type combinations.
+for fType in $(seq -1 3);
+do
+    for lType in $(seq 0 2);
+    do
+        ./fingerprints -D 1 -k 1 -f $fType -l $lType dict_test.txt queries_test.txt > $outFile
+        python check_result.py 4
     done
 done
 
