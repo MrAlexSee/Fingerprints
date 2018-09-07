@@ -9,8 +9,6 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-
 namespace fingerprints
 {
 
@@ -24,31 +22,31 @@ public:
      */
 
     /** Returns the total size of all strings from [words]. */
-    inline static size_t getTotalSize(const vector<string> &words);
+    inline static size_t getTotalSize(const std::vector<std::string> &words);
 
     /** Leaves only words having [size] characters in the [words] vector. */
-    inline void static filterWordsBySize(vector<string> &words, size_t size);
+    inline void static filterWordsBySize(std::vector<std::string> &words, size_t size);
 
     /*
      *** FILES
      */
 
-    inline static bool isFileReadable(const string &filePath);
-    inline static vector<string> readWords(const string &filePath, const string &separator);
+    inline static bool isFileReadable(const std::string &filePath);
+    inline static std::vector<std::string> readWords(const std::string &filePath, const std::string &separator);
 
     /** Appends [text] to file with [filePath] followed by an optional newline if [newline] is true. */
-    inline static void dumpToFile(const string &text, const string &filePath, bool newline = false);
-    inline static bool removeFile(const string &filePath);
+    inline static void dumpToFile(const std::string &text, const std::string &filePath, bool newline = false);
+    inline static bool removeFile(const std::string &filePath);
 
     /*
      *** RANDOM
      */
 
     /** Returns a set of [count] random distinct numbers from range [start] to [end] (both inclusive). */
-    inline static set<int> randNumbersFromRange(int start, int end, int count);
+    inline static std::set<int> randNumbersFromRange(int start, int end, int count);
 
     /** Returns a random alphanumeric string having [size] characters. */
-    inline static string genRandomStringAlphNum(int size);
+    inline static std::string genRandomStringAlphNum(int size);
 
 private:
     /** Lookup table for alphanumeric characters. */
@@ -57,11 +55,11 @@ private:
     static constexpr int alnumLUTSize = 62;
 };
 
-size_t Helpers::getTotalSize(const vector<string> &words)
+size_t Helpers::getTotalSize(const std::vector<std::string> &words)
 {
     size_t totalSize = 0;
 
-    for (const string &word : words)
+    for (const std::string &word : words)
     {
         totalSize += word.size();
     }
@@ -69,7 +67,7 @@ size_t Helpers::getTotalSize(const vector<string> &words)
     return totalSize;
 }
 
-void Helpers::filterWordsBySize(vector<string> &words, size_t size)
+void Helpers::filterWordsBySize(std::vector<std::string> &words, size_t size)
 {
     for (auto it = words.begin(); it != words.end(); )
     {
@@ -84,14 +82,15 @@ void Helpers::filterWordsBySize(vector<string> &words, size_t size)
     }
 }
 
-bool Helpers::isFileReadable(const string &filePath)
+bool Helpers::isFileReadable(const std::string &filePath)
 {
-    ifstream inStream(filePath);
+    std::ifstream inStream(filePath);
     return inStream.good();
 }
 
-vector<string> Helpers::readWords(const string &filePath, const string &separator)
+std::vector<std::string> Helpers::readWords(const std::string &filePath, const std::string &separator)
 {
+    using namespace std;
     ifstream inStream(filePath);
 
     if (!inStream)
@@ -119,30 +118,32 @@ vector<string> Helpers::readWords(const string &filePath, const string &separato
     return filt;
 }
 
-void Helpers::dumpToFile(const string &text, const string &filePath, bool newline)
+void Helpers::dumpToFile(const std::string &text, const std::string &filePath, bool newline)
 {
-    ofstream outStream(filePath, ios_base::app);
+    std::ofstream outStream(filePath, std::ios_base::app);
 
     if (!outStream)
     {
-        throw runtime_error("failed to write file (insufficient permisions?): " + filePath);
+        throw std::runtime_error("failed to write file (insufficient permisions?): " + filePath);
     }
 
     outStream << text;
 
     if (newline)
     {
-        outStream << endl;
+        outStream << std::endl;
     }
 }
 
-bool Helpers::removeFile(const string &filePath)
+bool Helpers::removeFile(const std::string &filePath)
 {
     return remove(filePath.c_str()) == 0;
 }
 
-set<int> Helpers::randNumbersFromRange(int start, int end, int count)
+std::set<int> Helpers::randNumbersFromRange(int start, int end, int count)
 {
+    using namespace std;
+
     if (end - start + 1 < count)
     {
         throw invalid_argument("range is too narrow");
@@ -162,8 +163,10 @@ set<int> Helpers::randNumbersFromRange(int start, int end, int count)
     return res;
 }
 
-string Helpers::genRandomStringAlphNum(int size)
+std::string Helpers::genRandomStringAlphNum(int size)
 {
+    using namespace std;
+
     random_device rd;
     mt19937 mt(rd());
     uniform_int_distribution<int> dist(0, alnumLUTSize - 1);
