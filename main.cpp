@@ -31,9 +31,12 @@ namespace
 Params params;
 using FING_T = uint16_t;
 
+/** Indicates that program execution should continue after checking parameters. */
+constexpr int paramsResContinue = -1;
+
 }
 
-/** Handles cmd-line parameters, returns -1 if program execution should continue. */
+/** Handles cmd-line parameters, returns paramsResContinue if program execution should continue. */
 int handleParams(int argc, const char **argv);
 /** Returns true if input files are readable, false otherwise. */
 bool checkInputFiles(const char *execName);
@@ -52,7 +55,7 @@ void dumpRunInfo(float elapsedUs, const vector<string> &words, size_t processedW
 int main(int argc, const char **argv)
 {
     int paramsRes = handleParams(argc, argv);
-    if (paramsRes != -1)
+    if (paramsRes != paramsResContinue)
     {
         return paramsRes;
     }
@@ -140,7 +143,7 @@ int handleParams(int argc, const char **argv)
         params.dumpToFile = true;
     }
 
-    return -1;
+    return paramsResContinue;
 }
 
 bool checkInputFiles(const char *execName)
@@ -256,7 +259,8 @@ void dumpParamInfoToStdout(int fingSizeB)
 
     cout << "Using distance: " << distanceStr << endl;
     
-    if (params.fingerprintType == -1)
+    if (static_cast<Fingerprints<FING_T>::FingerprintType>(params.fingerprintType) == 
+            Fingerprints<FING_T>::FingerprintType::NoFing)
     {
         cout << "Using words only (no fingerprints)" << endl; 
     }

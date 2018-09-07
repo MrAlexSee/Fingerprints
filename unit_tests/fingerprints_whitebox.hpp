@@ -28,7 +28,7 @@ public:
     }
 
     template<typename FING_T>
-    inline static function<FING_T(const char *, size_t)> getCalcFingerprintFun(Fingerprints<FING_T> &fingerprints)
+    inline static std::function<FING_T(const char *, size_t)> getCalcFingerprintFun(Fingerprints<FING_T> &fingerprints)
     {
         return fingerprints.calcFingerprintFun;
     }
@@ -58,7 +58,7 @@ public:
     }
 
     template<typename FING_T>
-    inline static size_t calcTotalSize(const vector<string> &words, size_t *wordCountsBySize)
+    inline static size_t calcTotalSize(const std::vector<std::string> &words, size_t *wordCountsBySize)
     {
         return Fingerprints<FING_T>::calcTotalSize(words, wordCountsBySize);
     }
@@ -88,15 +88,15 @@ public:
     }
 
     template<typename FING_T>
-    inline static bool isHamAMK(const char *str1, const char *str2, size_t size, int k)
+    inline static bool isHamAtMostK(const char *str1, const char *str2, size_t size, int k)
     {
-        return Fingerprints<FING_T>::isHamAMK(str1, str2, size, k);
+        return Fingerprints<FING_T>::isHamAtMostK(str1, str2, size, k);
     }
 
     template<typename FING_T>
-    inline static bool isLevAMK(Fingerprints<FING_T> &fingerprints, const char *str1, size_t size1, const char *str2, size_t size2, int k)
+    inline static bool isLevAtMostK(Fingerprints<FING_T> &fingerprints, const char *str1, size_t size1, const char *str2, size_t size2, int k)
     {
-        return fingerprints.isLevAMK(str1, size1, str2, size2, k);
+        return fingerprints.isLevAtMostK(str1, size1, str2, size2, k);
     }
 };
 

@@ -4,8 +4,6 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-
 namespace fingerprints
 {
 
@@ -47,14 +45,14 @@ struct Params
     int nIter = 1;
 
     /** Input dictionary file path (positional arg 1). */
-    string inDictFile = "";
+    std::string inDictFile = "";
     /** Input pattern file path (positional arg 2). */
-    string inPatternFile = "";
+    std::string inPatternFile = "";
 
     /** Input data (dictionary and patterns) separator. */
-    string separator = "\n";
+    std::string separator = "\n";
     /** Output file path. */
-    string outFile = "res.txt";
+    std::string outFile = "res.txt";
 
     /*
      *** CONSTANTS
@@ -66,8 +64,8 @@ struct Params
     static constexpr int noValue = -1;
 
     /** Current version: major.minor.patch */
-    const string versionInfo = "fingerprints v1.1.0";
-    const string usageInfoString = "[options] <input dictionary file> <input pattern file>";
+    const std::string versionInfo = "fingerprints v1.1.0";
+    const std::string usageInfoString = "[options] <input dictionary file> <input pattern file>";
 };
 
 } // namespace fingerprints

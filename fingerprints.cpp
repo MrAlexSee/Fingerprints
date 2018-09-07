@@ -9,6 +9,8 @@
 #include <unordered_map>
 #include <unordered_set>
 
+using namespace std;
+
 namespace fingerprints
 {
 
@@ -562,7 +564,7 @@ int Fingerprints<FING_T>::testFingerprintsHamming(const vector<string> &patterns
             {
                 curEntry += sizeof(FING_T);
 
-                if (isHamAMK(pattern.c_str(), curEntry, curSize, k))
+                if (isHamAtMostK(pattern.c_str(), curEntry, curSize, k))
                 {
                     // Make sure that the number of results is returned in order to
                     // prevent the compiler from overoptimizing unused results.
@@ -612,7 +614,7 @@ int Fingerprints<FING_T>::testFingerprintsLeven(const vector<string> &patterns, 
                 {
                     curEntry += sizeof(FING_T);
 
-                    if (isLevAMK(pattern.c_str(), patSize, curEntry, curSize, k))
+                    if (isLevAtMostK(pattern.c_str(), patSize, curEntry, curSize, k))
                     {
                         // Make sure that the number of results is returned in order to
                         // prevent the compiler from overoptimizing unused results.
@@ -647,7 +649,7 @@ int Fingerprints<FING_T>::testWordsHamming(const vector<string> &patterns, int k
 
         while (curEntry != nextEntry)
         {
-            if (isHamAMK(pattern.c_str(), curEntry, curSize, k))
+            if (isHamAtMostK(pattern.c_str(), curEntry, curSize, k))
             {
                 // Make sure that the number of results is returned in order to
                 // prevent the compiler from overoptimizing unused results.
@@ -684,7 +686,7 @@ int Fingerprints<FING_T>::testWordsLeven(const vector<string> &patterns, int k)
 
             while (curEntry != nextEntry)
             {
-                if (isLevAMK(pattern.c_str(), patSize, curEntry, curSize, k))
+                if (isLevAtMostK(pattern.c_str(), patSize, curEntry, curSize, k))
                 {
                     // Make sure that the number of results is returned in order to
                     // prevent the compiler from overoptimizing unused results.
@@ -1064,7 +1066,7 @@ unsigned char Fingerprints<FING_T>::calcNErrors(FING_T f1, FING_T f2) const
 }
 
 template<typename FING_T>
-bool Fingerprints<FING_T>::isHamAMK(const char *str1, const char *str2, const size_t size, const int k)
+bool Fingerprints<FING_T>::isHamAtMostK(const char *str1, const char *str2, const size_t size, const int k)
 {
     // With compiler optimizations, this version is faster than any bitwise/avx/sse magic (tested).
     int nErrors = 0;
@@ -1088,7 +1090,7 @@ bool Fingerprints<FING_T>::isHamAMK(const char *str1, const char *str2, const si
 // Calculates only the 2k + 1 strip since we are only interested in distance <= k.
 // Attribution: based on: https://commons.apache.org/sandbox/commons-text/jacoco/org.apache.commons.text.similarity/LevenshteinDistance.java.html
 template<typename FING_T>
-bool Fingerprints<FING_T>::isLevAMK(const char *str1, const size_t size1, const char *str2, const size_t size2, const int k)
+bool Fingerprints<FING_T>::isLevAtMostK(const char *str1, const size_t size1, const char *str2, const size_t size2, const int k)
 {
     const int size1s = size1;
     const int size2s = size2;

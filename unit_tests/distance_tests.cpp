@@ -29,7 +29,7 @@ TEST_CASE("is Hamming at most k for empty calculation correct", "[distance]")
 
     for (int k = 0; k <= maxK; ++k)
     {
-        REQUIRE(FingerprintsWhitebox::isHamAMK<FING_T>(empty.c_str(), empty.c_str(), 0, k) == true);    
+        REQUIRE(FingerprintsWhitebox::isHamAtMostK<FING_T>(empty.c_str(), empty.c_str(), 0, k) == true);    
     }
 }
 
@@ -39,7 +39,7 @@ TEST_CASE("is Hamming at most k calculation for self correct", "[distance]")
 
     for (int k = 0; k <= maxK; ++k)
     {
-        REQUIRE(FingerprintsWhitebox::isHamAMK<FING_T>(str1.c_str(), str1.c_str(), str1.size(), k) == true);    
+        REQUIRE(FingerprintsWhitebox::isHamAtMostK<FING_T>(str1.c_str(), str1.c_str(), str1.size(), k) == true);    
     }
 }
 
@@ -52,13 +52,13 @@ TEST_CASE("is Hamming at most k=1 calculation correct", "[distance]")
         string cur = str;
         cur[i] = 'N';
 
-        REQUIRE(FingerprintsWhitebox::isHamAMK<FING_T>(cur.c_str(), str.c_str(), cur.size(), 0) == false);
-        REQUIRE(FingerprintsWhitebox::isHamAMK<FING_T>(str.c_str(), cur.c_str(), cur.size(), 0) == false);
+        REQUIRE(FingerprintsWhitebox::isHamAtMostK<FING_T>(cur.c_str(), str.c_str(), cur.size(), 0) == false);
+        REQUIRE(FingerprintsWhitebox::isHamAtMostK<FING_T>(str.c_str(), cur.c_str(), cur.size(), 0) == false);
 
         for (int k = 1; k <= maxK; ++k)
         {
-            REQUIRE(FingerprintsWhitebox::isHamAMK<FING_T>(cur.c_str(), str.c_str(), cur.size(), 1) == true);
-            REQUIRE(FingerprintsWhitebox::isHamAMK<FING_T>(str.c_str(), cur.c_str(), cur.size(), 1) == true);
+            REQUIRE(FingerprintsWhitebox::isHamAtMostK<FING_T>(cur.c_str(), str.c_str(), cur.size(), 1) == true);
+            REQUIRE(FingerprintsWhitebox::isHamAtMostK<FING_T>(str.c_str(), cur.c_str(), cur.size(), 1) == true);
         }
     }
 }
@@ -66,39 +66,39 @@ TEST_CASE("is Hamming at most k=1 calculation correct", "[distance]")
 TEST_CASE("is Hamming at most k=1 calculation for selected words correct", "[distance]")
 {
     string str1 = "aaaa", str2 = "aaab";
-    REQUIRE(FingerprintsWhitebox::isHamAMK<FING_T>(str1.c_str(), str2.c_str(), str1.size(), 1) == true);
-    REQUIRE(FingerprintsWhitebox::isHamAMK<FING_T>(str2.c_str(), str1.c_str(), str1.size(), 1) == true);
+    REQUIRE(FingerprintsWhitebox::isHamAtMostK<FING_T>(str1.c_str(), str2.c_str(), str1.size(), 1) == true);
+    REQUIRE(FingerprintsWhitebox::isHamAtMostK<FING_T>(str2.c_str(), str1.c_str(), str1.size(), 1) == true);
 
     str1 = "aaaa", str2 = "baab";
-    REQUIRE(FingerprintsWhitebox::isHamAMK<FING_T>(str1.c_str(), str2.c_str(), str1.size(), 1) == false);
-    REQUIRE(FingerprintsWhitebox::isHamAMK<FING_T>(str2.c_str(), str1.c_str(), str1.size(), 1) == false);
+    REQUIRE(FingerprintsWhitebox::isHamAtMostK<FING_T>(str1.c_str(), str2.c_str(), str1.size(), 1) == false);
+    REQUIRE(FingerprintsWhitebox::isHamAtMostK<FING_T>(str2.c_str(), str1.c_str(), str1.size(), 1) == false);
 
     str1 = "abcdef", str2 = "abccef";
-    REQUIRE(FingerprintsWhitebox::isHamAMK<FING_T>(str1.c_str(), str2.c_str(), str1.size(), 1) == true);
-    REQUIRE(FingerprintsWhitebox::isHamAMK<FING_T>(str2.c_str(), str1.c_str(), str1.size(), 1) == true);
+    REQUIRE(FingerprintsWhitebox::isHamAtMostK<FING_T>(str1.c_str(), str2.c_str(), str1.size(), 1) == true);
+    REQUIRE(FingerprintsWhitebox::isHamAtMostK<FING_T>(str2.c_str(), str1.c_str(), str1.size(), 1) == true);
 
     str1 = "abcdef", str2 = "abcccf";
-    REQUIRE(FingerprintsWhitebox::isHamAMK<FING_T>(str1.c_str(), str2.c_str(), str1.size(), 1) == false);
-    REQUIRE(FingerprintsWhitebox::isHamAMK<FING_T>(str2.c_str(), str1.c_str(), str1.size(), 1) == false);
+    REQUIRE(FingerprintsWhitebox::isHamAtMostK<FING_T>(str1.c_str(), str2.c_str(), str1.size(), 1) == false);
+    REQUIRE(FingerprintsWhitebox::isHamAtMostK<FING_T>(str2.c_str(), str1.c_str(), str1.size(), 1) == false);
 }
 
 TEST_CASE("is Hamming at most k=2 calculation for selected words correct", "[distance]")
 {
     string str1 = "aaaa", str2 = "aabb";
-    REQUIRE(FingerprintsWhitebox::isHamAMK<FING_T>(str1.c_str(), str2.c_str(), str1.size(), 2) == true);
-    REQUIRE(FingerprintsWhitebox::isHamAMK<FING_T>(str2.c_str(), str1.c_str(), str1.size(), 2) == true);
+    REQUIRE(FingerprintsWhitebox::isHamAtMostK<FING_T>(str1.c_str(), str2.c_str(), str1.size(), 2) == true);
+    REQUIRE(FingerprintsWhitebox::isHamAtMostK<FING_T>(str2.c_str(), str1.c_str(), str1.size(), 2) == true);
 
     str1 = "aaaa", str2 = "abbb";
-    REQUIRE(FingerprintsWhitebox::isHamAMK<FING_T>(str1.c_str(), str2.c_str(), str1.size(), 2) == false);
-    REQUIRE(FingerprintsWhitebox::isHamAMK<FING_T>(str2.c_str(), str1.c_str(), str1.size(), 2) == false);
+    REQUIRE(FingerprintsWhitebox::isHamAtMostK<FING_T>(str1.c_str(), str2.c_str(), str1.size(), 2) == false);
+    REQUIRE(FingerprintsWhitebox::isHamAtMostK<FING_T>(str2.c_str(), str1.c_str(), str1.size(), 2) == false);
 
     str1 = "abcdef", str2 = "abcccf";
-    REQUIRE(FingerprintsWhitebox::isHamAMK<FING_T>(str1.c_str(), str2.c_str(), str1.size(), 2) == true);
-    REQUIRE(FingerprintsWhitebox::isHamAMK<FING_T>(str2.c_str(), str1.c_str(), str1.size(), 2) == true);
+    REQUIRE(FingerprintsWhitebox::isHamAtMostK<FING_T>(str1.c_str(), str2.c_str(), str1.size(), 2) == true);
+    REQUIRE(FingerprintsWhitebox::isHamAtMostK<FING_T>(str2.c_str(), str1.c_str(), str1.size(), 2) == true);
 
     str1 = "abcdef", str2 = "abcccc";
-    REQUIRE(FingerprintsWhitebox::isHamAMK<FING_T>(str1.c_str(), str2.c_str(), str1.size(), 2) == false);
-    REQUIRE(FingerprintsWhitebox::isHamAMK<FING_T>(str2.c_str(), str1.c_str(), str1.size(), 2) == false);
+    REQUIRE(FingerprintsWhitebox::isHamAtMostK<FING_T>(str1.c_str(), str2.c_str(), str1.size(), 2) == false);
+    REQUIRE(FingerprintsWhitebox::isHamAtMostK<FING_T>(str2.c_str(), str1.c_str(), str1.size(), 2) == false);
 }
 
 TEST_CASE("is Hamming at most k=1,2,3,4 randomized calculation correct", "[distance]")
@@ -118,13 +118,13 @@ TEST_CASE("is Hamming at most k=1,2,3,4 randomized calculation correct", "[dista
 
             for (int curK = 0; curK < k; ++curK)
             {
-                REQUIRE(FingerprintsWhitebox::isHamAMK<FING_T>(cur.c_str(), str.c_str(), cur.size(), curK) == false);
-                REQUIRE(FingerprintsWhitebox::isHamAMK<FING_T>(str.c_str(), cur.c_str(), cur.size(), curK) == false);
+                REQUIRE(FingerprintsWhitebox::isHamAtMostK<FING_T>(cur.c_str(), str.c_str(), cur.size(), curK) == false);
+                REQUIRE(FingerprintsWhitebox::isHamAtMostK<FING_T>(str.c_str(), cur.c_str(), cur.size(), curK) == false);
             }
             for (int curK = k; curK <= 4; ++curK)
             {
-                REQUIRE(FingerprintsWhitebox::isHamAMK<FING_T>(cur.c_str(), str.c_str(), cur.size(), curK) == true);
-                REQUIRE(FingerprintsWhitebox::isHamAMK<FING_T>(str.c_str(), cur.c_str(), cur.size(), curK) == true);
+                REQUIRE(FingerprintsWhitebox::isHamAtMostK<FING_T>(cur.c_str(), str.c_str(), cur.size(), curK) == true);
+                REQUIRE(FingerprintsWhitebox::isHamAtMostK<FING_T>(str.c_str(), cur.c_str(), cur.size(), curK) == true);
             }
         });
     };
@@ -138,7 +138,7 @@ TEST_CASE("is Leven at most k for empty calculation correct", "[distance]")
 
     for (int k = 0; k <= maxK; ++k)
     {
-        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, empty.c_str(), empty.size(), empty.c_str(), empty.size(), k) == true);
+        REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, empty.c_str(), empty.size(), empty.c_str(), empty.size(), k) == true);
     }
 }
 
@@ -150,7 +150,7 @@ TEST_CASE("is Leven at most k calculation for self correct", "[distance]")
 
     for (int k = 0; k <= maxK; ++k)
     {
-        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str1.c_str(), str1.size(), str1.c_str(), str1.size(), k) == true);
+        REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str1.c_str(), str1.size(), str1.c_str(), str1.size(), k) == true);
     }
 }
 
@@ -160,11 +160,11 @@ TEST_CASE("is Leven at most k=0 calculation for selected words correct", "[dista
     Fingerprints<FING_T> fingerprints(1, 0, 0);
     string str1 = "ala", str2 = "kota";
 
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str1.c_str(), str1.size(), str1.c_str(), str1.size(), 0) == true);
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str2.c_str(), str2.size(), str2.c_str(), str2.size(), 0) == true);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str1.c_str(), str1.size(), str1.c_str(), str1.size(), 0) == true);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str2.c_str(), str2.size(), str2.c_str(), str2.size(), 0) == true);
 
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 0) == false);
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 0) == false);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 0) == false);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 0) == false);
 }
 
 TEST_CASE("is Leven at most k=1 calculation correct", "[distance]")
@@ -179,13 +179,13 @@ TEST_CASE("is Leven at most k=1 calculation correct", "[distance]")
         string cur = str;
         cur[i] = 'N';
 
-        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, cur.c_str(), cur.size(), str.c_str(), str.size(), 0) == false);
-        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str.c_str(), str.size(), cur.c_str(), cur.size(), 0) == false);
+        REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, cur.c_str(), cur.size(), str.c_str(), str.size(), 0) == false);
+        REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str.c_str(), str.size(), cur.c_str(), cur.size(), 0) == false);
 
         for (int k = 1; k <= maxK; ++k)
         {
-            REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, cur.c_str(), cur.size(), str.c_str(), str.size(), k) == true);
-            REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str.c_str(), str.size(), cur.c_str(), cur.size(), k) == true);
+            REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, cur.c_str(), cur.size(), str.c_str(), str.size(), k) == true);
+            REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str.c_str(), str.size(), cur.c_str(), cur.size(), k) == true);
         }
     }
 
@@ -194,13 +194,13 @@ TEST_CASE("is Leven at most k=1 calculation correct", "[distance]")
     {
         string cur = str.substr(0, i) + "N" + str.substr(i, string::npos);
 
-        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, cur.c_str(), cur.size(), str.c_str(), str.size(), 0) == false);
-        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str.c_str(), str.size(), cur.c_str(), cur.size(), 0) == false);
+        REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, cur.c_str(), cur.size(), str.c_str(), str.size(), 0) == false);
+        REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str.c_str(), str.size(), cur.c_str(), cur.size(), 0) == false);
 
         for (int k = 1; k <= maxK; ++k)
         {
-            REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, cur.c_str(), cur.size(), str.c_str(), str.size(), k) == true);
-            REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str.c_str(), str.size(), cur.c_str(), cur.size(), k) == true);
+            REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, cur.c_str(), cur.size(), str.c_str(), str.size(), k) == true);
+            REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str.c_str(), str.size(), cur.c_str(), cur.size(), k) == true);
         }
     }
 
@@ -209,13 +209,13 @@ TEST_CASE("is Leven at most k=1 calculation correct", "[distance]")
     {
         string cur = str.substr(0, i) + str.substr(i + 1, string::npos);
 
-        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, cur.c_str(), cur.size(), str.c_str(), str.size(), 0) == false);
-        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str.c_str(), str.size(), cur.c_str(), cur.size(), 0) == false);
+        REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, cur.c_str(), cur.size(), str.c_str(), str.size(), 0) == false);
+        REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str.c_str(), str.size(), cur.c_str(), cur.size(), 0) == false);
 
         for (int k = 1; k <= maxK; ++k)
         {
-            REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, cur.c_str(), cur.size(), str.c_str(), str.size(), k) == true);
-            REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str.c_str(), str.size(), cur.c_str(), cur.size(), k) == true);
+            REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, cur.c_str(), cur.size(), str.c_str(), str.size(), k) == true);
+            REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str.c_str(), str.size(), cur.c_str(), cur.size(), k) == true);
         }
     }
 }
@@ -226,48 +226,48 @@ TEST_CASE("is Leven at most k=1 calculation for selected words correct", "[dista
     Fingerprints<FING_T> fingerprints(1, 0, 0);
 
     string str1 = "aaaa", str2 = "aaab";
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 1) == true);
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 1) == true);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 1) == true);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 1) == true);
 
     str1 = "aaaa", str2 = "baab";
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 1) == false);
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 1) == false);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 1) == false);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 1) == false);
 
     str1 = "ala", str2 = "alak";
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 1) == true);
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 1) == true);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 1) == true);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 1) == true);
 
     str1 = "ala", str2 = "kota";
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 1) == false);
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 1) == false);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 1) == false);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 1) == false);
 
     str1 = "ala", str2 = "al";
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 1) == true);
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 1) == true);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 1) == true);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 1) == true);
 
     str1 = "ala", str2 = "ma";
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 1) == false);
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 1) == false);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 1) == false);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 1) == false);
 
     str1 = "ala", str2 = "aa";
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 1) == true);
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 1) == true);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 1) == true);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 1) == true);
 
     str1 = "jarek", str2 = "jaek";
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 1) == true);
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 1) == true);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 1) == true);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 1) == true);
 
     str1 = "jarek", str2 = "jarrek";
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 1) == true);
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 1) == true);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 1) == true);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 1) == true);
 
     str1 = "jarek", str2 = "jak";
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 1) == false);
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 1) == false);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 1) == false);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 1) == false);
 
     str1 = "jarek", str2 = "jarrrek";
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 1) == false);
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 1) == false);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 1) == false);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 1) == false);
 }
 
 TEST_CASE("is Leven at most k=1 calculation after match for selected words correct", "[distance]")
@@ -276,15 +276,15 @@ TEST_CASE("is Leven at most k=1 calculation after match for selected words corre
     Fingerprints<FING_T> fingerprints(1, 0, 0);
    
     string str1 = "ala", str2 = "kota"; 
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str1.c_str(), str1.size(), str1.c_str(), str1.size(), 1) == true);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str1.c_str(), str1.size(), str1.c_str(), str1.size(), 1) == true);
 
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 1) == false);
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 1) == false);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 1) == false);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 1) == false);
 
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str2.c_str(), str2.size(), str2.c_str(), str2.size(), 1) == true);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str2.c_str(), str2.size(), str2.c_str(), str2.size(), 1) == true);
 
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 1) == false);
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 1) == false);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 1) == false);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 1) == false);
 }
 
 TEST_CASE("is Leven at most k=1 calculation for various deletions correct", "[distance]")
@@ -299,14 +299,14 @@ TEST_CASE("is Leven at most k=1 calculation for various deletions correct", "[di
     
     for (const string &inStr : inStrings)
     {
-        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str.c_str(), str.size(), inStr.c_str(), inStr.size(), 1) == true);
-        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, inStr.c_str(), inStr.size(), str.c_str(), str.size(), 1) == true);
+        REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str.c_str(), str.size(), inStr.c_str(), inStr.size(), 1) == true);
+        REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, inStr.c_str(), inStr.size(), str.c_str(), str.size(), 1) == true);
     }
 
     for (const string &outStr : outStrings)
     {
-        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str.c_str(), str.size(), outStr.c_str(), outStr.size(), 1) == false);
-        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, outStr.c_str(), outStr.size(), str.c_str(), str.size(), 1) == false);
+        REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str.c_str(), str.size(), outStr.c_str(), outStr.size(), 1) == false);
+        REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, outStr.c_str(), outStr.size(), str.c_str(), str.size(), 1) == false);
     }
 }
 
@@ -322,14 +322,14 @@ TEST_CASE("is Leven at most k=1 calculation for various insertions correct", "[d
     
     for (const string &inStr : inStrings)
     {
-        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str.c_str(), str.size(), inStr.c_str(), inStr.size(), 1) == true);
-        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, inStr.c_str(), inStr.size(), str.c_str(), str.size(), 1) == true);
+        REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str.c_str(), str.size(), inStr.c_str(), inStr.size(), 1) == true);
+        REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, inStr.c_str(), inStr.size(), str.c_str(), str.size(), 1) == true);
     }
 
     for (const string &outStr : outStrings)
     {
-        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str.c_str(), str.size(), outStr.c_str(), outStr.size(), 1) == false);
-        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, outStr.c_str(), outStr.size(), str.c_str(), str.size(), 1) == false);
+        REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str.c_str(), str.size(), outStr.c_str(), outStr.size(), 1) == false);
+        REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, outStr.c_str(), outStr.size(), str.c_str(), str.size(), 1) == false);
     }
 }
 
@@ -345,14 +345,14 @@ TEST_CASE("is Leven at most k=1 calculation for various substitutions correct", 
     
     for (const string &inStr : inStrings)
     {
-        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str.c_str(), str.size(), inStr.c_str(), inStr.size(), 1) == true);
-        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, inStr.c_str(), inStr.size(), str.c_str(), str.size(), 1) == true);
+        REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str.c_str(), str.size(), inStr.c_str(), inStr.size(), 1) == true);
+        REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, inStr.c_str(), inStr.size(), str.c_str(), str.size(), 1) == true);
     }
 
     for (const string &outStr : outStrings)
     {
-        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str.c_str(), str.size(), outStr.c_str(), outStr.size(), 1) == false);
-        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, outStr.c_str(), outStr.size(), str.c_str(), str.size(), 1) == false);
+        REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str.c_str(), str.size(), outStr.c_str(), outStr.size(), 1) == false);
+        REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, outStr.c_str(), outStr.size(), str.c_str(), str.size(), 1) == false);
     }
 }
 
@@ -362,36 +362,36 @@ TEST_CASE("is Leven at most k=2 calculation for selected words correct", "[dista
     Fingerprints<FING_T> fingerprints(1, 0, 0);
 
     string str1 = "aaaa", str2 = "aabb";
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 2) == true);
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 2) == true);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 2) == true);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 2) == true);
 
     str1 = "aaaa", str2 = "aa";
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 2) == true);
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 2) == true);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 2) == true);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 2) == true);
 
     str1 = "aaaa", str2 = "aaaaaa";
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 2) == true);
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 2) == true);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 2) == true);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 2) == true);
 
     str1 = "aaaa", str2 = "aaccaa";
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 2) == true);
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 2) == true);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 2) == true);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 2) == true);
 
     str1 = "aaaa", str2 = "a";
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 2) == false);
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 2) == false);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 2) == false);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 2) == false);
 
     str1 = "aaaa", str2 = "aaaaaaa";
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 2) == false);
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 2) == false);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 2) == false);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 2) == false);
 
     str1 = "aaaa", str2 = "accc";
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 2) == false);
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 2) == false);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 2) == false);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 2) == false);
 
     str1 = "aaaa", str2 = "aaaaccc";
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 2) == false);
-    REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 2) == false);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 2) == false);
+    REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str2.c_str(), str2.size(), str1.c_str(), str1.size(), 2) == false);
 }
 
 TEST_CASE("is Leven at most k=2 calculation for various deletions correct", "[distance]")
@@ -406,14 +406,14 @@ TEST_CASE("is Leven at most k=2 calculation for various deletions correct", "[di
     
     for (const string &inStr : inStrings)
     {
-        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str.c_str(), str.size(), inStr.c_str(), inStr.size(), 2) == true);
-        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, inStr.c_str(), inStr.size(), str.c_str(), str.size(), 2) == true);
+        REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str.c_str(), str.size(), inStr.c_str(), inStr.size(), 2) == true);
+        REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, inStr.c_str(), inStr.size(), str.c_str(), str.size(), 2) == true);
     }
 
     for (const string &outStr : outStrings)
     {
-        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str.c_str(), str.size(), outStr.c_str(), outStr.size(), 2) == false);
-        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, outStr.c_str(), outStr.size(), str.c_str(), str.size(), 2) == false);
+        REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str.c_str(), str.size(), outStr.c_str(), outStr.size(), 2) == false);
+        REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, outStr.c_str(), outStr.size(), str.c_str(), str.size(), 2) == false);
     }
 }
 
@@ -429,14 +429,14 @@ TEST_CASE("is Leven at most k=2 calculation for various insertions correct", "[d
     
     for (const string &inStr : inStrings)
     {
-        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str.c_str(), str.size(), inStr.c_str(), inStr.size(), 2) == true);
-        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, inStr.c_str(), inStr.size(), str.c_str(), str.size(), 2) == true);
+        REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str.c_str(), str.size(), inStr.c_str(), inStr.size(), 2) == true);
+        REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, inStr.c_str(), inStr.size(), str.c_str(), str.size(), 2) == true);
     }
 
     for (const string &outStr : outStrings)
     {
-        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str.c_str(), str.size(), outStr.c_str(), outStr.size(), 2) == false);
-        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, outStr.c_str(), outStr.size(), str.c_str(), str.size(), 2) == false);
+        REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str.c_str(), str.size(), outStr.c_str(), outStr.size(), 2) == false);
+        REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, outStr.c_str(), outStr.size(), str.c_str(), str.size(), 2) == false);
     }
 }
 
@@ -452,14 +452,14 @@ TEST_CASE("is Leven at most k=2 calculation for various modifications correct", 
     
     for (const string &inStr : inStrings)
     {
-        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str.c_str(), str.size(), inStr.c_str(), inStr.size(), 2) == true);
-        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, inStr.c_str(), inStr.size(), str.c_str(), str.size(), 2) == true);
+        REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str.c_str(), str.size(), inStr.c_str(), inStr.size(), 2) == true);
+        REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, inStr.c_str(), inStr.size(), str.c_str(), str.size(), 2) == true);
     }
 
     for (const string &outStr : outStrings)
     {
-        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, str.c_str(), str.size(), outStr.c_str(), outStr.size(), 2) == false);
-        REQUIRE(FingerprintsWhitebox::isLevAMK<FING_T>(fingerprints, outStr.c_str(), outStr.size(), str.c_str(), str.size(), 2) == false);
+        REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str.c_str(), str.size(), outStr.c_str(), outStr.size(), 2) == false);
+        REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, outStr.c_str(), outStr.size(), str.c_str(), str.size(), 2) == false);
     }
 }
 

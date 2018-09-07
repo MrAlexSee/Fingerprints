@@ -9,8 +9,6 @@
 #define FINGERPRINTS_WHITEBOX
 #endif
 
-using namespace std;
-
 namespace fingerprints
 {
 
@@ -26,22 +24,23 @@ public:
     /** Constructs an array which stores [words].
      * If [useFingerprints] is true, constructs corresponding fingerprints and
      * sets elapsedUs to time elapsed during construction. */
-    void preprocess(const vector<string> &words);
+    void preprocess(const std::vector<std::string> &words);
 
     /** Performs approximate matching for [patterns] and [k] errors, iterates [nIter] times. 
      * If [setProcessedWordsCollection] is true, stores all processed words explicitly, otherwise stores only their count.
      * Returns the total number of matches. Sets elapsedUs to time elapsed during this matching. */
-    int test(const vector<string> &patterns, int k, int nIter = 1, bool setProcessedWordsCollection = false);
+    int test(const std::vector<std::string> &patterns, int k, int nIter = 1, 
+        bool setProcessedWordsCollection = false);
 
     /** Tests [patterns] for [k] errors using fingerprints.
      * Returns the fraction of words which were rejected by fingerprints. */
-    float testRejection(const vector<string> &patterns, int k);
+    float testRejection(const std::vector<std::string> &patterns, int k);
 
     /** Returns total elapsed time during construction or testing in microseconds. */
     float getElapsedUs() const { return elapsedUs; }
     
     /** Returns a collection of all words processed during a single test iteration. */
-    vector<string> getProcessedWords() const { return processedWords; }
+    std::vector<std::string> getProcessedWords() const { return processedWords; }
     /** Returns count of all words processed during a single test iteration. */
     size_t getProcessedWordsCount() const { return processedWordsCount; }
 
@@ -55,9 +54,9 @@ private:
      */
 
     /** Constructs an array which stores [words] together with their corresponding fingerprints. */
-    void preprocessFingerprints(vector<string> words);
+    void preprocessFingerprints(std::vector<std::string> words);
     /** Constructs an array which stores only [words]. */
-    void preprocessWords(vector<string> words);
+    void preprocessWords(std::vector<std::string> words);
 
     /** Initializes a lookup table for true number of errors based on fingerprints errors. */
     void initNErrorsLUT();
@@ -68,7 +67,7 @@ private:
     void initCharList(int lettersType);
     
     /** Returns the character list for [nChars] count and [lettersType] (common, mixed, rare). */
-    string getCharList(size_t nChars, int lettersType) const;
+    std::string getCharList(size_t nChars, int lettersType) const;
 
     /** Calculates mismatches LUT (nMismatchesLUT) for occurrence fingerprints. */
     void calcOccNMismatchesLUT();
@@ -80,7 +79,7 @@ private:
     /** Returns the total size of an array for words from [words] and corresponding fingerprints.
      * Calculates a count for each word size and stores it in [wordCountsBySize]
      * (passed array must be of size maxWordSize + 1). */
-    static size_t calcTotalSize(const vector<string> &words, size_t *wordCountsBySize);
+    static size_t calcTotalSize(const std::vector<std::string> &words, size_t *wordCountsBySize);
 
     /** Set to false if the user selected the mode without fingeprints (where only the words are stored). */
     bool useFingerprints = true;
@@ -93,34 +92,34 @@ private:
 
     /** Performs approximate matching for [patterns] and [k] errors using fingerprints for Hamming distance.
      * Returns the total number of matches. Sets elapsedUs to time elapsed during this matching. */
-    int testFingerprintsHamming(const vector<string> &patterns, int k);
+    int testFingerprintsHamming(const std::vector<std::string> &patterns, int k);
     /** Performs approximate matching for [patterns] and [k] errors using fingerprints for Levenshtein distance.
      * Returns the total number of matches. Sets elapsedUs to time elapsed during this matching. */
-    int testFingerprintsLeven(const vector<string> &patterns, int k);
+    int testFingerprintsLeven(const std::vector<std::string> &patterns, int k);
 
     /** Performs approximate matching for [patterns] and [k] errors without fingerprints for Hamming distance.
      * Returns the total number of matches. Sets elapsedUs to time elapsed during this matching. */
-    int testWordsHamming(const vector<string> &patterns, int k);
+    int testWordsHamming(const std::vector<std::string> &patterns, int k);
     /** Performs approximate matching for [patterns] and [k] errors without fingerprints for Levenshtein distance.
      * Returns the total number of matches. Sets elapsedUs to time elapsed during this matching. */
-    int testWordsLeven(const vector<string> &patterns, int k);
+    int testWordsLeven(const std::vector<std::string> &patterns, int k);
 
     /** Tests [patterns] for [k] errors using fingerprints for Hamming distance.
      * Returns the fraction of words which were rejected by fingerprints. */
-    float testRejectionHamming(const vector<string> &patterns, int k);
+    float testRejectionHamming(const std::vector<std::string> &patterns, int k);
 
     /** Tests [patterns] for [k] errors using fingerprints for Levenshtein distance.
      * Returns the fraction of words which were rejected by fingerprints. */
-    float testRejectionLeven(const vector<string> &patterns, int k);
+    float testRejectionLeven(const std::vector<std::string> &patterns, int k);
 
-    void setProcessedWords(const vector<string> &patterns, int k);
-    void setProcessedWordsCount(const vector<string> &patterns, int k);
+    void setProcessedWords(const std::vector<std::string> &patterns, int k);
+    void setProcessedWordsCount(const std::vector<std::string> &patterns, int k);
 
     /** Elapsed (during construction or testing) time in microseconds. */
     float elapsedUs = 0.0f;
 
     /** A collection of all words processed during a single test iteration. */
-    vector<string> processedWords;
+    std::vector<std::string> processedWords;
 
     /** Count of all words processed during a single test iteration. */
     size_t processedWordsCount;
@@ -131,7 +130,7 @@ private:
 
     /** Returns a fingerprint of the current type for a string.
      * Set to one of the specific functions listed below. */
-    function<FING_T(const char *, size_t)> calcFingerprintFun;
+    std::function<FING_T(const char *, size_t)> calcFingerprintFun;
 
     /** Returns an occurrence fingerprint for string [str] having [size] chars. */
     FING_T calcFingerprintOcc(const char *str, size_t size) const;
@@ -152,11 +151,11 @@ private:
      */
 
     /** Returns true if Hamming distance between [str1] and [str2] both of [size] is at most [k] (i.e. <= k). */
-    static bool isHamAMK(const char *str1, const char *str2, const size_t size, const int k);
+    static bool isHamAtMostK(const char *str1, const char *str2, const size_t size, const int k);
 
     /** Returns true if Levenshtein distance between [str1] of [size1] and [str2] of [size2] is at most [k] (i.e. <= k).
      * Uses the 2k + 1 strip. */
-    bool isLevAMK(const char *str1, size_t size1, const char *str2, const size_t size2, const int k);
+    bool isLevAtMostK(const char *str1, size_t size1, const char *str2, const size_t size2, const int k);
 
     /*
      *** CONSTANTS
@@ -200,19 +199,19 @@ private:
      *** FINGERPRINT LETTER COLLECTIONS
      */
 
-    const string engCommonLetters16 = "etaoinshrdlcumwf";
-    const string engMixedLetters16 = "etaoinshzqxjkvbp";
-    const string engRareLetters16 = "zqxjkvbpygfwmucl";
+    const std::string engCommonLetters16 = "etaoinshrdlcumwf";
+    const std::string engMixedLetters16 = "etaoinshzqxjkvbp";
+    const std::string engRareLetters16 = "zqxjkvbpygfwmucl";
 
-    const string engCommonLetters8 = "etaoinsh";
-    const string engMixedLetters8 = "etaokvbp";
-    const string engRareLetters8 = "zqxjkvbp";
+    const std::string engCommonLetters8 = "etaoinsh";
+    const std::string engMixedLetters8 = "etaokvbp";
+    const std::string engRareLetters8 = "zqxjkvbp";
 
     // These collections use 5 letters for a position fingerprint 
     // and a single, additional character for occurrence.
-    const string engCommonLettersPos5 = "etaoin";
-    const string engMixedLettersPos5 = "etakvb";
-    const string engRareLettersPos5 = "zqxjkv";
+    const std::string engCommonLettersPos5 = "etaoin";
+    const std::string engMixedLettersPos5 = "etakvb";
+    const std::string engRareLettersPos5 = "zqxjkv";
 
     FINGERPRINTS_WHITEBOX
 };
