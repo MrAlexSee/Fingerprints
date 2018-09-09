@@ -35,14 +35,14 @@ Short name | Long name                | Parameter description
 &nbsp;     | `--calc-rejection`       | calculate percentages of rejected words instead of measuring time
 `-d`       | `--dump`                 | dump input files and params info with elapsed time and throughput to output file (useful for testing)
 &nbsp;     | `--dump-construction`    | dump fingerprint construction time
-`-D`       | `--distance arg`         | distance metric: 0 &rarr; Hamming, 1 &rarr; Levenshtein (default = 0)
-`-f`       | `--fingerprint-type arg` | fingerprint type: -1 &rarr; no fingerprints, 0 &rarr; occurrence, 1 &rarr; count, 2 &rarr; position, 3 &rarr; occurrence halved (default = 0)
+`-D`       | `--distance arg`         | distance metric: ham (Hamming), lev (Levenshtein) (default = ham)
+`-f`       | `--fingerprint-type arg` | fingerprint type: none, occ (occurrence), occhalved (occurrence halved), count, pos (position) (default = occ)
 `-h`       | `--help`                 | display help message
 `-i`       | `--in-dict-file arg`     | input dictionary file path (positional arg 1)
 `-I`       | `--in-pattern-file arg`  | input pattern file path (positional arg 2)
 &nbsp;     | `--iter arg`             | number of iterations per pattern lookup (default = 1)
 `-k`       | `--approx arg`           | perform approximate search (Hamming or Levenshtein) for k errors
-`-l`       | `--letters-type arg`     | letters type: 0 &rarr; common, 1 &rarr; mixed, 2 &rarr; rare (default = 0)
+`-l`       | `--letters-type arg`     | letters type: common, mixed, rare (default = common)
 `-o`       | `--out-file arg`         | output file path
 `-p`       | `--pattern-count arg`    | maximum number of patterns read from top of the pattern file
 &nbsp;     | `--pattern-size arg`     | if set, only patterns of this size (letter count) will be read from the pattern file
