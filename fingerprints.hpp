@@ -16,9 +16,13 @@ template<typename FING_T>
 class Fingerprints
 {
 public:
+    enum class DistanceType { Ham, Lev };
+    enum class FingerprintType { None, Occ, OccHalved, Count, Pos };
+    enum class LettersType { Common, Mixed, Rare };
+
     /** Constructs a fingerprints object for [distanceType], [fingerprintType], and [lettersType].
      * Consult params.hpp for more information regarding the parameters. */
-    Fingerprints(int distanceType, int fingerprintType, int lettersType);
+    Fingerprints(DistanceType distanceType, FingerprintType fingerprintType, LettersType lettersType);
     ~Fingerprints();
 
     /** Constructs an array which stores [words].
@@ -44,10 +48,6 @@ public:
     /** Returns count of all words processed during a single test iteration. */
     size_t getProcessedWordsCount() const { return processedWordsCount; }
 
-    enum class DistanceType { Hamming = 0, Leven = 1 };
-    enum class FingerprintType { NoFing = -1, Occ = 0, Count = 1, Pos = 2, OccHalved = 3 };
-    enum class LettersType { Common = 0, Mixed = 1, Rare = 2 };
-
 private:
     /*
      *** INITIALIZIATION
@@ -62,12 +62,12 @@ private:
     void initNErrorsLUT();
     
     /** Initializes the character map for [fingerprintType] (occurrence, count) and [lettersType] (common, mixed, rare). */
-    void initCharsMap(int fingerprintType, int lettersType);
+    void initCharsMap(FingerprintType fingerprintType, LettersType lettersType);
     /** Initializes the character list for position fingerprint and [lettersType] (common, mixed, rare). */
-    void initCharList(int lettersType);
+    void initCharList(LettersType lettersType);
     
     /** Returns the character list for [nChars] count and [lettersType] (common, mixed, rare). */
-    std::string getCharList(size_t nChars, int lettersType) const;
+    std::string getCharList(size_t nChars, LettersType lettersType) const;
 
     /** Calculates mismatches LUT (nMismatchesLUT) for occurrence fingerprints. */
     void calcOccNMismatchesLUT();

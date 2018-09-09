@@ -24,12 +24,17 @@ struct Params
     /** Dump input files and params info with elapsed and throughput to output file. Cmd arg -d. */
     bool dumpToFile = false;
 
-    /** Distance type: 0 -> Hamming, 1 -> Levenshtein. Cmd arg -D. */
-    int distanceType = 0;
-    /** Fingerprint type: -1 -> no fingerprints, 0 -> occurrence, 1 -> count, 2 -> position, 3 -> occurrence halved. Cmd arg -f. */
-    int fingerprintType = 0;
-    /** Letters type: 0 -> common, 1 -> mixed, 2 -> rare. Cmd arg -l. */
-    int lettersType = 0;
+    /** Distance type: ham (Hamming), lev (Levenshtein). Cmd arg -D. */
+    std::string distanceType;
+
+    /** Fingerprint type: none, occ (occurrence), occhalved (occurrence halved), count, pos (position). Cmd arg -f. */
+    std::string fingerprintType;
+
+    /** Letters type: common, mixed, rare. Cmd arg -l. */
+    std::string lettersType;
+
+    /** Number of iterations per pattern lookup. */
+    int nIter;
 
     /** Number of errors for approximate search (Hamming or Levenshtein). Cmd arg -k. */
     int kApprox = noValue;
@@ -41,18 +46,16 @@ struct Params
     /** Maximum number of words read from top of the dictionary file. Cmd arg -w. */
     int nWords = noValue;
 
-    /** Number of iterations per pattern lookup. */
-    int nIter = 1;
-
-    /** Input dictionary file path (positional arg 1). */
-    std::string inDictFile = "";
-    /** Input pattern file path (positional arg 2). */
-    std::string inPatternFile = "";
-
     /** Input data (dictionary and patterns) separator. */
     std::string separator = "\n";
+
+    /** Input dictionary file path (positional arg 1). */
+    std::string inDictFile;
+    /** Input pattern file path (positional arg 2). */
+    std::string inPatternFile;
+
     /** Output file path. */
-    std::string outFile = "res.txt";
+    std::string outFile;
 
     /*
      *** CONSTANTS
@@ -64,7 +67,7 @@ struct Params
     static constexpr int noValue = -1;
 
     /** Current version: major.minor.patch */
-    const std::string versionInfo = "fingerprints v1.1.0";
+    const std::string versionInfo = "fingerprints v1.2.0";
     const std::string usageInfoString = "[options] <input dictionary file> <input pattern file>";
 };
 

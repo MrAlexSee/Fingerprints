@@ -15,24 +15,12 @@ namespace fingerprints
 {
 
 template<typename FING_T>
-Fingerprints<FING_T>::Fingerprints(int distanceType, int fingerprintType, int lettersType)
+Fingerprints<FING_T>::Fingerprints(DistanceType distanceType,
+    FingerprintType fingerprintType, LettersType lettersType)
 {
-    if (distanceType < 0 or distanceType > 1)
-    {
-        throw runtime_error("bad distance type: " + to_string(distanceType));
-    }
-    if (fingerprintType < -1 or fingerprintType > 3)
-    {
-        throw runtime_error("bad fingerprint type: " + to_string(fingerprintType));
-    }
-    if (lettersType < 0 or lettersType > 2)
-    {
-        throw runtime_error("bad letters type: " + to_string(lettersType));
-    }
-
     initNErrorsLUT();
     
-    if (static_cast<DistanceType>(distanceType) != DistanceType::Hamming)
+    if (distanceType != DistanceType::Ham)
     {
         useHamming = false;
         
@@ -40,37 +28,37 @@ Fingerprints<FING_T>::Fingerprints(int distanceType, int fingerprintType, int le
         levV1 = new int[maxWordSize];
     }
 
-    switch (static_cast<FingerprintType>(fingerprintType))
+    switch (fingerprintType)
     {
-        case FingerprintType::NoFing:
+        case FingerprintType::None:
             useFingerprints = false;
             break;
         case FingerprintType::Occ:
             initCharsMap(fingerprintType, lettersType);
             calcOccNMismatchesLUT();
 
-            calcFingerprintFun = bind(&Fingerprints<FING_T>::calcFingerprintOcc, this, 
-                placeholders::_1, placeholders::_2);
-            break;
-        case FingerprintType::Count:
-            initCharsMap(fingerprintType, lettersType);
-            calcCountNMismatchesLUT();
-
-            calcFingerprintFun = bind(&Fingerprints<FING_T>::calcFingerprintCount, this, 
-                placeholders::_1, placeholders::_2);
-            break;
-        case FingerprintType::Pos:
-            initCharList(lettersType);
-            calcPosNMismatchesLUT();
-
-            calcFingerprintFun = bind(&Fingerprints<FING_T>::calcFingerprintPos, this, 
+            calcFingerprintFun = bind(&Fingerprints<FING_T>::calcFingerprintOcc, this,
                 placeholders::_1, placeholders::_2);
             break;
         case FingerprintType::OccHalved:
             initCharsMap(fingerprintType, lettersType);
             calcOccNMismatchesLUT();
 
-            calcFingerprintFun = bind(&Fingerprints<FING_T>::calcFingerprintOccHalved, this, 
+            calcFingerprintFun = bind(&Fingerprints<FING_T>::calcFingerprintOccHalved, this,
+                placeholders::_1, placeholders::_2);
+            break;
+        case FingerprintType::Count:
+            initCharsMap(fingerprintType, lettersType);
+            calcCountNMismatchesLUT();
+
+            calcFingerprintFun = bind(&Fingerprints<FING_T>::calcFingerprintCount, this,
+                placeholders::_1, placeholders::_2);
+            break;
+        case FingerprintType::Pos:
+            initCharList(lettersType);
+            calcPosNMismatchesLUT();
+
+            calcFingerprintFun = bind(&Fingerprints<FING_T>::calcFingerprintPos, this,
                 placeholders::_1, placeholders::_2);
             break;
         default:
@@ -118,7 +106,7 @@ int Fingerprints<FING_T>::test(const vector<string> &patterns, int k, int nIter,
 {
     if (k < 0)
     {
-        throw runtime_error("bad k: " + to_string(k));
+        throw invalid_argument("bad k: " + to_string(k));
     }
 
     int nMatches = 0;
@@ -200,7 +188,7 @@ float Fingerprints<FING_T>::testRejection(const vector<string> &patterns, int k)
 {
     if (k < 0)
     {
-        throw runtime_error("bad k: " + to_string(k));
+        throw invalid_argument("bad k: " + to_string(k));
     }
 
     float res;
@@ -313,7 +301,8 @@ void Fingerprints<FING_T>::initNErrorsLUT()
 }
 
 template<typename FING_T>
-void Fingerprints<FING_T>::initCharsMap(int fingerprintType, int lettersType)
+void Fingerprints<FING_T>::initCharsMap(FingerprintType fingerprintType,
+    LettersType lettersType)
 {
     charsMap = new unsigned char[charsMapSize];
 
@@ -324,15 +313,15 @@ void Fingerprints<FING_T>::initCharsMap(int fingerprintType, int lettersType)
 
     size_t nChars;
 
-    switch (static_cast<FingerprintType>(fingerprintType))
+    switch (fingerprintType)
     {
         case FingerprintType::Occ:
             nChars = sizeof(FING_T) * 8;
             break;
-        case FingerprintType::Count:
+        case FingerprintType::OccHalved:
             nChars = sizeof(FING_T) * 4;
             break;
-        case FingerprintType::OccHalved:
+        case FingerprintType::Count:
             nChars = sizeof(FING_T) * 4;
             break;
         default:
@@ -347,7 +336,7 @@ void Fingerprints<FING_T>::initCharsMap(int fingerprintType, int lettersType)
     {
         const char c = charList[i];
 
-        if (static_cast<FingerprintType>(fingerprintType) == FingerprintType::OccHalved)
+        if (fingerprintType == FingerprintType::OccHalved)
         {
             charsMap[static_cast<size_t>(c)] = 2 * i;
         }
@@ -359,7 +348,7 @@ void Fingerprints<FING_T>::initCharsMap(int fingerprintType, int lettersType)
 }
 
 template<typename FING_T>
-void Fingerprints<FING_T>::initCharList(int lettersType)
+void Fingerprints<FING_T>::initCharList(LettersType lettersType)
 {
     size_t nChars = sizeof(FING_T) * 8 / nBitsPerPos;
     string curList = getCharList(nChars, lettersType);
@@ -375,9 +364,9 @@ void Fingerprints<FING_T>::initCharList(int lettersType)
 }
 
 template<typename FING_T>
-string Fingerprints<FING_T>::getCharList(size_t nChars, int lettersType) const
+string Fingerprints<FING_T>::getCharList(size_t nChars, LettersType lettersType) const
 {
-    switch (static_cast<LettersType>(lettersType))
+    switch (lettersType)
     {
         case LettersType::Common:
             switch (nChars)

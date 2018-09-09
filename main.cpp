@@ -46,6 +46,9 @@ int run();
 void filterInput(vector<string> &dict, vector<string> &patterns);
 
 void runFingerprints(const vector<string> &words, const vector<string> &patterns);
+void initFingerprintParams(Fingerprints<FING_T>::DistanceType &distanceType,
+    Fingerprints<FING_T>::FingerprintType &fingerprintType,
+    Fingerprints<FING_T>::LettersType &lettersType);
 
 void dumpParamInfoToStdout(int fingSizeB);
 void dumpRunInfo(float elapsedUs, const vector<string> &words, size_t processedWordsCount);
@@ -78,18 +81,19 @@ int handleParams(int argc, const char **argv)
        ("calc-rejection", "calculate percentages of rejected words instead of measuring time")
        ("dump,d", "dump input files and params info with elapsed time and throughput to output file (useful for testing)")
        ("dump-construction", "dump fingerprint construction time")
-       ("distance,D", po::value<int>(&params.distanceType), "distance metric: 0 -> Hamming, 1 -> Levenshtein (default = 0)")
-       ("fingerprint-type,f", po::value<int>(&params.fingerprintType), "fingerprint type: -1 -> no fingerprints, 0 -> occurrence, 1 -> count, 2 -> position, 3 -> occurrence halved (default = 0)")
+       ("distance,D", po::value<string>(&params.distanceType)->default_value("ham"), "distance metric: ham (Hamming), lev (Levenshtein)")
+       ("fingerprint-type,f", po::value<string>(&params.fingerprintType)->default_value("occ"), "fingerprint type: none, occ (occurrence), occhalved (occurrence halved), count, pos (position)")
        ("help,h", "display help message")
        ("in-dict-file,i", po::value<string>(&params.inDictFile)->required(), "input dictionary file path (positional arg 1)")
        ("in-pattern-file,I", po::value<string>(&params.inPatternFile)->required(), "input pattern file path (positional arg 2)")
-       ("iter", po::value<int>(&params.nIter), "number of iterations per pattern lookup (default = 1)")
+       ("iter", po::value<int>(&params.nIter)->default_value(1), "number of iterations per pattern lookup")
        ("approx,k", po::value<int>(&params.kApprox)->required(), "perform approximate search (Hamming or Levenshtein) for k errors")
-       ("letters-type,l", po::value<int>(&params.lettersType), "letters type: 0 -> common, 1 -> mixed, 2 -> rare (default = 0)")
-       ("out-file,o", po::value<string>(&params.outFile), "output file path")
+       ("letters-type,l", po::value<string>(&params.lettersType)->default_value("common"), "letters type: common, mixed, rare")
+       ("out-file,o", po::value<string>(&params.outFile)->default_value("res.txt"), "output file path")
        ("pattern-count,p", po::value<int>(&params.nPatterns), "maximum number of patterns read from top of the pattern file (non-positive values are ignored)")
        ("pattern-size", po::value<int>(&params.patternSize), "if set, only patterns of this size (letter count) will be read from the pattern file (non-positive values are ignored)")
-       ("separator,s", po::value<string>(&params.separator), "input data (dictionary and patterns) separator")
+       // Not using a default value from Boost for separator because it literally prints a newline.
+       ("separator,s", po::value<string>(&params.separator), "input data (dictionary and patterns) separator (default = newline)")
        ("version,v", "display version info")
        ("word-count,w", po::value<int>(&params.nWords), "maximum number of words read from top of the dictionary file (non-positive values are ignored)");
 
@@ -190,11 +194,35 @@ int run()
     return 0;
 }
 
+void filterInput(vector<string> &dict, vector<string> &patterns)
+{
+    if (params.nWords > 0 and static_cast<size_t>(params.nWords) < dict.size())
+    {
+        dict.resize(params.nWords);
+    }
+
+    if (params.nPatterns > 0 and static_cast<size_t>(params.nPatterns) < patterns.size())
+    {
+        patterns.resize(params.nPatterns);
+    }
+
+    if (params.patternSize > 0)
+    {
+        Helpers::filterWordsBySize(patterns, params.patternSize);
+    }
+}
+
 void runFingerprints(const vector<string> &words, const vector<string> &patterns)
 {
     dumpParamInfoToStdout(sizeof(FING_T));
 
-    Fingerprints<FING_T> fingerprints(params.distanceType, params.fingerprintType, params.lettersType);
+    Fingerprints<FING_T>::DistanceType distanceType;
+    Fingerprints<FING_T>::FingerprintType fingerprintType;
+    Fingerprints<FING_T>::LettersType lettersType;
+
+    initFingerprintParams(distanceType, fingerprintType, lettersType);
+
+    Fingerprints<FING_T> fingerprints(distanceType, fingerprintType, lettersType);
     fingerprints.preprocess(words);
     
     cout << "Preprocessed #words = " << words.size() << endl;
@@ -234,40 +262,70 @@ void runFingerprints(const vector<string> &words, const vector<string> &patterns
     }
 }
 
-void filterInput(vector<string> &dict, vector<string> &patterns)
+void initFingerprintParams(Fingerprints<FING_T>::DistanceType &distanceType,
+    Fingerprints<FING_T>::FingerprintType &fingerprintType,
+    Fingerprints<FING_T>::LettersType &lettersType)
 {
-    if (params.nWords > 0 and static_cast<size_t>(params.nWords) < dict.size())
+    if (params.distanceType == "ham")
     {
-        dict.resize(params.nWords);
+        distanceType = Fingerprints<FING_T>::DistanceType::Ham;
     }
-    
-    if (params.nPatterns > 0 and static_cast<size_t>(params.nPatterns) < patterns.size())
+    else if (params.distanceType == "lev")
     {
-        patterns.resize(params.nPatterns);
+        distanceType = Fingerprints<FING_T>::DistanceType::Lev;
     }
-    
-    if (params.patternSize > 0)
+    else
     {
-        Helpers::filterWordsBySize(patterns, params.patternSize);
+        throw invalid_argument("bad distance type: " + params.distanceType);
+    }
+
+    if (params.fingerprintType == "none")
+    {
+        fingerprintType = Fingerprints<FING_T>::FingerprintType::None;
+    }
+    else if (params.fingerprintType == "occ")
+    {
+        fingerprintType = Fingerprints<FING_T>::FingerprintType::Occ;
+    }
+    else if (params.fingerprintType == "occhalved")
+    {
+        fingerprintType = Fingerprints<FING_T>::FingerprintType::OccHalved;
+    }
+    else if (params.fingerprintType == "count")
+    {
+        fingerprintType = Fingerprints<FING_T>::FingerprintType::Count;
+    }
+    else if (params.fingerprintType == "pos")
+    {
+        fingerprintType = Fingerprints<FING_T>::FingerprintType::Pos;
+    }
+    else
+    {
+        throw invalid_argument("bad fingerprint type: " + params.fingerprintType);
+    }
+
+    if (params.lettersType == "common")
+    {
+        lettersType = Fingerprints<FING_T>::LettersType::Common;
+    }
+    else if (params.lettersType == "mixed")
+    {
+        lettersType = Fingerprints<FING_T>::LettersType::Mixed;
+    }
+    else if (params.lettersType == "rare")
+    {
+        lettersType = Fingerprints<FING_T>::LettersType::Rare;
+    }
+    else
+    {
+        throw invalid_argument("bad letters type: " + params.lettersType);
     }
 }
 
 void dumpParamInfoToStdout(int fingSizeB)
 {
-    using DType = Fingerprints<FING_T>::DistanceType;
-    string distanceStr = (static_cast<DType>(params.distanceType) == DType::Hamming) ? "Hamming" : "Levenshtein";
-
-    cout << "Using distance: " << distanceStr << endl;
-    
-    if (static_cast<Fingerprints<FING_T>::FingerprintType>(params.fingerprintType) == 
-            Fingerprints<FING_T>::FingerprintType::NoFing)
-    {
-        cout << "Using words only (no fingerprints)" << endl; 
-    }
-    else
-    {
-        cout << boost::format("Using fingerprint type: %1%, size = %2% bytes") % params.fingerprintType % fingSizeB << endl; 
-    }
+    cout << "Using distance: " << params.distanceType << endl;
+    cout << boost::format("Using fingerprint type: %1%, size = %2% bytes") % params.fingerprintType % fingSizeB << endl; 
 
     if (params.patternSize != Params::noValue)
     {
