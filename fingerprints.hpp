@@ -61,7 +61,7 @@ private:
     /** Initializes a lookup table for true number of errors based on fingerprints errors. */
     void initNErrorsLUT();
     
-    /** Initializes the character map for [fingerprintType] (occurrence, count) and [lettersType] (common, mixed, rare). */
+    /** Initializes the character map for [fingerprintType] (occurrence, occurrence halved, count) and [lettersType] (common, mixed, rare). */
     void initCharsMap(FingerprintType fingerprintType, LettersType lettersType);
     /** Initializes the character list for position fingerprint and [lettersType] (common, mixed, rare). */
     void initCharList(LettersType lettersType);
