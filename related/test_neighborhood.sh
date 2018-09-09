@@ -7,7 +7,7 @@ outFile="res"
 k=1
 # This applies only to the fingerprints executable.
 nIter=1
-# This requires that dictionary subsamples of sizes 64, 256, 1024, 4096, 16384 are generated.
+# This requires that dictionary subsamples of given sizes have been generated.
 sampleSizes=(64 256 1024 4096 16384)
 
 # Both fingerprints and neighborhood executables should be located in the current directory.
@@ -16,11 +16,11 @@ do
     ./neighborhood ${inputDir}/dict_${dictName}_${sampleSize}.txt ${inputDir}/queries_${dictName}_8.txt
 
     # All fingerprint and letters type combinations.
-    for fType in $(seq 0 3);
+    for fType in occ occhalved count pos;
     do
-        for lType in $(seq 0 2);
+        for lType in common mixed rare;
         do
-            ./fingerprints -d -o ${outFile}.txt -D 0 -k $k --iter $nIter -f $fType -l $lType ${inputDir}/dict_${dictName}_${sampleSize}.txt ${inputDir}/queries_${dictName}_8.txt;
+            ./fingerprints -d -o ${outFile}.txt -D ham -k $k --iter $nIter -f $fType -l $lType ${inputDir}/dict_${dictName}_${sampleSize}.txt ${inputDir}/queries_${dictName}_8.txt;
         done
     done
 done
