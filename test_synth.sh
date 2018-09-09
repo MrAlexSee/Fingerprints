@@ -14,7 +14,7 @@ do
 done
 
 # All fingerprint and letters type combinations.
-for fType in none occ occhalved count pos;
+for fType in occ occhalved count pos;
 do
     for lType in common mixed rare;
     do

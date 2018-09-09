@@ -13,7 +13,7 @@ nIter=1
 ./fingerprints -d -o ${outFile}.txt -D $dist -k $k --iter $nIter -f none ${inputDir}/dict_urls.txt ${inputDir}/queries_urls_69.txt;
 
 # All fingerprint and letters type combinations.
-for fType in none occ occhalved count pos;
+for fType in occ occhalved count pos;
 do
     for lType in common mixed rare;
     do
