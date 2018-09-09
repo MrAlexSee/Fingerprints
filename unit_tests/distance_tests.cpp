@@ -132,8 +132,9 @@ TEST_CASE("is Hamming at most k=1,2,3,4 randomized calculation correct", "[dista
 
 TEST_CASE("is Leven at most k for empty calculation correct", "[distance]")
 {
-    // Passing distance type 1 -- Levenshtein, fingerprint and letter types don't matter here.
-    Fingerprints<FING_T> fingerprints(1, 0, 0);
+    // Passing distance type Levenshtein, fingerprint and letter types don't matter here.
+    Fingerprints<FING_T> fingerprints(Fingerprints<FING_T>::DistanceType::Lev, 
+        Fingerprints<FING_T>::FingerprintType::Occ, Fingerprints<FING_T>::LettersType::Common);
     string empty = "";
 
     for (int k = 0; k <= maxK; ++k)
@@ -144,8 +145,9 @@ TEST_CASE("is Leven at most k for empty calculation correct", "[distance]")
 
 TEST_CASE("is Leven at most k calculation for self correct", "[distance]")
 {
-    // Passing distance type 1 -- Levenshtein, fingerprint and letter types don't matter here.
-    Fingerprints<FING_T> fingerprints(1, 0, 0);
+    // Passing distance type Levenshtein, fingerprint and letter types don't matter here.
+    Fingerprints<FING_T> fingerprints(Fingerprints<FING_T>::DistanceType::Lev, 
+        Fingerprints<FING_T>::FingerprintType::Occ, Fingerprints<FING_T>::LettersType::Common);
     string str1 = "ala ma kota";
 
     for (int k = 0; k <= maxK; ++k)
@@ -156,8 +158,9 @@ TEST_CASE("is Leven at most k calculation for self correct", "[distance]")
 
 TEST_CASE("is Leven at most k=0 calculation for selected words correct", "[distance]")
 {
-    // Passing distance type 1 -- Levenshtein, fingerprint and letter types don't matter here.
-    Fingerprints<FING_T> fingerprints(1, 0, 0);
+    // Passing distance type Levenshtein, fingerprint and letter types don't matter here.
+    Fingerprints<FING_T> fingerprints(Fingerprints<FING_T>::DistanceType::Lev, 
+        Fingerprints<FING_T>::FingerprintType::Occ, Fingerprints<FING_T>::LettersType::Common);
     string str1 = "ala", str2 = "kota";
 
     REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str1.c_str(), str1.size(), str1.c_str(), str1.size(), 0) == true);
@@ -169,8 +172,9 @@ TEST_CASE("is Leven at most k=0 calculation for selected words correct", "[dista
 
 TEST_CASE("is Leven at most k=1 calculation correct", "[distance]")
 {
-    // Passing distance type 1 -- Levenshtein, fingerprint and letter types don't matter here.
-    Fingerprints<FING_T> fingerprints(1, 0, 0);
+    // Passing distance type Levenshtein, fingerprint and letter types don't matter here.
+    Fingerprints<FING_T> fingerprints(Fingerprints<FING_T>::DistanceType::Lev, 
+        Fingerprints<FING_T>::FingerprintType::Occ, Fingerprints<FING_T>::LettersType::Common);
     const string str = "ala ma kota";
 
     // Substitutions.
@@ -222,8 +226,9 @@ TEST_CASE("is Leven at most k=1 calculation correct", "[distance]")
 
 TEST_CASE("is Leven at most k=1 calculation for selected words correct", "[distance]")
 {
-    // Passing distance type 1 -- Levenshtein, fingerprint and letter types don't matter here.
-    Fingerprints<FING_T> fingerprints(1, 0, 0);
+    // Passing distance type Levenshtein, fingerprint and letter types don't matter here.
+    Fingerprints<FING_T> fingerprints(Fingerprints<FING_T>::DistanceType::Lev, 
+        Fingerprints<FING_T>::FingerprintType::Occ, Fingerprints<FING_T>::LettersType::Common);
 
     string str1 = "aaaa", str2 = "aaab";
     REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 1) == true);
@@ -272,8 +277,9 @@ TEST_CASE("is Leven at most k=1 calculation for selected words correct", "[dista
 
 TEST_CASE("is Leven at most k=1 calculation after match for selected words correct", "[distance]")
 {
-    // Passing distance type 1 -- Levenshtein, fingerprint and letter types don't matter here.
-    Fingerprints<FING_T> fingerprints(1, 0, 0);
+    // Passing distance type Levenshtein, fingerprint and letter types don't matter here.
+    Fingerprints<FING_T> fingerprints(Fingerprints<FING_T>::DistanceType::Lev, 
+        Fingerprints<FING_T>::FingerprintType::Occ, Fingerprints<FING_T>::LettersType::Common);
    
     string str1 = "ala", str2 = "kota"; 
     REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str1.c_str(), str1.size(), str1.c_str(), str1.size(), 1) == true);
@@ -289,8 +295,9 @@ TEST_CASE("is Leven at most k=1 calculation after match for selected words corre
 
 TEST_CASE("is Leven at most k=1 calculation for various deletions correct", "[distance]")
 {
-    // Passing distance type 1 -- Levenshtein, fingerprint and letter types don't matter here.
-    Fingerprints<FING_T> fingerprints(1, 0, 0);
+    // Passing distance type Levenshtein, fingerprint and letter types don't matter here.
+    Fingerprints<FING_T> fingerprints(Fingerprints<FING_T>::DistanceType::Lev, 
+        Fingerprints<FING_T>::FingerprintType::Occ, Fingerprints<FING_T>::LettersType::Common);
     
     string str = "jarek";
     
@@ -312,8 +319,9 @@ TEST_CASE("is Leven at most k=1 calculation for various deletions correct", "[di
 
 TEST_CASE("is Leven at most k=1 calculation for various insertions correct", "[distance]")
 {
-    // Passing distance type 1 -- Levenshtein, fingerprint and letter types don't matter here.
-    Fingerprints<FING_T> fingerprints(1, 0, 0);
+    // Passing distance type Levenshtein, fingerprint and letter types don't matter here.
+    Fingerprints<FING_T> fingerprints(Fingerprints<FING_T>::DistanceType::Lev, 
+        Fingerprints<FING_T>::FingerprintType::Occ, Fingerprints<FING_T>::LettersType::Common);
     
     string str = "jarek";
     
@@ -335,8 +343,9 @@ TEST_CASE("is Leven at most k=1 calculation for various insertions correct", "[d
 
 TEST_CASE("is Leven at most k=1 calculation for various substitutions correct", "[distance]")
 {
-    // Passing distance type 1 -- Levenshtein, fingerprint and letter types don't matter here.
-    Fingerprints<FING_T> fingerprints(1, 0, 0);
+    // Passing distance type Levenshtein, fingerprint and letter types don't matter here.
+    Fingerprints<FING_T> fingerprints(Fingerprints<FING_T>::DistanceType::Lev, 
+        Fingerprints<FING_T>::FingerprintType::Occ, Fingerprints<FING_T>::LettersType::Common);
 
     string str = "jarek";
 
@@ -358,8 +367,9 @@ TEST_CASE("is Leven at most k=1 calculation for various substitutions correct", 
 
 TEST_CASE("is Leven at most k=2 calculation for selected words correct", "[distance]")
 {
-    // Passing distance type 1 -- Levenshtein, fingerprint and letter types don't matter here.
-    Fingerprints<FING_T> fingerprints(1, 0, 0);
+    // Passing distance type Levenshtein, fingerprint and letter types don't matter here.
+    Fingerprints<FING_T> fingerprints(Fingerprints<FING_T>::DistanceType::Lev, 
+        Fingerprints<FING_T>::FingerprintType::Occ, Fingerprints<FING_T>::LettersType::Common);
 
     string str1 = "aaaa", str2 = "aabb";
     REQUIRE(FingerprintsWhitebox::isLevAtMostK<FING_T>(fingerprints, str1.c_str(), str1.size(), str2.c_str(), str2.size(), 2) == true);
@@ -396,8 +406,9 @@ TEST_CASE("is Leven at most k=2 calculation for selected words correct", "[dista
 
 TEST_CASE("is Leven at most k=2 calculation for various deletions correct", "[distance]")
 {
-    // Passing distance type 1 -- Levenshtein, fingerprint and letter types don't matter here.
-    Fingerprints<FING_T> fingerprints(1, 0, 0);
+    // Passing distance type Levenshtein, fingerprint and letter types don't matter here.
+    Fingerprints<FING_T> fingerprints(Fingerprints<FING_T>::DistanceType::Lev, 
+        Fingerprints<FING_T>::FingerprintType::Occ, Fingerprints<FING_T>::LettersType::Common);
     
     string str = "jarek";
     
@@ -419,8 +430,9 @@ TEST_CASE("is Leven at most k=2 calculation for various deletions correct", "[di
 
 TEST_CASE("is Leven at most k=2 calculation for various insertions correct", "[distance]")
 {
-    // Passing distance type 1 -- Levenshtein, fingerprint and letter types don't matter here.
-    Fingerprints<FING_T> fingerprints(1, 0, 0);
+    // Passing distance type Levenshtein, fingerprint and letter types don't matter here.
+    Fingerprints<FING_T> fingerprints(Fingerprints<FING_T>::DistanceType::Lev, 
+        Fingerprints<FING_T>::FingerprintType::Occ, Fingerprints<FING_T>::LettersType::Common);
     
     string str = "jarek";
     
@@ -442,8 +454,9 @@ TEST_CASE("is Leven at most k=2 calculation for various insertions correct", "[d
 
 TEST_CASE("is Leven at most k=2 calculation for various modifications correct", "[distance]")
 {
-    // Passing distance type 1 -- Levenshtein, fingerprint and letter types don't matter here.
-    Fingerprints<FING_T> fingerprints(1, 0, 0);
+    // Passing distance type Levenshtein, fingerprint and letter types don't matter here.
+    Fingerprints<FING_T> fingerprints(Fingerprints<FING_T>::DistanceType::Lev, 
+        Fingerprints<FING_T>::FingerprintType::Occ, Fingerprints<FING_T>::LettersType::Common);
     
     string str = "jarek";
     

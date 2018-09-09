@@ -26,28 +26,44 @@ constexpr int stringSize = 25;
 
 constexpr int maxNIter = 50;
 
-vector<int> distanceTypes { 0, 1 };
-vector<int> fingerprintTypes { -1, 0, 1, 2, 3 };
-vector<int> lettersTypes { 0, 1, 2 };
+using FING_T = uint16_t;
 
 constexpr int maxK = 5;
 
-using FING_T = uint16_t;
+vector<Fingerprints<FING_T>::DistanceType> distanceTypes { 
+    Fingerprints<FING_T>::DistanceType::Ham,
+    Fingerprints<FING_T>::DistanceType::Lev
+};
+
+vector<Fingerprints<FING_T>::FingerprintType> fingerprintTypes {
+    Fingerprints<FING_T>::FingerprintType::None,
+    Fingerprints<FING_T>::FingerprintType::Occ,
+    Fingerprints<FING_T>::FingerprintType::OccHalved,
+    Fingerprints<FING_T>::FingerprintType::Count,
+    Fingerprints<FING_T>::FingerprintType::Pos
+};
+
+vector<Fingerprints<FING_T>::LettersType> lettersTypes {
+    Fingerprints<FING_T>::LettersType::Common,
+    Fingerprints<FING_T>::LettersType::Mixed,
+    Fingerprints<FING_T>::LettersType::Rare
+};
 
 }
 
 TEST_CASE("is initializing using fingerprints correct", "[fingerprints]")
 {
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
-        for (int lettersType : lettersTypes)
+        for (auto lettersType : lettersTypes)
         {
-            Fingerprints<FING_T> fno(distanceType, -1, lettersType);
+            Fingerprints<FING_T> fno(distanceType, Fingerprints<FING_T>::FingerprintType::None, lettersType);
             REQUIRE(FingerprintsWhitebox::getUseFingerprints(fno) == false);
 
-            for (int fingerprintType : { 0, 1, 2 })
+            for (auto fingerprintType = fingerprintTypes.begin() + 1; fingerprintType != fingerprintTypes.end(); 
+                ++fingerprintType)
             {
-                Fingerprints<FING_T> f(distanceType, fingerprintType, lettersType);
+                Fingerprints<FING_T> f(distanceType, *fingerprintType, lettersType);
                 REQUIRE(FingerprintsWhitebox::getUseFingerprints(f) == true);
             }
         }
@@ -56,14 +72,14 @@ TEST_CASE("is initializing using fingerprints correct", "[fingerprints]")
 
 TEST_CASE("is initializing using Hamming correct", "[fingerprints]")
 {
-    for (int fingerprintType : fingerprintTypes)
+    for (auto fingerprintType : fingerprintTypes)
     {
-        for (int lettersType : lettersTypes)
+        for (auto lettersType : lettersTypes)
         {
-            Fingerprints<FING_T> fham(0, fingerprintType, lettersType);
+            Fingerprints<FING_T> fham(Fingerprints<FING_T>::DistanceType::Ham, fingerprintType, lettersType);
             REQUIRE(FingerprintsWhitebox::getUseHamming(fham) == true);
 
-            Fingerprints<FING_T> flev(1, fingerprintType, lettersType);
+            Fingerprints<FING_T> flev(Fingerprints<FING_T>::DistanceType::Lev, fingerprintType, lettersType);
             REQUIRE(FingerprintsWhitebox::getUseHamming(flev) == false);
         }
     }
@@ -74,11 +90,11 @@ TEST_CASE("is searching empty words correct", "[fingerprints]")
     vector<string> words;
     vector<string> patterns { "ala", "ma", "kota", "a", "jarek", "ma", "psa" };
 
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
-        for (int fingerprintType : fingerprintTypes)
+        for (auto fingerprintType : fingerprintTypes)
         {
-            for (int lettersType : lettersTypes)
+            for (auto lettersType : lettersTypes)
             {
                 Fingerprints<FING_T> curF(distanceType, fingerprintType, lettersType);
                 curF.preprocess(words);
@@ -97,11 +113,11 @@ TEST_CASE("is searching words exact correct", "[fingerprints]")
     vector<string> words { "ala", "ma", "kota", "a", "jarek", "ma", "psa", "ma" };
     vector<string> patternsOut { "not", "in", "this", "dict" };
 
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
-        for (int fingerprintType : fingerprintTypes)
+        for (auto fingerprintType : fingerprintTypes)
         {
-            for (int lettersType : lettersTypes)
+            for (auto lettersType : lettersTypes)
             {
                 Fingerprints<FING_T> curF(distanceType, fingerprintType, lettersType);
                 curF.preprocess(words);
@@ -118,11 +134,11 @@ TEST_CASE("is searching words exact one-by-one correct", "[fingerprints]")
     vector<string> words { "ala", "ma", "kota", "a", "jarek", "ma", "psa", "ma" };
     vector<string> patternsOut { "not", "in", "this", "dict" };
 
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
-        for (int fingerprintType : fingerprintTypes)
+        for (auto fingerprintType : fingerprintTypes)
         {
-            for (int lettersType : lettersTypes)
+            for (auto lettersType : lettersTypes)
             {
                 Fingerprints<FING_T> curF(distanceType, fingerprintType, lettersType);
                 curF.preprocess(words);
@@ -153,11 +169,11 @@ TEST_CASE("is searching words exact randomized correct", "[fingerprints]")
         // Use different sizes than stringSize here.
         vector<string> patternsOut { "not", "in", "this", "dict" };
 
-        for (int distanceType : distanceTypes)
+        for (auto distanceType : distanceTypes)
         {
-            for (int fingerprintType : fingerprintTypes)
+            for (auto fingerprintType : fingerprintTypes)
             {
-                for (int lettersType : lettersTypes)
+                for (auto lettersType : lettersTypes)
                 {   
                     Fingerprints<FING_T> curF(distanceType, fingerprintType, lettersType);
                     curF.preprocess(words);
@@ -188,11 +204,11 @@ TEST_CASE("is searching words for k = 1 for Hamming correct", "[fingerprints]")
         }
     }
 
-    for (int fingerprintType : fingerprintTypes)
+    for (auto fingerprintType : fingerprintTypes)
     {
-        for (int lettersType : lettersTypes)
+        for (auto lettersType : lettersTypes)
         {
-            Fingerprints<FING_T> curF(0, fingerprintType, lettersType);
+            Fingerprints<FING_T> curF(Fingerprints<FING_T>::DistanceType::Ham, fingerprintType, lettersType);
             curF.preprocess(words);
 
             REQUIRE(curF.test(patternsIn, 1) == patternsIn.size());
@@ -219,11 +235,11 @@ TEST_CASE("is searching words for k = 1 for Hamming one-by-one correct", "[finge
         }
     }
 
-    for (int fingerprintType : fingerprintTypes)
+    for (auto fingerprintType : fingerprintTypes)
     {
-        for (int lettersType : lettersTypes)
+        for (auto lettersType : lettersTypes)
         {
-            Fingerprints<FING_T> curF(0, fingerprintType, lettersType);
+            Fingerprints<FING_T> curF(Fingerprints<FING_T>::DistanceType::Ham, fingerprintType, lettersType);
             curF.preprocess(words);
 
             for (const string &patternIn : patternsIn)
@@ -269,11 +285,11 @@ TEST_CASE("is searching words for various k for Hamming randomized correct", "[f
                 patternsIn.emplace_back(move(curWord));
             }
 
-            for (int fingerprintType : fingerprintTypes)
+            for (auto fingerprintType : fingerprintTypes)
             {
-                for (int lettersType : lettersTypes)
+                for (auto lettersType : lettersTypes)
                 {   
-                    Fingerprints<FING_T> curF(0, fingerprintType, lettersType);
+                    Fingerprints<FING_T> curF(Fingerprints<FING_T>::DistanceType::Ham, fingerprintType, lettersType);
                     curF.preprocess(words);
 
                     // Note: there might be more matches due to randomization, but at least one word
@@ -293,11 +309,11 @@ TEST_CASE("is searching words for k = 1 for Levenshtein correct", "[fingerprints
     vector<string> patternsIn { "bla", "alak", "alla", "darek", "jaek", "jarrek", "ps" };
     vector<string> patternsOut { "not", "in", "this", "dict" };
 
-    for (int fingerprintType : fingerprintTypes)
+    for (auto fingerprintType : fingerprintTypes)
     {
-        for (int lettersType : lettersTypes)
+        for (auto lettersType : lettersTypes)
         {
-            Fingerprints<FING_T> curF(1, fingerprintType, lettersType);
+            Fingerprints<FING_T> curF(Fingerprints<FING_T>::DistanceType::Lev, fingerprintType, lettersType);
             curF.preprocess(words);
 
             REQUIRE(curF.test(patternsIn, 1) == patternsIn.size());
@@ -313,11 +329,11 @@ TEST_CASE("is searching words for k = 1 for Levenshtein one-by-one correct", "[f
     vector<string> patternsIn { "bla", "alak", "alla", "darek", "jaek", "jarrek", "ps" };
     vector<string> patternsOut { "not", "in", "this", "dict" };
 
-    for (int fingerprintType : fingerprintTypes)
+    for (auto fingerprintType : fingerprintTypes)
     {
-        for (int lettersType : lettersTypes)
+        for (auto lettersType : lettersTypes)
         {
-            Fingerprints<FING_T> curF(1, fingerprintType, lettersType);
+            Fingerprints<FING_T> curF(Fingerprints<FING_T>::DistanceType::Lev, fingerprintType, lettersType);
             curF.preprocess(words);
 
             for (const string &patternIn : patternsIn)
@@ -340,11 +356,11 @@ TEST_CASE("is searching words for k = 2 for Levenshtein correct", "[fingerprints
     vector<string> patternsIn { "blb", "kota", "alla", "allla", "jak", "jarrrek", "stok", "stol" };
     vector<string> patternsOut { "isnot", "in", "this", "dict" };
 
-    for (int fingerprintType : fingerprintTypes)
+    for (auto fingerprintType : fingerprintTypes)
     {
-        for (int lettersType : lettersTypes)
+        for (auto lettersType : lettersTypes)
         {
-            Fingerprints<FING_T> curF(1, fingerprintType, lettersType);
+            Fingerprints<FING_T> curF(Fingerprints<FING_T>::DistanceType::Lev, fingerprintType, lettersType);
             curF.preprocess(words);
 
             REQUIRE(curF.test(patternsIn, 2) == patternsIn.size());
@@ -360,11 +376,11 @@ TEST_CASE("is searching words for k = 2 for Levenshtein one-by-one correct", "[f
     vector<string> patternsIn { "blb", "kota", "alla", "allla", "jak", "jarrrek", "stok", "stol" };
     vector<string> patternsOut { "isnot", "in", "this", "dict" };
 
-    for (int fingerprintType : fingerprintTypes)
+    for (auto fingerprintType : fingerprintTypes)
     {
-        for (int lettersType : lettersTypes)
+        for (auto lettersType : lettersTypes)
         {
-            Fingerprints<FING_T> curF(1, fingerprintType, lettersType);
+            Fingerprints<FING_T> curF(Fingerprints<FING_T>::DistanceType::Lev, fingerprintType, lettersType);
             curF.preprocess(words);
 
             for (const string &patternIn : patternsIn)
@@ -388,10 +404,11 @@ TEST_CASE("is calculating rejection for k = 1 for occurrence common fingerprints
     vector<string> patternsMixed { "zzzzz", "kotaa" };
 
     // Distance type shouldn't matter for rejection calculation (note that all strings are of the same size).
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
         // Passing fingerprint type 0 -- occurrence, letters type 0 - common (etaoinshrdlcumwf).
-        Fingerprints<FING_T> fingerprints(distanceType, 0, 0);
+        Fingerprints<FING_T> fingerprints(distanceType, Fingerprints<FING_T>::FingerprintType::Occ,
+            Fingerprints<FING_T>::LettersType::Common);
         fingerprints.preprocess(words);
 
         REQUIRE(fingerprints.testRejection(patternsOut, 1) == 1.0f);
@@ -407,10 +424,11 @@ TEST_CASE("is calculating rejection for k = 1 for occurrence mixed fingerprints 
     vector<string> patternsMixed { "zzzzz", "kotaa" };
 
     // Distance type shouldn't matter for rejection calculation (note that all strings are of the same size).
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
         // Passing fingerprint type 0 -- occurrence, letters type 1 - mixed (etaoinshzqxjkvbp).
-        Fingerprints<FING_T> fingerprints(distanceType, 0, 1);
+        Fingerprints<FING_T> fingerprints(distanceType, Fingerprints<FING_T>::FingerprintType::Occ,
+            Fingerprints<FING_T>::LettersType::Mixed);
         fingerprints.preprocess(words);
 
         REQUIRE(fingerprints.testRejection(patternsOut, 1) == 1.0f);
@@ -426,10 +444,11 @@ TEST_CASE("is calculating rejection for k = 1 for occurrence rare fingerprints c
     vector<string> patternsMixed { "zzzzz", "jarek" };
 
     // Distance type shouldn't matter for rejection calculation (note that all strings are of the same size).
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
         // Passing fingerprint type 0 -- occurrence, letters type 2 - rare (zqxjkvbpygfwmucl).
-        Fingerprints<FING_T> fingerprints(distanceType, 0, 2);
+        Fingerprints<FING_T> fingerprints(distanceType, Fingerprints<FING_T>::FingerprintType::Occ,
+            Fingerprints<FING_T>::LettersType::Rare);
         fingerprints.preprocess(words);
 
         REQUIRE(fingerprints.testRejection(patternsOut, 1) == 1.0f);
@@ -442,11 +461,11 @@ TEST_CASE("is setting processed words for Hamming for a single word various iter
     vector<string> words { "ala", "ma", "kota", "a", "jarek", "da", "szopa" };
 
     // Note that this should work for both words only (no fingerprints) and all other fingerprint types.
-    for (int fingerprintType : fingerprintTypes)
+    for (auto fingerprintType : fingerprintTypes)
     {
-        for (int lettersType : lettersTypes)
+        for (auto lettersType : lettersTypes)
         {
-            Fingerprints<FING_T> fingerprints(0, fingerprintType, lettersType);
+            Fingerprints<FING_T> fingerprints(Fingerprints<FING_T>::DistanceType::Ham, fingerprintType, lettersType);
             fingerprints.preprocess(words);
 
             for (int k = 0; k <= maxK; ++k)
@@ -493,11 +512,11 @@ TEST_CASE("is setting processed words for Hamming correct", "[fingerprints]")
     vector<string> words { "ala", "ma", "kota", "a", "jarek", "da", "psa", "i", "szopa" };
 
     // Note that this should work for both words only (no fingerprints) and all other fingerprint types.
-    for (int fingerprintType : fingerprintTypes)
+    for (auto fingerprintType : fingerprintTypes)
     {
-        for (int lettersType : lettersTypes)
+        for (auto lettersType : lettersTypes)
         {
-            Fingerprints<FING_T> fingerprints(0, fingerprintType, lettersType);
+            Fingerprints<FING_T> fingerprints(Fingerprints<FING_T>::DistanceType::Ham, fingerprintType, lettersType);
             fingerprints.preprocess(words);
 
             fingerprints.test(vector<string> { "kk" }, 1, 1, true);
@@ -530,11 +549,11 @@ TEST_CASE("is setting processed words for Levenshtein for a single word various 
     vector<string> words { "ala", "ma", "kota", "a", "jarek", "da", "szopa" };
 
     // Note that this should work for both words only (no fingerprints) and all other fingerprint types.
-    for (int fingerprintType : fingerprintTypes)
+    for (auto fingerprintType : fingerprintTypes)
     {
-        for (int lettersType : lettersTypes)
+        for (auto lettersType : lettersTypes)
         {
-            Fingerprints<FING_T> fingerprints(1, fingerprintType, lettersType);
+            Fingerprints<FING_T> fingerprints(Fingerprints<FING_T>::DistanceType::Lev, fingerprintType, lettersType);
             fingerprints.preprocess(words);
 
             for (int iIter = 0; iIter < maxNIter; ++iIter)
@@ -574,11 +593,11 @@ TEST_CASE("is setting processed words for Levenshtein correct", "[fingerprints]"
     vector<string> words { "ala", "ma", "kota", "a", "jarek", "da", "psa", "i", "szopa" };
 
     // Note that this should work for both words only (no fingerprints) and all other fingerprint types.
-    for (int fingerprintType : fingerprintTypes)
+    for (auto fingerprintType : fingerprintTypes)
     {
-        for (int lettersType : lettersTypes)
+        for (auto lettersType : lettersTypes)
         {
-            Fingerprints<FING_T> fingerprints(1, fingerprintType, lettersType);
+            Fingerprints<FING_T> fingerprints(Fingerprints<FING_T>::DistanceType::Lev, fingerprintType, lettersType);
             fingerprints.preprocess(words);
 
             fingerprints.test(vector<string> { "kk" }, 1, 1, true);
@@ -615,11 +634,11 @@ TEST_CASE("is setting processed words for Levenshtein for various k correct", "[
     vector<string> words { "ala", "ma", "kota", "a", "jarek", "da", "psa", "i", "szopa", "zamian" };
 
     // Note that this should work for both words only (no fingerprints) and all other fingerprint types.
-    for (int fingerprintType : fingerprintTypes)
+    for (auto fingerprintType : fingerprintTypes)
     {
-        for (int lettersType : lettersTypes)
+        for (auto lettersType : lettersTypes)
         {
-            Fingerprints<FING_T> fingerprints(1, fingerprintType, lettersType);
+            Fingerprints<FING_T> fingerprints(Fingerprints<FING_T>::DistanceType::Lev, fingerprintType, lettersType);
             fingerprints.preprocess(words);
 
             // k = 0
@@ -666,11 +685,11 @@ TEST_CASE("is setting processed words for Levenshtein for various k correct", "[
 
 TEST_CASE("is initializing errors LUT correct", "[fingerprints]")
 {
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
-        for (int fingerprintType : fingerprintTypes)
+        for (auto fingerprintType : fingerprintTypes)
         {
-            for (int lettersType : lettersTypes)
+            for (auto lettersType : lettersTypes)
             {
                 Fingerprints<FING_T> fingerprints(distanceType, fingerprintType, lettersType);
 
@@ -689,10 +708,11 @@ TEST_CASE("is initializing errors LUT correct", "[fingerprints]")
 
 TEST_CASE("is initializing chars map for 16 common letters correct", "[fingerprints]")
 {
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
         // This is checked for an occurrence fingerprint.
-        Fingerprints<FING_T> fingerprints(distanceType, 0, 0);
+        Fingerprints<FING_T> fingerprints(distanceType, Fingerprints<FING_T>::FingerprintType::Occ,
+            Fingerprints<FING_T>::LettersType::Common);
 
         const unsigned char *charsMap = FingerprintsWhitebox::getCharsMap(fingerprints);
         string letters = "etaoinshrdlcumwf";
@@ -706,10 +726,11 @@ TEST_CASE("is initializing chars map for 16 common letters correct", "[fingerpri
 
 TEST_CASE("is initializing chars map for 8 common letters correct", "[fingerprints]")
 {
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
         // This is checked for a count fingerprint.
-        Fingerprints<FING_T> fingerprints(distanceType, 1, 0);
+        Fingerprints<FING_T> fingerprints(distanceType, Fingerprints<FING_T>::FingerprintType::Count,
+            Fingerprints<FING_T>::LettersType::Common);
 
         const unsigned char *charsMap = FingerprintsWhitebox::getCharsMap(fingerprints);
         string letters = "etaoinsh";
@@ -723,10 +744,11 @@ TEST_CASE("is initializing chars map for 8 common letters correct", "[fingerprin
 
 TEST_CASE("is initializing char list for 5 common letters correct", "[fingerprints]")
 {
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
         // This is checked for a position fingerprint.
-        Fingerprints<FING_T> fingerprints(distanceType, 2, 0);
+        Fingerprints<FING_T> fingerprints(distanceType, Fingerprints<FING_T>::FingerprintType::Pos,
+            Fingerprints<FING_T>::LettersType::Common);
 
         const unsigned char *charList = FingerprintsWhitebox::getCharList(fingerprints);
         string letters = "etaoin";
@@ -740,11 +762,11 @@ TEST_CASE("is initializing char list for 5 common letters correct", "[fingerprin
 
 TEST_CASE("is calculating mismatches LUT for occurrence fingerprints correct", "[fingerprints]")
 {
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
-        for (int lettersType : lettersTypes)
+        for (auto lettersType : lettersTypes)
         {
-            Fingerprints<FING_T> fingerprints(distanceType, 0, lettersType);
+            Fingerprints<FING_T> fingerprints(distanceType, Fingerprints<FING_T>::FingerprintType::Occ, lettersType);
             const unsigned char *nMismatchesLUT = FingerprintsWhitebox::getNMismatchesLUT(fingerprints);
             
             // We check the mismatches for selected predefined results below.
@@ -763,11 +785,11 @@ TEST_CASE("is calculating mismatches LUT for occurrence fingerprints correct", "
 
 TEST_CASE("is calculating mismatches LUT for count fingerprints correct", "[fingerprints]")
 {
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
-        for (int lettersType : lettersTypes)
+        for (auto lettersType : lettersTypes)
         {
-            Fingerprints<FING_T> fingerprints(distanceType, 1, lettersType);
+            Fingerprints<FING_T> fingerprints(distanceType, Fingerprints<FING_T>::FingerprintType::Count, lettersType);
             const unsigned char *nMismatchesLUT = FingerprintsWhitebox::getNMismatchesLUT(fingerprints);
             
             // We check the mismatches for selected predefined results below.
@@ -786,11 +808,11 @@ TEST_CASE("is calculating mismatches LUT for count fingerprints correct", "[fing
 
 TEST_CASE("is calculating mismatches LUT for position fingerprints correct", "[fingerprints]")
 {
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
-        for (int lettersType : lettersTypes)
+        for (auto lettersType : lettersTypes)
         {
-            Fingerprints<FING_T> fingerprints(distanceType, 2, lettersType);
+            Fingerprints<FING_T> fingerprints(distanceType, Fingerprints<FING_T>::FingerprintType::Pos, lettersType);
             const unsigned char *nMismatchesLUT = FingerprintsWhitebox::getNMismatchesLUT(fingerprints);
 
             // We check the mismatches for selected predefined results below.
@@ -871,10 +893,11 @@ TEST_CASE("is calculating words total size and counts correct for repeated strin
 
 TEST_CASE("is calculating occurrence fingerprint for common letters correct", "[fingerprints]")
 {
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
         // Passing fingerprint type 0 -- occurrence, letters type 0 - common (etaoinshrdlcumwf).
-        Fingerprints<FING_T> fingerprints(distanceType, 0, 0);
+        Fingerprints<FING_T> fingerprints(distanceType, Fingerprints<FING_T>::FingerprintType::Occ,
+            Fingerprints<FING_T>::LettersType::Common);
         auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
 
         // Fingerprints are constructed from the right-hand side (i.e. from the least significant bit).
@@ -887,10 +910,11 @@ TEST_CASE("is calculating occurrence fingerprint for common letters correct", "[
 
 TEST_CASE("is calculating occurrence fingerprint for mixed letters correct", "[fingerprints]")
 {
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
         // Passing fingerprint type 0 -- occurrence, letters type 1 - mixed (etaoinshzqxjkvbp).
-        Fingerprints<FING_T> fingerprints(distanceType, 0, 1);
+        Fingerprints<FING_T> fingerprints(distanceType, Fingerprints<FING_T>::FingerprintType::Occ,
+            Fingerprints<FING_T>::LettersType::Mixed);
         auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
 
         REQUIRE(fun("ala", 3) == 0b0000000000000100);
@@ -902,10 +926,11 @@ TEST_CASE("is calculating occurrence fingerprint for mixed letters correct", "[f
 
 TEST_CASE("is calculating occurrence fingerprint for rare letters correct", "[fingerprints]")
 {
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
         // Passing fingerprint type 0 -- occurrence, letters type 2 - rare (zqxjkvbpygfwmucl).
-        Fingerprints<FING_T> fingerprints(distanceType, 0, 2);
+        Fingerprints<FING_T> fingerprints(distanceType, Fingerprints<FING_T>::FingerprintType::Occ,
+            Fingerprints<FING_T>::LettersType::Rare);
         auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
 
         REQUIRE(fun("ala", 3) == 0b1000000000000000);
@@ -917,10 +942,11 @@ TEST_CASE("is calculating occurrence fingerprint for rare letters correct", "[fi
 
 TEST_CASE("is calculating count fingerprint for common letters correct", "[fingerprints]")
 {
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
         // Passing fingerprint type 1 -- count, letters type 0 - common (etaoinsh).
-        Fingerprints<FING_T> fingerprints(distanceType, 1, 0);
+        Fingerprints<FING_T> fingerprints(distanceType, Fingerprints<FING_T>::FingerprintType::Count,
+            Fingerprints<FING_T>::LettersType::Common);
         auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
 
         // Fingerprints are constructed from the right-hand side (i.e. from the least significant bit).
@@ -933,10 +959,11 @@ TEST_CASE("is calculating count fingerprint for common letters correct", "[finge
 
 TEST_CASE("is calculating count fingerprint for mixed letters correct", "[fingerprints]")
 {
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
         // Passing fingerprint type 1 -- count, letters type 1 - mixed (etaokvbp).
-        Fingerprints<FING_T> fingerprints(distanceType, 1, 1);
+        Fingerprints<FING_T> fingerprints(distanceType, Fingerprints<FING_T>::FingerprintType::Count,
+            Fingerprints<FING_T>::LettersType::Mixed);
         auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
 
         // Fingerprints are constructed from the right-hand side (i.e. from the least significant bit).
@@ -949,10 +976,11 @@ TEST_CASE("is calculating count fingerprint for mixed letters correct", "[finger
 
 TEST_CASE("is calculating count fingerprint for rare letters correct", "[fingerprints]")
 {
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
         // Passing fingerprint type 1 -- count, letters type 2 - rare (zqxjkvbp).
-        Fingerprints<FING_T> fingerprints(distanceType, 1, 2);
+        Fingerprints<FING_T> fingerprints(distanceType, Fingerprints<FING_T>::FingerprintType::Count,
+            Fingerprints<FING_T>::LettersType::Rare);
         auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
 
         // Fingerprints are constructed from the right-hand side (i.e. from the least significant bit).
@@ -965,10 +993,11 @@ TEST_CASE("is calculating count fingerprint for rare letters correct", "[fingerp
 
 TEST_CASE("is calculating position fingerprint for common letters correct", "[fingerprints]")
 {
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
         // Passing fingerprint type 2 -- position, letters type 0 - common (etaoin).
-        Fingerprints<FING_T> fingerprints(distanceType, 2, 0);
+        Fingerprints<FING_T> fingerprints(distanceType, Fingerprints<FING_T>::FingerprintType::Pos,
+            Fingerprints<FING_T>::LettersType::Common);
         auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
 
         // Fingerprints are constructed from the right-hand side (i.e. from the least significant bit).
@@ -981,10 +1010,11 @@ TEST_CASE("is calculating position fingerprint for common letters correct", "[fi
 
 TEST_CASE("is calculating position fingerprint for mixed letters correct", "[fingerprints]")
 {
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
         // Passing fingerprint type 2 -- position, letters type 1 - mixed (etakvb).
-        Fingerprints<FING_T> fingerprints(distanceType, 2, 1);
+        Fingerprints<FING_T> fingerprints(distanceType, Fingerprints<FING_T>::FingerprintType::Pos,
+            Fingerprints<FING_T>::LettersType::Mixed);
         auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
 
         // Fingerprints are constructed from the right-hand side (i.e. from the least significant bit).
@@ -997,10 +1027,11 @@ TEST_CASE("is calculating position fingerprint for mixed letters correct", "[fin
 
 TEST_CASE("is calculating position fingerprint for rare letters correct", "[fingerprints]")
 {
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
         // Passing fingerprint type 2 -- position, letters type 2 - rare (zqxjkv).
-        Fingerprints<FING_T> fingerprints(distanceType, 2, 2);
+        Fingerprints<FING_T> fingerprints(distanceType, Fingerprints<FING_T>::FingerprintType::Pos,
+            Fingerprints<FING_T>::LettersType::Rare);
         auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
 
         // Fingerprints are constructed from the right-hand side (i.e. from the least significant bit).
@@ -1013,10 +1044,11 @@ TEST_CASE("is calculating position fingerprint for rare letters correct", "[fing
 
 TEST_CASE("is calculating occurrence halved fingerprint for common letters correct", "[fingerprints]")
 {
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
         // Passing fingerprint type 3 -- occurrence halved, letters type 0 - common (etaoinsh).
-        Fingerprints<FING_T> fingerprints(distanceType, 3, 0);
+        Fingerprints<FING_T> fingerprints(distanceType, Fingerprints<FING_T>::FingerprintType::OccHalved,
+            Fingerprints<FING_T>::LettersType::Common);
         auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
 
         // Fingerprints are constructed from the right-hand side (i.e. from the least significant bit).
@@ -1029,10 +1061,11 @@ TEST_CASE("is calculating occurrence halved fingerprint for common letters corre
 
 TEST_CASE("is calculating occurrence halved fingerprint for mixed letters correct", "[fingerprints]")
 {
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
         // Passing fingerprint type 3 -- occurrence halved, letters type 1 - mixed (etaokvbp).
-        Fingerprints<FING_T> fingerprints(distanceType, 3, 1);
+        Fingerprints<FING_T> fingerprints(distanceType, Fingerprints<FING_T>::FingerprintType::OccHalved,
+            Fingerprints<FING_T>::LettersType::Mixed);
         auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
 
         // Fingerprints are constructed from the right-hand side (i.e. from the least significant bit).
@@ -1045,10 +1078,11 @@ TEST_CASE("is calculating occurrence halved fingerprint for mixed letters correc
 
 TEST_CASE("is calculating occurrence halved fingerprint for rare letters correct", "[fingerprints]")
 {
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
         // Passing fingerprint type 3 -- occurrence halved, letters type 2 - rare (zqxjkvbp).
-        Fingerprints<FING_T> fingerprints(distanceType, 3, 2);
+        Fingerprints<FING_T> fingerprints(distanceType, Fingerprints<FING_T>::FingerprintType::OccHalved,
+            Fingerprints<FING_T>::LettersType::Rare);
         auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
 
         // Fingerprints are constructed from the right-hand side (i.e. from the least significant bit).
@@ -1078,10 +1112,11 @@ TEST_CASE("is Hamming weight calculation correct", "[fingerprints]")
 
 TEST_CASE("is calculcating number of errors for occurrence fingerprint for common letters correct", "[fingerprints]")
 {
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
         // Passing fingerprint type 0 -- occurrence, letters type 0 - common (etaoinshrdlcumwf).
-        Fingerprints<FING_T> fingerprints(distanceType, 0, 0);
+        Fingerprints<FING_T> fingerprints(distanceType, Fingerprints<FING_T>::FingerprintType::Occ,
+            Fingerprints<FING_T>::LettersType::Common);
         auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
 
         string str1 = "ala ma kota";
@@ -1121,10 +1156,11 @@ TEST_CASE("is calculcating number of errors for occurrence fingerprint for commo
 
 TEST_CASE("is calculcating number of errors for occurrence fingerprint for mixed letters correct", "[fingerprints]")
 {
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
         // Passing fingerprint type 0 -- occurrence, letters type 1 - mixed (etaoinshzqxjkvbp).
-        Fingerprints<FING_T> fingerprints(distanceType, 0, 1);
+        Fingerprints<FING_T> fingerprints(distanceType, Fingerprints<FING_T>::FingerprintType::Occ,
+            Fingerprints<FING_T>::LettersType::Mixed);
         auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
 
         string str1 = "ala ma kota";
@@ -1164,10 +1200,11 @@ TEST_CASE("is calculcating number of errors for occurrence fingerprint for mixed
 
 TEST_CASE("is calculcating number of errors for occurrence fingerprint for rare letters correct", "[fingerprints]")
 {
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
         // Passing fingerprint type 0 -- occurrence, letters type 2 - rare (zqxjkvbpygfwmucl).
-        Fingerprints<FING_T> fingerprints(distanceType, 0, 2);
+        Fingerprints<FING_T> fingerprints(distanceType, Fingerprints<FING_T>::FingerprintType::Occ,
+            Fingerprints<FING_T>::LettersType::Rare);
         auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
 
         string str1 = "ala ma kota";
@@ -1207,10 +1244,11 @@ TEST_CASE("is calculcating number of errors for occurrence fingerprint for rare 
 
 TEST_CASE("is calculating number of errors for count fingerprint for common letters correct", "[fingerprints]")
 {
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
         // Passing fingerprint type 1 -- count, letters type 0 - common (etaoinsh).
-        Fingerprints<FING_T> fingerprints(distanceType, 1, 0);
+        Fingerprints<FING_T> fingerprints(distanceType, Fingerprints<FING_T>::FingerprintType::Count,
+            Fingerprints<FING_T>::LettersType::Common);
         auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
 
         string str1 = "ala ma kota";
@@ -1250,10 +1288,11 @@ TEST_CASE("is calculating number of errors for count fingerprint for common lett
 
 TEST_CASE("is calculating number of errors for count fingerprint for mixed letters correct", "[fingerprints]")
 {
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
         // Passing fingerprint type 1 -- count, letters type 1 - mixed (etaokvbp).
-        Fingerprints<FING_T> fingerprints(distanceType, 1, 1);
+        Fingerprints<FING_T> fingerprints(distanceType, Fingerprints<FING_T>::FingerprintType::Count,
+            Fingerprints<FING_T>::LettersType::Mixed);
         auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
 
         string str1 = "ala ma kota";
@@ -1293,10 +1332,11 @@ TEST_CASE("is calculating number of errors for count fingerprint for mixed lette
 
 TEST_CASE("is calculating number of errors for count fingerprint for rare letters correct", "[fingerprints]")
 {
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
         // Passing fingerprint type 1 -- count, letters type 2 - rare (zqxjkvbp).
-        Fingerprints<FING_T> fingerprints(distanceType, 1, 2);
+        Fingerprints<FING_T> fingerprints(distanceType, Fingerprints<FING_T>::FingerprintType::Count,
+            Fingerprints<FING_T>::LettersType::Rare);
         auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
 
         string str1 = "ala ma kota";
@@ -1336,10 +1376,11 @@ TEST_CASE("is calculating number of errors for count fingerprint for rare letter
 
 TEST_CASE("is calculating number of errors for position fingerprint for common letters correct", "[fingerprints]")
 {
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
         // Passing fingerprint type 2 -- position, letters type 0 - common (etaoin).
-        Fingerprints<FING_T> fingerprints(distanceType, 2, 0);
+        Fingerprints<FING_T> fingerprints(distanceType, Fingerprints<FING_T>::FingerprintType::Pos,
+            Fingerprints<FING_T>::LettersType::Common);
         auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
 
         string str1 = "kota ma ala";
@@ -1379,10 +1420,11 @@ TEST_CASE("is calculating number of errors for position fingerprint for common l
 
 TEST_CASE("is calculating number of errors for position fingerprint for mixed letters correct", "[fingerprints]")
 {
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
         // Passing fingerprint type 2 -- position, letters type 1 - mixed (etakvb).
-        Fingerprints<FING_T> fingerprints(distanceType, 2, 1);
+        Fingerprints<FING_T> fingerprints(distanceType, Fingerprints<FING_T>::FingerprintType::Pos,
+            Fingerprints<FING_T>::LettersType::Mixed);
         auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
     
         string str1 = "kota ma ala";
@@ -1422,10 +1464,11 @@ TEST_CASE("is calculating number of errors for position fingerprint for mixed le
 
 TEST_CASE("is calculating number of errors for position fingerprint for rare letters correct", "[fingerprints]")
 {
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
         // Passing fingerprint type 2 -- position, letters type 2 - rare (zqxjkv).
-        Fingerprints<FING_T> fingerprints(distanceType, 2, 2);
+        Fingerprints<FING_T> fingerprints(distanceType, Fingerprints<FING_T>::FingerprintType::Pos,
+            Fingerprints<FING_T>::LettersType::Rare);
         auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
 
         string str1 = "kota ma ala";
@@ -1465,10 +1508,11 @@ TEST_CASE("is calculating number of errors for position fingerprint for rare let
 
 TEST_CASE("is calculating number of errors for occurrence halved fingerprint for common letters correct", "[fingerprints]")
 {
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
         // Passing fingerprint type 3 -- occurrence halved, letters type 0 - common (etaoinsh).
-        Fingerprints<FING_T> fingerprints(distanceType, 3, 0);
+        Fingerprints<FING_T> fingerprints(distanceType, Fingerprints<FING_T>::FingerprintType::OccHalved,
+            Fingerprints<FING_T>::LettersType::Common);
         auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
 
         string str1 = "ala ma kota"; // ala m|a kota
@@ -1508,10 +1552,11 @@ TEST_CASE("is calculating number of errors for occurrence halved fingerprint for
 
 TEST_CASE("is calculating number of errors for occurrence halved fingerprint for mixed letters correct", "[fingerprints]")
 {
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
         // Passing fingerprint type 3 -- occurrence halved, letters type 1 - mixed (etaokvbp).
-        Fingerprints<FING_T> fingerprints(distanceType, 3, 1);
+        Fingerprints<FING_T> fingerprints(distanceType, Fingerprints<FING_T>::FingerprintType::OccHalved,
+            Fingerprints<FING_T>::LettersType::Mixed);
         auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
 
         string str1 = "ala ma kota"; // ala m|a kota
@@ -1551,10 +1596,11 @@ TEST_CASE("is calculating number of errors for occurrence halved fingerprint for
 
 TEST_CASE("is calculating number of errors for occurrence halved fingerprint for rare letters correct", "[fingerprints]")
 {
-    for (int distanceType : distanceTypes)
+    for (auto distanceType : distanceTypes)
     {
         // Passing fingerprint type 3 -- occurrence halved, letters type 2 - rare (zqxjkvbp).
-        Fingerprints<FING_T> fingerprints(distanceType, 3, 2);
+        Fingerprints<FING_T> fingerprints(distanceType, Fingerprints<FING_T>::FingerprintType::OccHalved,
+            Fingerprints<FING_T>::LettersType::Rare);
         auto fun = FingerprintsWhitebox::getCalcFingerprintFun(fingerprints);
 
         string str1 = "ala ma kota"; // ala m|a kota
