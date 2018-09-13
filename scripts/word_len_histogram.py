@@ -12,8 +12,9 @@ def readWords(inFile):
         words = f.read()
 
     words = words.split("\n")
-    print "Read #words = {0}".format(len(words))
+    words = [w for w in words if w]
 
+    print "Read #words = {0}".format(len(words))
     return words
 
 def main():
