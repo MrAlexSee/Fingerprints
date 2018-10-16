@@ -55,11 +55,8 @@ TEST_CASE("is Hamming at most k=1 calculation correct", "[distance]")
         REQUIRE(FingerprintsWhitebox::isHamAtMostK<FING_T>(cur.c_str(), str.c_str(), cur.size(), 0) == false);
         REQUIRE(FingerprintsWhitebox::isHamAtMostK<FING_T>(str.c_str(), cur.c_str(), cur.size(), 0) == false);
 
-        for (int k = 1; k <= maxK; ++k)
-        {
-            REQUIRE(FingerprintsWhitebox::isHamAtMostK<FING_T>(cur.c_str(), str.c_str(), cur.size(), 1) == true);
-            REQUIRE(FingerprintsWhitebox::isHamAtMostK<FING_T>(str.c_str(), cur.c_str(), cur.size(), 1) == true);
-        }
+        REQUIRE(FingerprintsWhitebox::isHamAtMostK<FING_T>(cur.c_str(), str.c_str(), cur.size(), 1) == true);
+        REQUIRE(FingerprintsWhitebox::isHamAtMostK<FING_T>(str.c_str(), cur.c_str(), cur.size(), 1) == true);
     }
 }
 
