@@ -20,7 +20,7 @@ namespace
 {
 
 const string pSeparator = "\n";
-constexpr int pNIter = 10;
+constexpr int pNIter = 100;
 
 }
 
@@ -31,9 +31,9 @@ string getAlphabet(const unordered_set<string> &wordSet);
 
 int main(int argc, const char **argv)
 {
-    if (argc != 3)
+    if (argc != 4)
     {
-        throw runtime_error("usage: ./neighborhood [dictionary path] [patterns path]");
+        throw runtime_error("usage: ./neighborhood [dictionary path] [patterns path] [ham/lev]");
     }
 
     vector<string> dict = Helpers::readWords(argv[1], pSeparator);
@@ -42,9 +42,22 @@ int main(int argc, const char **argv)
     cout << boost::format("Read #words = %1%, #patterns = %2%") % dict.size() % patterns.size() << endl;
     unordered_set<string> wordSet(dict.begin(), dict.end());
 
-    // Select Hamming or Levenshtein distance here.
-    // float elapsedUs = runHammingK1(wordSet, patterns, pNIter);
-    float elapsedUs = runLevenK1(wordSet, patterns, pNIter);
+    float elapsedUs;
+
+    if (strcmp(argv[3], "ham") == 0)
+    {
+        cout << "Caculating for the Hamming distance" << endl;
+        elapsedUs = runHammingK1(wordSet, patterns, pNIter);
+    }
+    else if (strcmp(argv[3], "lev") == 0)
+    {
+        cout << "Caculating for the Levenshtein distance" << endl;
+        elapsedUs = runLevenK1(wordSet, patterns, pNIter);
+    }
+    else
+    {
+        throw runtime_error("bad distance: " + string(argv[3]));
+    }
 
     size_t nProcessedWords = dict.size() * patterns.size();
 
