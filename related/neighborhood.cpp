@@ -46,12 +46,12 @@ int main(int argc, const char **argv)
 
     if (strcmp(argv[3], "ham") == 0)
     {
-        cout << "Caculating for the Hamming distance" << endl;
+        cout << "Calculating for the Hamming distance" << endl;
         elapsedUs = runHammingK1(wordSet, patterns, pNIter);
     }
     else if (strcmp(argv[3], "lev") == 0)
     {
-        cout << "Caculating for the Levenshtein distance" << endl;
+        cout << "Calculating for the Levenshtein distance" << endl;
         elapsedUs = runLevenK1(wordSet, patterns, pNIter);
     }
     else
