@@ -70,8 +70,8 @@ int main(int argc, const char **argv)
 
 float runHammingK1(const unordered_set<string> &wordSet, const vector<string> &patterns, int nIter)
 {
-    int nMatches = 0;
     clock_t start, end;
+    int nMatches = 0;
 
     string alphabet = getAlphabet(wordSet);
     cout << "Alphabet size = " << alphabet.size() << endl;
@@ -80,6 +80,8 @@ float runHammingK1(const unordered_set<string> &wordSet, const vector<string> &p
 
     for (int i = 0; i < nIter; ++i)
     {
+        nMatches = 0;
+
         for (const string &pattern : patterns) 
         {
             // Checking for an exact match.
@@ -120,8 +122,8 @@ float runHammingK1(const unordered_set<string> &wordSet, const vector<string> &p
 
 float runLevenK1(const unordered_set<string> &wordSet, const vector<string> &patterns, int nIter)
 {
-    int nMatches = 0;
     clock_t start, end;
+    int nMatches = 0;
 
     string alphabet = getAlphabet(wordSet);
     cout << "Alphabet size = " << alphabet.size() << endl;
@@ -130,6 +132,8 @@ float runLevenK1(const unordered_set<string> &wordSet, const vector<string> &pat
 
     for (int i = 0; i < nIter; ++i)
     {
+        nMatches = 0;
+
         for (const string &pattern : patterns)
         {
             // Checking for an exact match.
