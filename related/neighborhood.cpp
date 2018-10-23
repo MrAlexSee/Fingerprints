@@ -162,27 +162,36 @@ float runLevenK1(const unordered_set<string> &wordSet, const vector<string> &pat
                 }
             }
 
+            // Stores already checked words.
+            // Prevents duplicate checks which might happen with insertions and deletions.
+            unordered_set<string> checked;
+
             // Deletions for k = 1.
             for (size_t i = 0; i < pattern.size(); ++i)
             {
                 const size_t prefixSize = i + 1;
-                string candidate(pattern.size() - 1, ' ');
+                string candidate(pattern.size() - 1, 0);
 
                 char *src = const_cast<char *>(candidate.c_str());
 
                 memcpy(src, pattern.c_str(), i);
                 memcpy(src + i, pattern.c_str() + prefixSize, pattern.size() - prefixSize);
 
-                if (wordSet.find(candidate) != wordSet.end())
+                if (checked.find(candidate) == checked.end())
                 {
-                    nMatches += 1;
+                    if (wordSet.find(candidate) != wordSet.end())
+                    {
+                        nMatches += 1;
+                    }
+
+                    checked.insert(candidate);
                 }
             }
 
             // Insertions for k = 1.
             for (size_t i = 0; i < pattern.size() + 1; ++i)
             {
-                string candidate(pattern.size() + 1, ' ');
+                string candidate(pattern.size() + 1, 0);
                 const size_t prefixSize = i + 1;
 
                 char *src = const_cast<char *>(candidate.c_str());
@@ -194,9 +203,14 @@ float runLevenK1(const unordered_set<string> &wordSet, const vector<string> &pat
                 {
                     candidate[i] = c;
 
-                    if (wordSet.find(candidate) != wordSet.end())
+                    if (checked.find(candidate) == checked.end())
                     {
-                        nMatches += 1;
+                        if (wordSet.find(candidate) != wordSet.end())
+                        {
+                            nMatches += 1;
+                        }
+
+                        checked.insert(candidate);
                     }
                 }
             }
