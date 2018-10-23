@@ -93,6 +93,8 @@ float runHammingK1(const unordered_set<string> &wordSet, const vector<string> &p
             // This search assumes k = 1.
             for (size_t i = 0; i < pattern.size(); ++i)
             {
+                string candidate = pattern;
+
                 for (const char c : alphabet)
                 {
                     if (pattern[i] == c)
@@ -100,7 +102,6 @@ float runHammingK1(const unordered_set<string> &wordSet, const vector<string> &p
                         continue;
                     }
 
-                    string candidate = pattern;
                     candidate[i] = c;
 
                     if (wordSet.find(candidate) != wordSet.end())
@@ -145,6 +146,8 @@ float runLevenK1(const unordered_set<string> &wordSet, const vector<string> &pat
             // Substitutions for k = 1.
             for (size_t i = 0; i < pattern.size(); ++i)
             {
+                string candidate = pattern;
+
                 for (const char c : alphabet)
                 {
                     if (pattern[i] == c)
@@ -152,7 +155,6 @@ float runLevenK1(const unordered_set<string> &wordSet, const vector<string> &pat
                         continue;
                     }
 
-                    string candidate = pattern;
                     candidate[i] = c;
 
                     if (wordSet.find(candidate) != wordSet.end())
