@@ -408,6 +408,8 @@ template<typename FING_T>
 void Fingerprints<FING_T>::calcOccNMismatchesLUT()
 {
     FING_T maxVal = std::numeric_limits<FING_T>::max();
+
+    assert(nMismatchesLUT == nullptr);
     nMismatchesLUT = new unsigned char[maxVal + 1];
 
     FING_T n = 0x0U;
@@ -433,6 +435,8 @@ void Fingerprints<FING_T>::calcCountNMismatchesLUT()
     assert(sizeof(FING_T) == 2);
 
     FING_T maxVal = std::numeric_limits<FING_T>::max();
+
+    assert(nMismatchesLUT == nullptr);
     nMismatchesLUT = new unsigned char[maxVal + 1];
 
     FING_T mask = 0b011U;
@@ -473,6 +477,8 @@ void Fingerprints<FING_T>::calcPosNMismatchesLUT()
     assert(sizeof(FING_T) == 2);
 
     FING_T maxVal = std::numeric_limits<FING_T>::max();
+
+    assert(nMismatchesLUT == nullptr);
     nMismatchesLUT = new unsigned char[maxVal + 1];
 
     FING_T mask = 0b0111U;
