@@ -26,8 +26,9 @@ Input dictionary file (positional parameter 1 or named parameter `-i` or `--in-d
 Input pattern file (positional parameter 2 or named parameter `-I` or `--in-pattern-file`) should contain the list of patterns, separated with newline characters.
 Attached as part of this package are scripts `test_real.sh` for testing on real-world data and `test_synth.sh` for testing on synthetic data.
 
-End-to-end tests are located in the `end_to_end_tests` folder and they can be run using the `run_tests.sh` script in that folder.
-Unit tests are located in the `unit_tests` folder and they can be run by issuing the `make run` command in that folder.
+* End-to-end tests are located in the `end_to_end_tests` folder and they can be run using the `run_tests.sh` script in that folder.
+* Unit tests are located in the `unit_tests` folder and they can be run by issuing the `make run` command in that folder.
+* The `scripts` directory contains some helpful Python 2 tools.
 
 #### Command-line parameter description
 
@@ -50,3 +51,21 @@ Short name | Long name                | Parameter description
 `-s`       | `--separator arg`        | input data (dictionary and patterns) separator (default = newline)
 `-v`       | `--version`              | display version info
 `-w`       | `--word-count arg`       | maximum number of words read from top of the dictionary file (non-positive values are ignored)
+
+#### Data files description
+
+File name                        | Description
+-------------------------------- | -------------------
+`dict_english_200.txt`           | words extracted from the English 200 collection from the Pizza&Chili index, 815,935 words
+`dict_iamerican_insane.txt`      | English dictionary, 350,518 words
+`queries_english_200_8.txt`      | queries of length 8 with errors extracted from the corresponding dictionary, 10,000 words
+`queries_iamerican_insane_8.txt` | queries of length 8 with errors extracted from the corresponding dictionary, 10,000 words
+`queries_misspellings.txt`       | a list of common English misspellings, 4,278 words
+`queries_urls_69.txt`            | queries of length 69 with errors extracted from a dictionary of real-world URL data, 10,000 words
+
+References:
+
+* Pizza&Chili: http://pizzachili.dcc.uchile.cl/texts/nlang/english.200MB.gz
+* iamerican-insane: Ubuntu package
+* English misspellings: https://en.wikipedia.org/wiki/Wikipedia:Lists_of_common_misspellings/For_machines
+* URL dictionary: http://data.law.di.unimi.it/webdata/in-2004/in-2004.urls.gz
