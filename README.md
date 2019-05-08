@@ -54,6 +54,8 @@ Short name | Long name                | Parameter description
 
 #### Data files description
 
+All files listed below are located in the `data` folder.
+
 File name                        | Description
 -------------------------------- | -------------------
 `dict_english_200.txt`           | words extracted from the English 200 collection from the Pizza&Chili index, 815,935 words
