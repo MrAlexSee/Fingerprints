@@ -3,7 +3,7 @@
 A proof-of-concept program for lightweight fingerprints for fast approximate keyword matching. Authors: Aleksander Cisłak, Szymon Grabowski.
 
 Published as *Lightweight Fingerprints for Fast Approximate Keyword Matching Using Bitwise Operations* (Cisłak and Grabowski), Computing and Informatics, 02/2019, pp. 367-389.
-Also available as a preprint at the following link: https://arxiv.org/abs/1711.08475.
+Available under the following link: http://www.cai.sk/ojs/index.php/cai/article/view/2019_2_367.
 
 ## Compilation
 
